@@ -154,6 +154,7 @@ static inline
 const char *
 S_error_string(void)
 {
+	(void) SERRLOC;
 	switch (SERRNO)
 	{
 	case S_NO_ERROR          : return "No error.";
