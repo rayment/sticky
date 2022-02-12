@@ -35,7 +35,7 @@ jobs:
         run: |
           brew update && \
           brew install \
-            pkg-config glew sdl2 assimp freetype
+            pkg-config glew sdl2 assimp freetype libomp
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Compile contrib dependencies

@@ -15,6 +15,8 @@ DEBUG_TRACE:=0
 
 # requires assimp
 ENABLE_ASSIMP:=1
+# requires OpenMP
+ENABLE_OPENMP:=1
 
 # ------
 # set ARCH:=32 for 32-bit builds
@@ -69,6 +71,9 @@ else
 		LIBRARIES+=openal
 		CXXFLAGS+=-Wpedantic -D_POSIX_C_SOURCE=200112L
 		LDFLAGS+=-pthread
+		ifeq ($(ENABLE_OPENMP),1)
+			CXXFLAGS+=-fopenmp
+		endif
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
 		HEADERS:=$(filter-out $(wildcard src/*/**_win32.h),$(HEADERS))
 		STATIC_LIB:=lib$(LIBNAME).a.$(VERSION)
@@ -76,9 +81,13 @@ else
 		DYNAMIC_LIB:=$(LINK_LIB).$(VERSION)
 	endif
 	ifeq ($(UNAME_S),Darwin)
-        CXXFLAGS+=-Wno-deprecated-declarations -Wno-typedef-redefinition \
+		CXXFLAGS+=-Wno-deprecated-declarations -Wno-typedef-redefinition \
 		          -Wno-pedantic
 		LDFLAGS+=-framework OpenGL -framework OpenAL -pthread
+		ifeq ($(ENABLE_OPENMP),1)
+			CXXFLAGS+=-Xpreprocessor -fopenmp
+			LDFLAGS+=-lomp
+		endif
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
 		HEADERS:=$(filter-out $(wildcard src/*/**_win32.h),$(HEADERS))
 		STATIC_LIB:=lib$(LIBNAME)-$(VERSION).a
@@ -158,7 +167,7 @@ test/%: test/%.o
 	$(LD) $< $(TEST_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
-	rm -rf build/ obj/ docs/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
+	rm -rf build/ obj/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
 
 clean_test:
 	rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) || true
