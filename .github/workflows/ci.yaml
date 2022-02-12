@@ -1,0 +1,67 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install system packages
+        run: |
+          sudo apt-get update && \
+          sudo apt-get install \
+               libglew-dev libsdl2-dev libopenal-dev libassimp-dev \
+               libfreetype6-dev libopengl-dev
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Compile contrib dependencies
+        run: |
+          cd contrib && make
+      - name: Compile source
+        run: |
+          make
+      - name: Compile tests
+        run: |
+          make test
+      - name: Execute test suite
+        run: |
+          cd test && sh stats.sh && sh test.sh
+  build-macos:
+    name: macOS build
+    runs-on: macos-latest
+    steps:
+      - name: Install system packages
+        run: |
+          brew update && \
+          brew install \
+            pkg-config glew sdl2 assimp freetype
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Compile contrib dependencies
+        run: |
+          cd contrib && make
+      - name: Compile source
+        run: |
+          make
+      - name: Compile tests
+        run: |
+          make test
+      - name: Execute test suite
+        run: |
+          cd test && sh stats.sh && sh test.sh
+  #build-windows:
+  #  name: Windows build
+  #  runs-on: windows-latest
+  #  steps:
+  #    - name: Checkout code
+  #      uses: actions/checkout@v2
+  #    - name: Compile contrib dependencies
+  #      run: ...
+  #    - name: Compile source
+  #      run: ...
+  #    - name: Compile tests
+  #      run: ...
+  #    - name: Execute test suite
+  #      run: ...
+
