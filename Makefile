@@ -72,7 +72,7 @@ else
 		CXXFLAGS+=-Wpedantic -D_POSIX_C_SOURCE=200112L
 		LDFLAGS+=-pthread
 		ifeq ($(ENABLE_OPENMP),1)
-			CXXFLAGS+=-fopenmp
+			CXXFLAGS+=-fopenmp -DENABLE_OPENMP=1
 		endif
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
 		HEADERS:=$(filter-out $(wildcard src/*/**_win32.h),$(HEADERS))
@@ -85,7 +85,7 @@ else
 		          -Wno-pedantic
 		LDFLAGS+=-framework OpenGL -framework OpenAL -pthread
 		ifeq ($(ENABLE_OPENMP),1)
-			CXXFLAGS+=-Xpreprocessor -fopenmp
+			CXXFLAGS+=-Xpreprocessor -fopenmp -DENABLE_OPENMP=1
 			LDFLAGS+=-lomp
 		endif
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
