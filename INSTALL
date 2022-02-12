@@ -1,0 +1,56 @@
+INSTALL
+-------
+
+The following build requirements must be met to compile and install sticky:
+  - A C99 compatible C compiler
+  - GNU compatible Make
+  - Git (for contrib)
+
+The following libraries and headers are also dependencies to install sticky:
+  - freetype2
+  - GL
+  - GLEW
+  - OpenAL
+  - SDL2
+
+The following libraries are optional and not required to install sticky but will
+limit the functionality of the library if not enabled:
+  - Assimp
+
+Note that the contrib folder contains a build script for some extra external
+dependencies. These dependencies are built into the engine automatically and
+are not included in the above list.
+
+Toggling optional libraries:
+  - Go to the project root directory and edit the ENABLE_XXX variables in
+    Makefile where XXX corresponds to an optional library.
+  - Follow the below instructions and compile as normal.
+
+Instructions:
+  - Go to the contrib folder and run `make' to download and prepare the extra
+    external dependencies.
+  - Go to the project root directory and run `make' to compile the library.
+  - Now run `make install' to install the library and headers.
+    Note that admin permissions may be required to run this command.
+    The library can still be linked locally.
+    Note also that a Unix-like system is most likely required.
+  - If your C compiler does not have a system link to `gcc', edit Makefile
+    and change the 'CC' variable to the correct command.
+
+Note that if you are installing on a 32-bit operating system, you must change
+the 'ARCH' variable to 32 before compilation.
+
+UNINSTALL
+---------
+
+The headers are installed by default to:
+	/usr/local/include/sticky
+
+The library is installed by default to:
+	/usr/local/lib
+
+- These files can be removed by running
+  `make uninstall'.
+- Otherwise, you may remove these files manually with no negative consequence.
+- Note that admin permissions may be required to remove these files.
+

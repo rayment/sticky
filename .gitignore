@@ -1,0 +1,16 @@
+.DS_Store
+[.]_*
+*.swp
+build
+docs
+obj
+*.a
+*.dll
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+*.app
+*.dSYM/
+*.o
