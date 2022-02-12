@@ -6,6 +6,5 @@ Documentation is generated using the provided Doxyfile and the doxygen program.
 The process can be automated by running `make docs' or by manually running
 Doxygen with `doxygen Doxyfile'.
 
-Output is generated in the 'docs' folder in both LaTeX (which will also require
-compiling) and HTML format.
+Output is generated in the 'docs' folder in HTML format.
 
