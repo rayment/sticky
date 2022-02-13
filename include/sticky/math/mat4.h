@@ -24,7 +24,6 @@ extern "C"
 
 /**
  * @file mat4.h
- * @todo Provide graphical examples of matrix functions.
  * @addtogroup mat4
  * @{
  */

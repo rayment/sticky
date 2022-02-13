@@ -22,6 +22,25 @@ extern "C"
  * @{
  */
 
+/**
+ * @brief 3x3 single-precision floating-point matrix.
+ *
+ * Matrices may be directly cast into {@link Sfloat Sfloat *} and accessed in
+ * column-major order. That is, <c>m[0] ... m[2]</c> refer to the first
+ * <b>column</b> of the matrix.
+ *
+ * A 3x3 matrix @f$M@f$ is defined as follows:
+ *
+ * @f[
+ *     M=\left[{\begin{array}{ccc}
+ *         a & d & g \\
+ *         b & e & h \\
+ *         c & f & i
+ *     \end{array}}\right]
+ * @f]
+ *
+ * @since 1.0.0
+ */
 typedef struct
 Smat3_s
 {
@@ -40,12 +59,11 @@ Smat3_s
  */
 
 /**
- * @brief 4x4 matrix.
+ * @brief 4x4 single-precision floating-point matrix.
  *
- * Defines a 4x4 single-precision floating-point matrix. Matrices can be
- * directly cast into {@link Sfloat Sfloat *} and accessed in column-major
- * order. That is, <c>m[0] ... m[3]</c> refer to the first <b>column</b> of the
- * matrix.
+ * Matrices may be directly cast into {@link Sfloat Sfloat *} and accessed in
+ * column-major order. That is, <c>m[0] ... m[3]</c> refer to the first
+ * <b>column</b> of the matrix.
  *
  * A 4x4 matrix @f$M@f$ is defined as follows:
  *
