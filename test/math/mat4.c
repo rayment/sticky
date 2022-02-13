@@ -14,8 +14,7 @@ void
 print_2_matrices(Smat4 *a,
                  Smat4 *b)
 {
-	ATOMIC_PRINT("\n");
-	ATOMIC_PRINT("%5.2f %5.2f %5.2f %5.2f    "
+	ATOMIC_PRINT("\n%5.2f %5.2f %5.2f %5.2f    "
 	             "%5.2f %5.2f %5.2f %5.2f\n",
 	             a->m00, a->m01, a->m02, a->m03,
 	             b->m00, b->m01, b->m02, b->m03);
@@ -38,8 +37,7 @@ print_3_matrices(Smat4 *a,
                  Smat4 *b,
                  Smat4 *c)
 {
-	ATOMIC_PRINT("\n");
-	ATOMIC_PRINT("%5.2f %5.2f %5.2f %5.2f   "
+	ATOMIC_PRINT("\n%5.2f %5.2f %5.2f %5.2f   "
 	             "%5.2f %5.2f %5.2f %5.2f   "
 	             "%6.2f %6.2f %6.2f %6.2f\n",
 	             a->m00, a->m01, a->m02, a->m03,
