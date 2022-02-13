@@ -1,0 +1,5 @@
+/**
+ * @defgroup mutex Mutexes
+ *
+ * @brief Mutual exclusion synchronisation primitives.
+ */

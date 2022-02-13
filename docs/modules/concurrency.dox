@@ -1,0 +1,5 @@
+/**
+ * @defgroup concurrency Concurrency
+ *
+ * @brief Threading and atomic access management.
+ */

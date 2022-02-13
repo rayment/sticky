@@ -1,0 +1,5 @@
+/**
+ * @addtogroup error Errors and logging
+ *
+ * @brief User message and error logging system.
+ */

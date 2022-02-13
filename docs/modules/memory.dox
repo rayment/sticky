@@ -1,0 +1,5 @@
+/**
+ * @addtogroup memory Memory management
+ *
+ * @brief Memory allocation and deallocation.
+ */
