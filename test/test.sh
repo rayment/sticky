@@ -27,6 +27,7 @@ assert_pass() {
 }
 
 assert_pass concurrency/mutex
+assert_pass concurrency/thread
 
 echo "--- $passed/$total tests passed ---"
 if [ ! $passed -eq $total ];

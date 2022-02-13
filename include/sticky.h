@@ -27,6 +27,7 @@
 #include "sticky/common/types.h"
 
 #include "sticky/concurrency/mutex.h"
+#include "sticky/concurrency/thread.h"
 
 #include "sticky/memory/allocator.h"
 #include "sticky/memory/memtrace.h"
