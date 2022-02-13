@@ -28,6 +28,7 @@ assert_pass() {
 
 assert_pass concurrency/mutex
 assert_pass concurrency/thread
+assert_pass math/mat3
 assert_pass math/mat4
 
 echo "--- $passed/$total tests passed ---"

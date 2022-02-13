@@ -67,6 +67,7 @@ int
 main(void)
 {
 	Smat4 a, b, c, tmp;
+	Smat3 d, e;
 	Sbool bb;
 
 	INIT();
@@ -180,6 +181,15 @@ main(void)
 		print_3_matrices(&a, &b, &tmp);
 	, S_mat4_equals(EPSILON, &tmp, &c) && S_mat4_equals(EPSILON, &c, &tmp)
 	, "S_mat4_multiply (M1 x M2 = M3)");
+
+	e.m00 = 210.0f; e.m10 = 93.0f;  e.m20 = 171.0f;
+	e.m01 = 267.0f; e.m11 = 149.0f; e.m21 = 146.0f;
+	e.m02 = 236.0f; e.m12 = 104.0f; e.m22 = 172.0f;
+
+	TEST(
+		S_mat4_to_mat3(&d, &c);
+	, S_mat3_equals(EPSILON, &d, &e) && S_mat3_equals(EPSILON, &e, &d)
+	, "S_mat4_to_mat3");
 
 	FREE();
 
