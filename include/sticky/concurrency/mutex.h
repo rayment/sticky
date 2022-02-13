@@ -34,16 +34,10 @@ extern "C"
 #include <windows.h>
 #elif defined(STICKY_POSIX)
 #include <pthread.h>
-#endif /* STICKY_WINDOWS */
-
-#if defined(STICKY_WINDOWS)
-
-#elif defined(STICKY_POSIX)
 typedef pthread_mutex_t _Smutex_raw;
 #endif /* STICKY_WINDOWS */
 /**
- * @brief The generic mutex data type.
- * @hideinitializer
+ * @brief The generic mutex data-type.
  *
  * The typedef for <b>_Smutex_raw</b> is platform-dependant and will
  * automatically select a native mutex implementation for the compiling system.

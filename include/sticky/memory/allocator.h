@@ -33,6 +33,7 @@ void   _S_out_of_memory(const Schar *, const Suint32);
 
 /**
  * @brief Allocate a given number of bytes on the heap.
+ * @hideinitializer
  *
  * Internally calls the standard function <b><c>malloc(size_t)</c></b> and
  * allocates a given number of bytes on the heap, returning a
@@ -47,6 +48,7 @@ void   _S_out_of_memory(const Schar *, const Suint32);
 #define S_memory_new(x)    _S_memory_new(x, __FILE__, __LINE__)
 /**
  * @brief Free a pointer from memory.
+ * @hideinitializer
  *
  * Internall calls the standard function <b><c>free(void *)</c></b> and frees a
  * block of memory from the heap.

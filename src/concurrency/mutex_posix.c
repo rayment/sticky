@@ -15,12 +15,12 @@
 #include "sticky/concurrency/mutex.h"
 #include "sticky/memory/allocator.h"
 
-#include <errno.h>
-#include <pthread.h>
-
 #ifndef STICKY_POSIX
 #error This source file cannot be compiled on non-POSIX systems.
 #endif /* STICKY_POSIX */
+
+#include <errno.h>
+#include <pthread.h>
 
 Smutex
 S_mutex_new(void)
