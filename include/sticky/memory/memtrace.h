@@ -52,6 +52,8 @@ void    _S_memtrace_stack_trace(void);
 	_S_memtrace_push_stack(name, __FILE__, __LINE__); \
 	call;                                             \
 	_S_memtrace_pop_stack()
+#else /* DEBUG_TRACE */
+#define _S_CALL(name, call) call
 #endif /* DEBUG_TRACE */
 
 void    _S_memtrace_init(void);
