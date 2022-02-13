@@ -20,24 +20,13 @@ extern "C"
 #endif /* __cplusplus */
 
 #include "sticky/common/types.h"
-#include "sticky/math/mat4.h"
-
-/* extern */
-typedef struct Smat4_s Smat4;
+#include "sticky/math/math.h"
 
 /**
  * @file mat3.h
  * @addtogroup mat3
  * @{
  */
-
-typedef struct
-Smat3_s
-{
-	Sfloat m00, m10, m20,
-	       m01, m11, m21,
-	       m02, m12, m22;
-} Smat3;
 
 void  S_mat3_identity(Smat3 *);
 void  S_mat3_multiply(Smat3 *, const Smat3 *);

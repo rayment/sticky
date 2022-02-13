@@ -20,10 +20,7 @@ extern "C"
 #endif /* __cplusplus */
 
 #include "sticky/common/types.h"
-#include "sticky/math/mat3.h"
-
-/* extern */
-typedef struct Smat3_s Smat3;
+#include "sticky/math/math.h"
 
 /**
  * @file mat4.h
@@ -31,36 +28,6 @@ typedef struct Smat3_s Smat3;
  * @addtogroup mat4
  * @{
  */
-
-/**
- * @brief 4x4 matrix.
- *
- * Defines a 4x4 single-precision floating-point matrix. Matrices can be
- * directly cast into {@link Sfloat Sfloat *} and accessed in column-major
- * order. That is, <c>m[0] ... m[3]</c> refer to the first <b>column</b> of the
- * matrix.
- *
- * A 4x4 matrix @f$M@f$ is defined as follows:
- *
- * @f[
- *     M=\left[{\begin{array}{cccc}
- *         a & e & i & m \\
- *         b & f & j & n \\
- *         c & g & k & o \\
- *         d & h & l & p
- *     \end{array}}\right]
- * @f]
- *
- * @since 1.0.0
- */
-typedef struct
-Smat4_s
-{
-	Sfloat m00, m10, m20, m30,
-	       m01, m11, m21, m31,
-	       m02, m12, m22, m32,
-	       m03, m13, m23, m33;
-} Smat4;
 
 /**
  * @brief Set a 4x4 matrix to the identity matrix.

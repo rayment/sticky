@@ -29,6 +29,7 @@
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
 
+#include "sticky/math/math.h"
 #include "sticky/math/mat3.h"
 #include "sticky/math/mat4.h"
 
