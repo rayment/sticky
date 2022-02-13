@@ -44,7 +44,7 @@ double tmptime, totaltime, besttime, worsttime, avgtime;
 
 #define ATOMIC_PRINT(x,...)                                  \
 	S_mutex_lock(print_mutex);                               \
-	fprintf(stdout, x, __VA_ARGS__);                         \
+	fprintf(stdout, x, ##__VA_ARGS__);                       \
 	fflush(stdout);                                          \
 	S_mutex_unlock(print_mutex)
 

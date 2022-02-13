@@ -30,27 +30,27 @@ main(void)
 	TEST_RAW(
 		S_mutex_lock(mutex);
 	, 1
-	, "S_mutex_lock");
+	, "S_mutex_lock (unlocked)");
 
 	TEST_RAW(
 		b = S_mutex_trylock(mutex);
 	, b == S_FALSE
-	, "S_mutex_trylock");
+	, "S_mutex_trylock (locked)");
 
 	TEST_RAW(
 		S_mutex_unlock(mutex);
 	, 1
-	, "S_mutex_unlock");
+	, "S_mutex_unlock (locked)");
 
 	TEST_RAW(
 		b = S_mutex_trylock(mutex);
 	, b == S_TRUE
-	, "S_mutex_trylock");
+	, "S_mutex_trylock (unlocked)");
 
 	TEST_RAW(
 		S_mutex_unlock(mutex);
 	, 1
-	, "S_mutex_unlock");
+	, "S_mutex_unlock (locked)");
 
 	TEST_RAW(
 		S_mutex_delete(mutex);
