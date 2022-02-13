@@ -24,14 +24,16 @@ Smutex print_mutex;
 #define BOLD  "\x1b[1m"
 #define RESET  "\x1b[0m"
 
-#define INIT() \
+#define INIT()                   \
+S_sticky_init();                 \
 print_mutex = S_mutex_new()
 
 #define FREE() \
-S_mutex_delete(print_mutex) \
+S_mutex_delete(print_mutex);     \
+S_sticky_free()
 
-#define ATOMIC_PRINT(x,...) \
-S_mutex_lock(print_mutex); \
+#define ATOMIC_PRINT(x,...)      \
+S_mutex_lock(print_mutex);       \
 fprintf(stdout, x, __VA_ARGS__); \
 fflush(stdout); \
 S_mutex_unlock(print_mutex)

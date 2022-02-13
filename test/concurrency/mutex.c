@@ -20,6 +20,8 @@ main(void)
 	Smutex mutex;
 	Sbool b;
 
+	S_sticky_init();
+
 	TEST_RAW(
 		mutex = S_mutex_new();
 	, mutex
@@ -54,6 +56,8 @@ main(void)
 		S_mutex_delete(mutex);
 	, 1
 	, "S_mutex_delete");
+
+	S_sticky_free();
 
 	return EXIT_SUCCESS;
 }
