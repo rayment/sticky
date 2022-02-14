@@ -8,7 +8,7 @@
 
 #include "test_common.h"
 
-#define EPSILON 0.00001f
+#define EPSILON S_EPSILON
 
 void
 print_2_matrices(Smat3 *a,

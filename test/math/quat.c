@@ -8,7 +8,7 @@
 
 #include "test_common.h"
 
-#define EPSILON 0.0001f
+#define EPSILON S_EPSILON
 #define EULER_EPSILON 0.1f
 
 void
