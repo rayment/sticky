@@ -178,11 +178,11 @@ S_mat3_to_mat4(Smat4 *dest,
 	dest->m10 = src->m10;
 	dest->m11 = src->m11;
 	dest->m12 = src->m12;
-	dest->m03 = 0.0f;
+	dest->m13 = 0.0f;
 	dest->m20 = src->m20;
 	dest->m21 = src->m21;
 	dest->m22 = src->m22;
-	dest->m03 = 0.0f;
+	dest->m23 = 0.0f;
 	dest->m30 = 0.0f;
 	dest->m31 = 0.0f;
 	dest->m32 = 0.0f;
