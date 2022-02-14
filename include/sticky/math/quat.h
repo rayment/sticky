@@ -35,6 +35,7 @@ Sfloat S_quat_dot(const Squat *, const Squat *);
 void   S_quat_normalize(Squat *);
 void   S_quat_inverse(Squat *);
 void   S_quat_lerp(Squat *, const Squat *, Sfloat);
+void   S_quat_slerp(Squat *, const Squat *, Sfloat);
 Sfloat S_quat_angle(Squat *, const Squat *);
 void   S_quat_copy(Squat *, const Squat *);
 Sbool  S_quat_equals(Sfloat, const Squat *, const Squat *);

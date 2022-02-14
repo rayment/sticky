@@ -24,9 +24,10 @@ extern "C"
  * @{
  */
 
-#define S_EPSILON 0.0001f
-#define S_PI      3.1415926536f
-#define S_HALFPI  1.5707963268f
+#define S_EPSILON  0.0001f
+#define S_PI       3.1415926536f
+#define S_HALFPI   1.5707963268f
+#define S_INFINITY INFINITY
 
 /**
  * @}
@@ -158,15 +159,19 @@ Smat4_s
  * @{
  */
 
-#define S_abs(x) fabsf(x)
-#define S_sqrt(x) sqrtf(x)
-#define S_radians(x) ((x) * 0.01745329252f)
-#define S_degrees(x) ((x) * 57.2957795131f)
-#define S_arcsin(x) asinf(x)
-#define S_arccos(x) acosf(x)
-#define S_arctan(x) atanf(x)
-#define S_arctan2(x,y) atan2f(x,y)
+#define S_abs(x)          fabsf(x)
+#define S_sqrt(x)         sqrtf(x)
+#define S_radians(x)      ((x) * 0.01745329252f)
+#define S_degrees(x)      ((x) * 57.2957795131f)
+#define S_sin(x)          sinf(x)
+#define S_cos(x)          cosf(x)
+#define S_tan(x)          tanf(x)
+#define S_arcsin(x)       asinf(x)
+#define S_arccos(x)       acosf(x)
+#define S_arctan(x)       atanf(x)
+#define S_arctan2(x,y)    atan2f(x,y)
 #define S_epsilon(x,y,z) ((y) > ((z)-(x)) && (y) < ((z)+(x)))
+#define S_clamp(x,y,z)   ((x) < (y) ? y : ((x) > (z) ? z : (x)))
 
 /**
  * @}

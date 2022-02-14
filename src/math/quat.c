@@ -108,18 +108,71 @@ S_quat_inverse(Squat *quat)
 	quat->k = conjugate.k / dot;
 }
 
-void  S_quat_lerp(Squat *, const Squat *, Sfloat);
+void
+S_quat_lerp(Squat *dest,
+            const Squat *src,
+            Sfloat time)
+{
+	Squat copy;
+	Sfloat tdiff;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_lerp");
+		return;
+	}
+	time = S_clamp(time, 0.0f, 1.0f);
+	tdiff = (1.0f - time);
+	_S_CALL("S_quat_copy", S_quat_copy(&copy, src));
+	copy.r *= tdiff;
+	copy.i *= tdiff;
+	copy.j *= tdiff;
+	copy.k *= tdiff;
+	dest->r = dest->r*time + copy.r;
+	dest->i = dest->i*time + copy.i;
+	dest->j = dest->j*time + copy.j;
+	dest->k = dest->k*time + copy.k;
+	_S_CALL("S_quat_normalize", S_quat_normalize(dest));
+}
+
+void
+S_quat_slerp(Squat *dest,
+             const Squat *src,
+             Sfloat time)
+{
+	Sfloat theta, stheta, a, b;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_slerp");
+		return;
+	}
+	time = S_clamp(time, 0.0f, 1.0f);
+	_S_CALL("S_quat_dot", theta = S_quat_dot(src, dest));
+	theta = S_arccos(theta);
+	if (theta < 0.0)
+		theta = -theta;
+	stheta = S_sin(theta);
+	a = S_sin((1.0f-time)*theta) / stheta;
+	b = S_sin(time*theta) / stheta;
+	dest->r = dest->r*b + src->r*a;
+	dest->i = dest->i*b + src->i*a;
+	dest->j = dest->j*b + src->j*a;
+	dest->k = dest->k*b + src->k*a;
+	_S_CALL("S_quat_normalize", S_quat_normalize(dest));
+}
 
 Sfloat
 S_quat_angle(Squat *dest,
              const Squat *src)
 {
-	Squat inverse, copy;
+	Squat inverse;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_angle");
+		return S_INFINITY;
+	}
 	_S_CALL("S_quat_copy", S_quat_copy(&inverse, src));
-	_S_CALL("S_quat_copy", S_quat_copy(&copy, dest));
 	_S_CALL("S_quat_inverse", S_quat_inverse(&inverse));
-	_S_CALL("S_quat_multiply", S_quat_multiply(&copy, &inverse));
-	_S_CALL("S_quat_copy", S_quat_copy(dest, &copy));
+	_S_CALL("S_quat_multiply", S_quat_multiply(dest, &inverse));
 	return S_degrees(2.0f * S_arccos(dest->r));
 }
 
@@ -164,6 +217,11 @@ S_quat_to_vec3(Svec3 *dest,
                const Squat *src)
 {
 	Sfloat lock;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_to_vec3");
+		return;
+	}
 	lock = src->r*src->k + src->i*src->j;
 	if (S_epsilon(S_EPSILON, lock, 0.5f))
 	{

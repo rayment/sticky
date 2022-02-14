@@ -190,6 +190,81 @@ main(void)
 	, "S_quat_multiply (Q1.Q2)");
 
 	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		S_quat_lerp(&b, &a, 0.0f);
+		print_2_quats(&a, &b);
+	, S_quat_equals(EPSILON, &b, &a)
+	, "S_quat_lerp (0.0)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		c.r = 0.98228f; c.i = 0.06094f; c.j = -0.14203f; c.k = 0.10599f;
+		S_quat_copy(&tmp, &b);
+		S_quat_lerp(&b, &a, 0.25f);
+		print_2_quats(&tmp, &b);
+	, S_quat_equals(EPSILON, &b, &c)
+	, "S_quat_lerp (0.25)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		c.r = 0.92385f; c.i = 0.12447f; c.j = -0.29007f; c.k = 0.21647f;
+		S_quat_copy(&tmp, &b);
+		S_quat_lerp(&b, &a, 0.5f);
+		print_2_quats(&tmp, &b);
+	, S_quat_equals(EPSILON, &b, &c)
+	, "S_quat_lerp (0.5)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		S_quat_copy(&tmp, &b);
+		S_quat_lerp(&b, &a, 1.0f);
+		print_2_quats(&tmp, &b);
+	, S_quat_equals(EPSILON, &b, &tmp)
+	, "S_quat_lerp (1.0)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		S_quat_slerp(&b, &a, 0.0f);
+		print_2_quats(&a, &b);
+	, S_quat_equals(EPSILON, &b, &a)
+	, "S_quat_slerp (0.0)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		c.r = 0.98078f; c.i = 0.06346f; c.j = -0.14788f; c.k = 0.11036f;
+		S_quat_copy(&tmp, &b);
+		S_quat_slerp(&b, &a, 0.25f);
+		print_2_quats(&tmp, &b);
+	, S_quat_equals(EPSILON, &b, &c)
+	, "S_quat_slerp (0.25)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		c.r = 0.92385f; c.i = 0.12447f; c.j = -0.29007f; c.k = 0.21647f;
+		S_quat_copy(&tmp, &b);
+		S_quat_slerp(&b, &a, 0.5f);
+		print_2_quats(&tmp, &b);
+		ATOMIC_PRINT("%f %f %f %f\n", b.r, b.i, b.j, b.k);
+	, S_quat_equals(EPSILON, &b, &c)
+	, "S_quat_slerp (0.5)");
+
+	TEST(
+		S_quat_identity(&a);
+		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
+		S_quat_copy(&tmp, &b);
+		S_quat_slerp(&b, &a, 1.0f);
+		print_2_quats(&tmp, &b);
+	, S_quat_equals(EPSILON, &b, &tmp)
+	, "S_quat_slerp (1.0)");
+
+	TEST(
 		a.r = sqrt2on2; a.i = 0.0f; a.j = 0.0f; a.k = sqrt2on2;
 		vecb.x = 0.0f; vecb.y = 0.0f; vecb.z = 90.0f;
 		S_quat_to_vec3(&veca, &a);
