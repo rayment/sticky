@@ -1,0 +1,200 @@
+/*
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
+ * quat.c
+ * Quaternion source.
+ *
+ * Author       : Finn Rayment <finn@rayment.fr>
+ * Date created : 09/09/2021
+ */
+
+#include "sticky/common/error.h"
+#include "sticky/common/types.h"
+#include "sticky/math/quat.h"
+#include "sticky/memory/memtrace.h"
+
+void
+S_quat_identity(Squat *quat)
+{
+	if (!quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_identity");
+		return;
+	}
+	quat->r = 1.0f;
+	quat->i = 0.0f;
+	quat->j = 0.0f;
+	quat->k = 0.0f;
+}
+
+void
+S_quat_multiply(Squat *dest,
+                const Squat *src)
+{
+	Squat tmp;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_multiply");
+		return;
+	}
+	tmp.r = dest->r*src->r - dest->i*src->i - dest->j*src->j - dest->k*src->k;
+	tmp.i = dest->r*src->i + dest->i*src->r + dest->j*src->k - dest->k*src->j;
+	tmp.j = dest->r*src->j - dest->i*src->k + dest->j*src->r + dest->k*src->i;
+	tmp.k = dest->r*src->k + dest->i*src->j - dest->j*src->i + dest->k*src->r;
+	_S_CALL("S_quat_copy", S_quat_copy(dest, &tmp));
+}
+
+void
+S_quat_conjugate(Squat *quat)
+{
+	if (!quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_conjugate");
+		return;
+	}
+	quat->i = -quat->i;
+	quat->j = -quat->j;
+	quat->k = -quat->k;
+}
+#include <stdio.h>
+Sfloat
+S_quat_dot(const Squat *a,
+           const Squat *b)
+{
+	if (!a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_dot");
+		return 0.0f;
+	}
+	return a->r*b->r + a->i*b->i + a->j*b->j + a->k*b->k;
+}
+
+void
+S_quat_normalize(Squat *quat)
+{
+	Sfloat norm;
+	if (!quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_normalize");
+		return;
+	}
+	_S_CALL("S_quat_dot", norm = S_quat_dot(quat, quat));
+	norm = S_sqrt(norm);
+	quat->r /= norm;
+	quat->i /= norm;
+	quat->j /= norm;
+	quat->k /= norm;
+}
+
+void
+S_quat_inverse(Squat *quat)
+{
+	Sfloat dot;
+	Squat conjugate;
+	if (!quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_inverse");
+		return;
+	}
+	_S_CALL("S_quat_dot", dot = S_quat_dot(quat, quat));
+	_S_CALL("S_quat_copy", S_quat_copy(&conjugate, quat));
+	_S_CALL("S_quat_conjugate", S_quat_conjugate(&conjugate));
+	quat->r = conjugate.r / dot;
+	quat->i = conjugate.i / dot;
+	quat->j = conjugate.j / dot;
+	quat->k = conjugate.k / dot;
+}
+
+void  S_quat_lerp(Squat *, const Squat *, Sfloat);
+
+Sfloat
+S_quat_angle(Squat *dest,
+             const Squat *src)
+{
+	Squat inverse, copy;
+	_S_CALL("S_quat_copy", S_quat_copy(&inverse, src));
+	_S_CALL("S_quat_copy", S_quat_copy(&copy, dest));
+	_S_CALL("S_quat_inverse", S_quat_inverse(&inverse));
+	_S_CALL("S_quat_multiply", S_quat_multiply(&copy, &inverse));
+	_S_CALL("S_quat_copy", S_quat_copy(dest, &copy));
+	return S_degrees(2.0f * S_arccos(dest->r));
+}
+
+void
+S_quat_copy(Squat *dest,
+            const Squat *src)
+{
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_copy");
+		return;
+	}
+	dest->r = src->r;
+	dest->i = src->i;
+	dest->j = src->j;
+	dest->k = src->k;
+}
+
+Sbool
+S_quat_equals(Sfloat epsilon,
+              const Squat *a,
+              const Squat *b)
+{
+	Sfloat dot;
+	if (epsilon < 0 || !a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_equals");
+		return S_FALSE;
+	}
+	_S_CALL("S_quat_dot", dot = S_quat_dot(a, b));
+	return S_abs(dot) > (1.0f - epsilon);
+}
+
+/*
+ * See:
+ * https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+ *
+ * ZXY euler system.
+ */
+void
+S_quat_to_vec3(Svec3 *dest,
+               const Squat *src)
+{
+	Sfloat lock;
+	lock = src->r*src->k + src->i*src->j;
+	if (S_epsilon(S_EPSILON, lock, 0.5f))
+	{
+		/* north-pole gimbal lock */
+		dest->x = 0.0f;
+		dest->y = S_degrees(2.0f * S_arctan2(src->i, src->r));
+		dest->z = 90.0f;
+	}
+	else if (S_epsilon(S_EPSILON, lock, -0.5f))
+	{
+		/* south-pole gimbal lock */
+		dest->x = 0.0f;
+		dest->y = S_degrees(-2.0f * S_arctan2(src->i, src->r));
+		dest->z = -90.0f;
+	}
+	else
+	{
+		/* general case */
+		dest->x = S_degrees(S_arcsin(
+			2.0f * (src->r*src->i - src->j*src->k)
+		));
+		dest->y = S_degrees(S_arctan2(
+			(2.0f * (src->r*src->j + src->k*src->i))
+				,
+			(1.0f - (2.0f * (src->i*src->i + src->j*src->j)))
+		));
+		dest->z = S_degrees(S_arctan2(
+			(2.0f * (src->r*src->k + src->i*src->j))
+				,
+			(1.0f - (2.0f * (src->k*src->k + src->i*src->i)))
+		));
+	}
+}
+

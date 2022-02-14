@@ -13,8 +13,70 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#include <math.h>
+
 /**
  * @file math.h
+ */
+
+/**
+ * @addtogroup math_constants
+ * @{
+ */
+
+#define S_EPSILON 0.0001f
+#define S_PI      3.1415926536f
+#define S_HALFPI  1.5707963268f
+
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup vec3
+ * @{
+ */
+
+/**
+ * @brief Single-precision floating-point 3D vector.
+ *
+ * 3D vectors may used for positions, rotations, velocities and other properties
+ * pertaining to 3D space. Each vector has three axis components, namely
+ * @f$(x,y,z)@f$.
+ *
+ * @since 1.0.0
+ */
+typedef struct
+Svec3_s
+{
+	Sfloat x, y, z;
+} Svec3;
+
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup quat
+ * @{
+ */
+
+/**
+ * @brief Rotational quaternion.
+ *
+ * Quaternions allow for 3D rotations without suffering from gimbal lock and use
+ * complex numbers to facilitate this.
+ *
+ * @since 1.0.0
+ */
+typedef struct
+Squat_s
+{
+	Sfloat r, i, j, k;
+} Squat;
+
+/**
+ * @}
  */
 
 /**
@@ -86,6 +148,25 @@ Smat4_s
 	       m02, m12, m22, m32,
 	       m03, m13, m23, m33;
 } Smat4;
+
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup scalar
+ * @{
+ */
+
+#define S_abs(x) fabsf(x)
+#define S_sqrt(x) sqrtf(x)
+#define S_radians(x) ((x) * 0.01745329252f)
+#define S_degrees(x) ((x) * 57.2957795131f)
+#define S_arcsin(x) asinf(x)
+#define S_arccos(x) acosf(x)
+#define S_arctan(x) atanf(x)
+#define S_arctan2(x,y) atan2f(x,y)
+#define S_epsilon(x,y,z) ((y) > ((z)-(x)) && (y) < ((z)+(x)))
 
 /**
  * @}

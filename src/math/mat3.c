@@ -11,11 +11,11 @@
  * Date created : 09/09/2021
  */
 
-#include <math.h>
 #include <string.h>
 
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
+#include "sticky/math/math.h"
 #include "sticky/math/mat3.h"
 #include "sticky/memory/memtrace.h"
 
@@ -150,15 +150,15 @@ S_mat3_equals(Sfloat epsilon,
 		return S_FALSE;
 	}
 	i = 0;
-	i += fabs(a->m00 - b->m00) <= epsilon;
-	i += fabs(a->m01 - b->m01) <= epsilon;
-	i += fabs(a->m02 - b->m02) <= epsilon;
-	i += fabs(a->m10 - b->m10) <= epsilon;
-	i += fabs(a->m11 - b->m11) <= epsilon;
-	i += fabs(a->m12 - b->m12) <= epsilon;
-	i += fabs(a->m20 - b->m20) <= epsilon;
-	i += fabs(a->m21 - b->m21) <= epsilon;
-	i += fabs(a->m22 - b->m22) <= epsilon;
+	i += S_abs(a->m00 - b->m00) <= epsilon;
+	i += S_abs(a->m01 - b->m01) <= epsilon;
+	i += S_abs(a->m02 - b->m02) <= epsilon;
+	i += S_abs(a->m10 - b->m10) <= epsilon;
+	i += S_abs(a->m11 - b->m11) <= epsilon;
+	i += S_abs(a->m12 - b->m12) <= epsilon;
+	i += S_abs(a->m20 - b->m20) <= epsilon;
+	i += S_abs(a->m21 - b->m21) <= epsilon;
+	i += S_abs(a->m22 - b->m22) <= epsilon;
 	return i == 9;
 }
 

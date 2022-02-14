@@ -1,6 +1,6 @@
 /*
  * mat4.c
- * 4x4 matric test suite.
+ * 4x4 matrix test suite.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 13/02/2022

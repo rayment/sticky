@@ -1,6 +1,6 @@
 /*
  * mat3.c
- * 3x3 matric test suite.
+ * 3x3 matrix test suite.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 13/02/2022

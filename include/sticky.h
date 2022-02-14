@@ -32,6 +32,8 @@
 #include "sticky/math/math.h"
 #include "sticky/math/mat3.h"
 #include "sticky/math/mat4.h"
+#include "sticky/math/quat.h"
+#include "sticky/math/vec3.h"
 
 #include "sticky/memory/allocator.h"
 #include "sticky/memory/memtrace.h"
