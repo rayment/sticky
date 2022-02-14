@@ -59,7 +59,7 @@ S_quat_conjugate(Squat *quat)
 	quat->j = -quat->j;
 	quat->k = -quat->k;
 }
-#include <stdio.h>
+
 Sfloat
 S_quat_dot(const Squat *a,
            const Squat *b)

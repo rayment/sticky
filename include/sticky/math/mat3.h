@@ -31,7 +31,7 @@ extern "C"
 /**
  * @brief Set a 3x3 matrix to the identity matrix.
  *
- * The identity matrix @f$I@f$ is define as:
+ * The identity matrix @f$I@f$ is defined as:
  *
  * @f[
  *     I=\left[{\begin{array}{ccc}
