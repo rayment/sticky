@@ -5,10 +5,10 @@
  */
 
 /**
- * @defgroup math_constants Mathematical constants
+ * @defgroup math_constants Constants
  * @ingroup math
  *
- * @brief Mathematical constants.
+ * @brief Constants.
  */
 
 /**
