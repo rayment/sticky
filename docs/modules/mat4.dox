@@ -1,6 +1,0 @@
-/**
- * @addtogroup mat4 4-D matrix math
- * @ingroup math
- *
- * @brief Math functions for 4-D matrices.
- */

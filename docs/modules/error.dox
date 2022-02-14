@@ -1,5 +1,13 @@
 /**
- * @addtogroup error Errors and logging
+ * @defgroup error Errors and logging
  *
  * @brief User message and error logging system.
  */
+
+/**
+ * @defgroup error_codes Error codes
+ * @ingroup error
+ *
+ * @brief List of defined error codes.
+ */
+

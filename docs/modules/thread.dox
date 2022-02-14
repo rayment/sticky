@@ -1,7 +1,0 @@
-/**
- * @defgroup thread Threads
- * @ingroup concurrency
- *
- * @brief User threads.
- */
-

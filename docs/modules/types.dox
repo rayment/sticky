@@ -1,5 +1,6 @@
 /**
- * @addtogroup types Generic types
+ * @defgroup types Generic types
  *
  * @brief General-use data-type definitions.
  */
+

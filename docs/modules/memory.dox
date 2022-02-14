@@ -1,5 +1,5 @@
 /**
- * @addtogroup memory Memory management
+ * @defgroup memory Memory management
  *
  * @brief Memory allocation and deallocation.
  */

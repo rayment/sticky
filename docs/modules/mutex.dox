@@ -1,6 +1,0 @@
-/**
- * @defgroup mutex Mutexes
- * @ingroup concurrency
- *
- * @brief Mutual exclusion synchronisation primitives.
- */

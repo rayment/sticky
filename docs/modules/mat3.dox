@@ -1,6 +1,0 @@
-/**
- * @addtogroup mat3 3-D matrix math
- * @ingroup math
- *
- * @brief Math functions for 3-D matrices.
- */

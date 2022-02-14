@@ -1,6 +1,62 @@
 /**
- * @addtogroup math Mathematics
+ * @defgroup math Mathematics
  *
  * @brief General-purpose vector and matrix mathematics library.
+ */
+
+/**
+ * @defgroup math_constants Mathematical constants
+ * @ingroup math
+ *
+ * @brief Mathematical constants.
+ */
+
+/**
+ * @defgroup scalar Scalar math
+ * @ingroup math
+ *
+ * @brief Math functions for scalars.
+ */
+
+/**
+ * @defgroup vec2 2D vector math
+ * @ingroup math
+ *
+ * @brief Math functions for 2D vectors.
+ */
+
+/**
+ * @defgroup vec3 3D vector math
+ * @ingroup math
+ *
+ * @brief Math functions for 3D vectors.
+ */
+
+/**
+ * @defgroup vec4 4D vector math
+ * @ingroup math
+ *
+ * @brief Math functions for 4D vectors.
+ */
+
+/**
+ * @defgroup quat Quaternion math
+ * @ingroup math
+ *
+ * @brief Math functions for quaternions.
+ */
+
+/**
+ * @defgroup mat3 3D matrix math
+ * @ingroup math
+ *
+ * @brief Math functions for 3x3 matrices.
+ */
+
+/**
+ * @defgroup mat4 4D matrix math
+ * @ingroup math
+ *
+ * @brief Math functions for 4x4 matrices.
  */
 
