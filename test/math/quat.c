@@ -251,7 +251,6 @@ main(void)
 		S_quat_copy(&tmp, &b);
 		S_quat_slerp(&b, &a, 0.5f);
 		print_2_quats(&tmp, &b);
-		ATOMIC_PRINT("%f %f %f %f\n", b.r, b.i, b.j, b.k);
 	, S_quat_equals(EPSILON, &b, &c)
 	, "S_quat_slerp (0.5)");
 
