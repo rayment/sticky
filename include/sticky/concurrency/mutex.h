@@ -13,9 +13,9 @@
 
 /**
  * @file mutex.h
- * @addtogroup concurrency Concurrency
+ * @addtogroup concurrency
  * @{
- * @addtogroup mutex Mutexes
+ * @addtogroup mutex
  * @{
  */
 

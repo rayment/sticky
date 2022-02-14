@@ -12,9 +12,9 @@
 
 /**
  * @file thread.h
- * @addtogroup concurrency Concurrency
+ * @addtogroup concurrency
  * @{
- * @addtogroup thread Threads
+ * @addtogroup thread
  * @{
  */
 

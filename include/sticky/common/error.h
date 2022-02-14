@@ -13,7 +13,7 @@
 
 /**
  * @file error.h
- * @addtogroup error Errors and logging
+ * @addtogroup error
  * @{
  */
 

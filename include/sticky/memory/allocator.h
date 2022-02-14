@@ -13,7 +13,7 @@
 
 /**
  * @file allocator.h
- * @addtogroup memory Memory management
+ * @addtogroup memory
  * @{
  */
 

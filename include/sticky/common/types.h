@@ -13,7 +13,7 @@
 
 /**
  * @file types.h
- * @addtogroup types Generic types
+ * @addtogroup types
  * @{
  */
 
