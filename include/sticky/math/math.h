@@ -24,9 +24,30 @@ extern "C"
  * @{
  */
 
+/**
+ * @brief Maximum error between two single-precision floating-point numbers for
+ * them to be considered equivalent.
+ *
+ * @since 1.0.0
+ */
 #define S_EPSILON  0.0001f
+/**
+ * @brief The value of @f$\pi@f$.
+ *
+ * @since 1.0.0
+ */
 #define S_PI       3.1415926536f
+/**
+ * @brief The value of @f$\frac{\pi}{2}@f$.
+ *
+ * @since 1.0.0
+ */
 #define S_HALFPI   1.5707963268f
+/**
+ * @brief The infinity value for single-precision floating-point numbers.
+ *
+ * @since 1.0.0
+ */
 #define S_INFINITY INFINITY
 
 /**
@@ -67,6 +88,17 @@ Svec3_s
  *
  * Quaternions allow for 3D rotations without suffering from gimbal lock and use
  * complex numbers to facilitate this.
+ *
+ * For the purpose of this documentation, quaternions will be shown in the form:
+ *
+ * @f[
+ *     q=a+b\mathbf{i}+c\mathbf{j}+d\mathbf{k}
+ * @f]
+ *
+ * where @f$a@f$, @f$b@f$, @f$c@f$ and @f$d@f$ are real numbers.
+ *
+ * Quaternion components may be referenced in superscript, such as @f$q^0@f$ and
+ * @f$q^3@f$ which refer to the real and @f$k@f$ components respectively.
  *
  * @since 1.0.0
  */

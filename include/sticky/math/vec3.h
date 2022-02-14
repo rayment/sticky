@@ -29,6 +29,10 @@ extern "C"
  */
 
 Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
+/**
+ * @brief temp
+ */
+void   S_vec3_to_quat(Squat *, const Svec3);
 
 /**
  * @}
