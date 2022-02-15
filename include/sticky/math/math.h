@@ -63,8 +63,8 @@ extern "C"
  * @brief Single-precision floating-point 3D vector.
  *
  * 3D vectors may used for positions, rotations, velocities and other properties
- * pertaining to 3D space. Each vector has three axis components, namely
- * @f$(x,y,z)@f$.
+ * pertaining to 3D space. Each vector @f$\vec{V}@f$has three axis components,
+ * namely @f$(x,y,z)@f$.
  *
  * @since 1.0.0
  */

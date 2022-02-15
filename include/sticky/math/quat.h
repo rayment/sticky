@@ -153,8 +153,8 @@ void   S_quat_inverse(Squat *);
 /**
  * @brief Perform a linear interpolation on two quaternions.
  *
- * Linearly interpolates from one quaternion to another for a given time offset,
- * and stores the result. The result will be normalised.
+ * Linearly interpolates from a quaternion @f$q_1@f$ to another @f$q_3@f$ for a
+ * given time offset, and stores the result. The result will be normalised.
  *
  * @warning This function expects both quaternions to be normalised. The output
  * of any other quaternions cannot be guaranteed to be correct.
