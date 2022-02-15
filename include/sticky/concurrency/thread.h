@@ -87,7 +87,7 @@ Sthread S_thread_new(Sthread_func, void *);
  * The calling thread will suspend execution until a given thread terminates. In
  * the case that the thread has already terminated, no suspension will occur.
  * Once this function is called for a given thread, that thread becomes invalid
-	 * and may not be used again in any other thread function.
+ * and may not be used again in any other thread function.
  *
  * After the thread has terminated, it shall be free'd from memory and finally
  * the <b><c>void *</c></b> that was returned by the thread shall be returned

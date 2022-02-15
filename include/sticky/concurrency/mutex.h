@@ -69,7 +69,7 @@ Smutex S_mutex_new(void);
  * only from the same thread that created the mutex. Other circumstances are
  * undefined, or may depend on the implementing operating system.
  *
- * @param[in] lock The mutex to be free'd.
+ * @param[in,out] lock The mutex to be free'd.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid mutex is provided to
  * the function.
  * @exception S_INVALID_OPERATION If a native error occurs while trying to
