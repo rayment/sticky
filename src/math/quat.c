@@ -13,6 +13,7 @@
 
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
+#include "sticky/math/math.h"
 #include "sticky/math/quat.h"
 #include "sticky/memory/memtrace.h"
 
@@ -113,7 +114,6 @@ S_quat_lerp(Squat *dest,
             const Squat *src,
             Sfloat time)
 {
-	Squat copy;
 	Sfloat tdiff;
 	if (!dest || !src)
 	{
@@ -122,15 +122,10 @@ S_quat_lerp(Squat *dest,
 	}
 	time = S_clamp(time, 0.0f, 1.0f);
 	tdiff = (1.0f - time);
-	_S_CALL("S_quat_copy", S_quat_copy(&copy, src));
-	copy.r *= tdiff;
-	copy.i *= tdiff;
-	copy.j *= tdiff;
-	copy.k *= tdiff;
-	dest->r = dest->r*time + copy.r;
-	dest->i = dest->i*time + copy.i;
-	dest->j = dest->j*time + copy.j;
-	dest->k = dest->k*time + copy.k;
+	dest->r = dest->r*time + src->r*tdiff;
+	dest->i = dest->i*time + src->i*tdiff;
+	dest->j = dest->j*time + src->j*tdiff;
+	dest->k = dest->k*time + src->k*tdiff;
 	_S_CALL("S_quat_normalize", S_quat_normalize(dest));
 }
 
