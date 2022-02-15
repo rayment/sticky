@@ -193,7 +193,6 @@ main(void)
 		S_quat_identity(&a);
 		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
 		S_quat_lerp(&b, &a, 0.0f);
-		print_2_quats(&a, &b);
 	, S_quat_equals(EPSILON, &b, &a)
 	, "S_quat_lerp (0.0)");
 
@@ -269,7 +268,7 @@ main(void)
 		S_quat_to_vec3(&veca, &a);
 		print_quat_vec(&a, &veca);
 	, S_vec3_equals(EULER_EPSILON, &veca, &vecb)
-	, "S_quat_to_vec3 (gimbal lock)");
+	, "S_quat_to_vec3 (gimbal-lock)");
 
 	TEST(
 		a.r = sqrt2on2; a.i = 0.23f; a.j = -0.536f; a.k = 0.4f;
