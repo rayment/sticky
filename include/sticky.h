@@ -26,6 +26,8 @@
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
 
+#include "sticky/collections/linkedlist.h"
+
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
 

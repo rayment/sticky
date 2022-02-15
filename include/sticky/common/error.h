@@ -123,6 +123,11 @@ static Schar  *_S_error_loc;
  * @since 1.0.0
  */
 #define S_INVALID_FORMAT    106
+/**
+ * @brief An error occurred because an invalid index was given.
+ * @since 1.0.0
+ */
+#define S_INVALID_INDEX     107
 /* system errors */
 /**
  * @brief An error occurred because the machine or program ran out of available
@@ -164,6 +169,7 @@ S_error_string(void)
 	case S_INVALID_ADDRESS   : return "Invalid address.";
 	case S_INVALID_ACCESS    : return "Invalid access.";
 	case S_INVALID_FORMAT    : return "Invalid format.";
+	case S_INVALID_INDEX     : return "Invalid index.";
 	case S_OUT_OF_MEMORY     : return "Out of memory.";
 	default                  : return "Unknown error.";
 	}

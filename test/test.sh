@@ -26,6 +26,7 @@ assert_pass() {
 	fi
 }
 
+assert_pass collections/linkedlist
 assert_pass concurrency/mutex
 assert_pass concurrency/thread
 assert_pass math/mat3
