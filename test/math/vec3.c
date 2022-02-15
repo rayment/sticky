@@ -1,4 +1,9 @@
 /*
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
  * vec3.c
  * 3D vector test suite.
  *
