@@ -28,11 +28,22 @@ extern "C"
  * @{
  */
 
+void   S_vec3_zero(Svec3 *);
+void   S_vec3_fill(Svec3 *, Sfloat);
+void   S_vec3_add(Svec3 *, const Svec3 *);
+void   S_vec3_multiply(Svec3 *, const Svec3 *);
+void   S_vec3_scale(Svec3 *, Sfloat);
+Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
+void   S_vec3_cross(Svec3 *, const Svec3 *);
+void   S_vec3_normalize(Svec3 *);
+void   S_vec3_inverse(Svec3 *);
+void   S_vec3_lerp(Svec3 *, const Svec3 *, Sfloat);
+void   S_vec3_copy(Svec3 *, const Svec3 *);
 Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
 /**
  * @brief temp
  */
-void   S_vec3_to_quat(Squat *, const Svec3);
+void   S_vec3_to_quat(Squat *, const Svec3 *);
 
 /**
  * @}

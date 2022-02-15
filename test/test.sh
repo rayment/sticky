@@ -31,6 +31,7 @@ assert_pass concurrency/thread
 assert_pass math/mat3
 assert_pass math/mat4
 assert_pass math/quat
+assert_pass math/vec3
 
 echo "--- $passed/$total tests passed ---"
 if [ ! $passed -eq $total ];
