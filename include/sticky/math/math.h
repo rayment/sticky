@@ -191,18 +191,147 @@ Smat4_s
  * @{
  */
 
+/**
+ * @brief Get the absolute value of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\mathrm{abs}(x)@f$
+ * @since 1.0.0
+ */
 #define S_abs(x)          fabsf(x)
+/**
+ * @brief Calculate the square root of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\sqrt{x}@f$
+ * @since 1.0.0
+ */
 #define S_sqrt(x)         sqrtf(x)
+/**
+ * @brief Convert a single-precision floating-point number from radians to
+ * degrees.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$x\frac{\pi}{180}@f$
+ * @since 1.0.0
+ */
 #define S_radians(x)      ((x) * 0.01745329252f)
+/**
+ * @brief Convert a single-precision floating-point number from degrees to
+ * radians.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$x\frac{180}{\pi}@f$
+ * @since 1.0.0
+ */
 #define S_degrees(x)      ((x) * 57.2957795131f)
+/**
+ * @brief Calculate the sine of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\sin(x)@f$
+ * @since 1.0.0
+ */
 #define S_sin(x)          sinf(x)
+/**
+ * @brief Calculate the cosine of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\cos(x)@f$
+ * @since 1.0.0
+ */
 #define S_cos(x)          cosf(x)
+/**
+ * @brief Calculate the tangent of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\tan(x)@f$
+ * @since 1.0.0
+ */
 #define S_tan(x)          tanf(x)
+/**
+ * @brief Calculate the inverse sine of a single-precision floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\sin^{-1}(x)@f$
+ * @since 1.0.0
+ */
 #define S_arcsin(x)       asinf(x)
+/**
+ * @brief Calculate the inverse cosine of a single-precision floating-point
+ * number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\cos^{-1}(x)@f$
+ * @since 1.0.0
+ */
 #define S_arccos(x)       acosf(x)
+/**
+ * @brief Calculate the inverse tangent of a single-precision floating-point
+ * number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @return @f$\tan^{-1}(x)@f$
+ * @since 1.0.0
+ */
 #define S_arctan(x)       atanf(x)
+/**
+ * @brief Calculate the 2-argument inverse tangent of a single-precision
+ * floating-point number.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @param y A single-precision floating-point number.
+ * @return @f$\mathrm{atan2}(x,y)@f$
+ * @since 1.0.0
+ */
 #define S_arctan2(x,y)    atan2f(x,y)
+/**
+ * @brief Compare two single-precision floating-point numbers given a maximum
+ * acceptable of error.
+ * @hideinitializer
+ *
+ * The equation for two values @f$a@f$ and @f$b@f$ and an acceptable error
+ * @f$\epsilon@f$ is defined as:
+ *
+ * @f[
+ *     \vert a-b\vert < \epsilon
+ * @f]
+ *
+ * @param x Maximum error between the two single-precision floating-point
+ * numbers for them to be considered equivalent. This is also a single-precision
+ * floating-point number.
+ * @param y The first single-precision floating-point number to compare.
+ * @param z The second single-precision floating-point number to compare.
+ * @return {@link S_TRUE} If the two values @p y and @p z are equivalent.
+ * @warning This function expects the epsilon parameter @p x to be more than or
+ * equal to zero. The return result is undefined for negative numbers.
+ * @since 1.0.0
+ */
 #define S_epsilon(x,y,z) ((y) > ((z)-(x)) && (y) < ((z)+(x)))
+/**
+ * @brief Clamp a single-precision floating-point number between a maximum and
+ * minimum value.
+ * @hideinitializer
+ *
+ * @param x The single-precision floating-point number to clamp.
+ * @param y The minimum value of @p x, also a single-precision floating-point
+ * number.
+ * @param z The maximum value of @p x, also single-precision floating-point
+ * number.
+ * @return If @p x < @p y, then y. If @p x > @p z, then @p z. Otherwise @p x.
+ * @since 1.0.0
+ */
 #define S_clamp(x,y,z)   ((x) < (y) ? y : ((x) > (z) ? z : (x)))
 
 /**
