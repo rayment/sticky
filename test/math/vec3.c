@@ -172,6 +172,14 @@ main(void)
 	, "S_vec3_to_quat (gimbal-lock)");
 
 	TEST(
+		a.x = 90.0f; a.y = 90.0f; a.z = 90.0f;
+		quata.r = sqrt2on2; quata.i = sqrt2on2; quata.j = 0.0f; quata.k = 0.0f;
+		S_vec3_to_quat(&quatb, &a);
+		print_vec_quat(&a, &quatb);
+	, S_quat_equals(EPSILON, &quata, &quatb)
+	, "S_vec3_to_quat (gimbal-lock)");
+
+	TEST(
 		a.x = 48.93121f; a.y = -60.87643f; a.z = 29.05586f;
 		quata.r = sqrt2on2; quata.i = 0.23f; quata.j = -0.536f; quata.k = 0.4f;
 		S_vec3_to_quat(&quatb, &a);
