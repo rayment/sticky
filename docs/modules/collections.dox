@@ -1,0 +1,13 @@
+/**
+ * @defgroup collections Collections
+ *
+ * @brief Storage container types for data.
+ */
+
+/**
+ * @defgroup linkedlist Linked-lists
+ * @ingroup collections
+ *
+ * @brief Doubley linked-lists with iterators.
+ */
+
