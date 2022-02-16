@@ -38,6 +38,12 @@ extern "C"
  */
 #define S_PI       3.1415926536f
 /**
+ * @brief The value of @f$2\pi@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_TWOPI    6.2831853072f
+/**
  * @brief The value of @f$\frac{\pi}{2}@f$.
  *
  * @since 1.0.0

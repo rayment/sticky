@@ -40,13 +40,6 @@
  */
 
 /**
- * @defgroup quat Quaternion math
- * @ingroup math
- *
- * @brief Math functions for quaternions.
- */
-
-/**
  * @defgroup mat3 3D matrix math
  * @ingroup math
  *
@@ -58,5 +51,19 @@
  * @ingroup math
  *
  * @brief Math functions for 4x4 matrices.
+ */
+
+/**
+ * @defgroup quat Quaternion math
+ * @ingroup math
+ *
+ * @brief Math functions for quaternions.
+ */
+
+/**
+ * @defgroup transform Transform math
+ * @ingroup math
+ *
+ * @brief Math functions for object transforms.
  */
 
