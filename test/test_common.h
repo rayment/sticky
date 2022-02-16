@@ -38,9 +38,17 @@ double tmptime, totaltime, besttime, worsttime, avgtime;
 	S_sticky_init();                                         \
 	print_mutex = S_mutex_new()
 
+#ifdef DEBUG
+#define FREE()                                               \
+	S_mutex_delete(print_mutex);                             \
+	S_sticky_free();                                         \
+    if (!_S_memtrace_all_free())                             \
+		exit(EXIT_FAILURE);
+#else /* DEBUG */
 #define FREE()                                               \
 	S_mutex_delete(print_mutex);                             \
 	S_sticky_free()
+#endif /* DEBUG */
 
 #define ATOMIC_PRINT(x,...)                                  \
 	S_mutex_lock(print_mutex);                               \

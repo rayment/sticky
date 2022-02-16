@@ -191,6 +191,12 @@ _S_memtrace_remove_frame(const void *ptr,
 #endif /* DEBUG_TRACE */
 }
 
+Sbool
+_S_memtrace_all_free(void)
+{
+	return num_allocations == num_frees;
+}
+
 void
 _S_memtrace_free(void)
 {
@@ -210,6 +216,8 @@ _S_memtrace_free(void)
 		fprintf(stdout, "  Num. bytes allocated: %ld\n", num_allocated_bytes);
 		fprintf(stdout, "    in %ld allocations\n", num_allocations);
 		fprintf(stdout, "    of which %ld were free'd.\n", num_frees);
+		if (num_allocations != num_frees)
+			fprintf(stdout, RED "  Memory leak detected!\n" RESET);
 	}
 	else
 	{

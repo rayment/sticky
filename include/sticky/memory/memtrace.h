@@ -58,6 +58,7 @@ void    _S_memtrace_stack_trace(void);
 
 void    _S_memtrace_init(void);
 void    _S_memtrace_free(void);
+Sbool   _S_memtrace_all_free(void);
 
 void    _S_memtrace_add_frame(const void *, const Ssize_t,
                               const Schar *, const Suint32);
