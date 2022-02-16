@@ -33,10 +33,30 @@ S_transform_new(void)
 void
 S_transform_delete(Stransform *transform)
 {
+	Stransform *parent, *child;
+	Slinkedlist_iter *iter;
+	Sbool b;
 	if (!transform)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_delete");
 		return;
+	}
+	parent = transform->parent;
+	_S_CALL("S_linkedlist_iter_begin",
+	        iter = S_linkedlist_iter_begin(transform->children));
+	/* remove this transform from parent's child list */
+	_S_CALL("S_transform_set_parent", S_transform_set_parent(transform, NULL));
+	/* set child parents to this parent */
+	while (1)
+	{
+		_S_CALL("S_linkedlist_iter_hasnext",
+	            b = S_linkedlist_iter_hasnext(iter));
+		if (!b)
+			break;
+		_S_CALL("S_linkedlist_iter_next",
+			    child = (Stransform *) S_linkedlist_iter_next(&iter));
+		_S_CALL("S_transform_set_parent",
+		        S_transform_set_parent(child, parent));
 	}
 	_S_CALL("S_linkedlist_delete", S_linkedlist_delete(transform->children));
 	S_memory_delete(transform);
