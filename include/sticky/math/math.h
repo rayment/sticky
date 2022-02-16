@@ -61,6 +61,30 @@ extern "C"
  */
 
 /**
+ * @addtogroup vec2
+ * @{
+ */
+
+/**
+ * @brief Single-precision floating-point 2D vector.
+ *
+ * 2D vectors may used for positions, rotations, velocities and other properties
+ * pertaining to 2D space. Each vector @f$\vec{V}@f$has two axis components,
+ * namely @f$(x,y)@f$.
+ *
+ * @since 1.0.0
+ */
+typedef struct
+Svec2_s
+{
+	Sfloat x, y;
+} Svec2;
+
+/**
+ * @}
+ */
+
+/**
  * @addtogroup vec3
  * @{
  */
@@ -79,6 +103,28 @@ Svec3_s
 {
 	Sfloat x, y, z;
 } Svec3;
+
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup vec4
+ * @{
+ */
+
+/**
+ * @brief Single-precision floating-point 4D vector.
+ *
+ * Each vector @f$\vec{V}@f$has four axis components, namely @f$(x,y,z,w)@f$.
+ *
+ * @since 1.0.0
+ */
+typedef struct
+Svec4_s
+{
+	Sfloat x, y, z, w;
+} Svec4;
 
 /**
  * @}
