@@ -195,9 +195,9 @@ main(void)
 	, "S_quat_multiply (Q1.Q2)");
 
 	TEST(
-		a.r = -0.291f; a.i = -0.383f; a.j = -0.848f; a.k =  0.224f;
-		b.r = -0.342f; b.i =  0.448f; b.j =  0.705f; b.k =  0.430f;
-		c.r =  0.773f; c.i = -0.522f; c.j =  0.350f; c.k = -0.092f;
+		a.r =  0.220f; a.i = -0.290f; a.j = -0.380f; a.k = -0.850f;
+		b.r =  0.431f; b.i = -0.341f; b.j =  0.452f; b.k =  0.702f;
+		c.r =  0.765f; c.i = -0.008f; c.j =  0.429f; c.k = -0.473f;
 		S_quat_copy(&tmp, &a);
 		S_quat_multiply(&a, &b);
 		print_3_quats(&tmp, &b, &a);
