@@ -55,6 +55,10 @@ _Slinkedlist_node_s
  * additional element (the first element to be manipulated at a given index
  * will always take @f$O(n)@f$ time to perform the action).
  *
+ * @warning Linked-lists are not thread safe. To ensure synchronisation across
+ * threads, {@link Smutex} must be used to synchronise interactions with the
+ * list.
+ *
  * @since 1.0.0
  */
 typedef struct
