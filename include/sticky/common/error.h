@@ -184,8 +184,8 @@ void
 _S_log(const Schar *location,
        const Suint32 line,
        const Schar *type,
-       const char *format,
        const Senum err,
+       const char *format,
        va_list va)
 {
 	FILE *out;
@@ -220,13 +220,13 @@ void
 _S_log_vararg(const Schar *location,
               const Suint32 line,
               const Schar *type,
-              const char *format,
               const Senum err,
+              const char *format,
               ...)
 {
 	va_list va;
-	va_start(va, err);
-	_S_log(location, line, type, format, err, va);
+	va_start(va, format);
+	_S_log(location, line, type, err, format, va);
 }
 
 static inline
@@ -241,7 +241,7 @@ _S_assert(const Schar *location,
 	if (!condition)
 	{
 		va_start(va, format);
-		_S_log(location, line, "ASSRT", format, _S_LOG_ERROR, va);
+		_S_log(location, line, "ASSRT", _S_LOG_ERROR, format, va);
 	}
 }
 
@@ -258,12 +258,12 @@ _S_assert(const Schar *location,
  * All formatting rules supported by <b><c>fprintf</c></b> are supported by this
  * function.
  *
- * @param[in] format The text to be printed to <b><c>stderr</c></b>.
- * @param[in] ... Any additional arguments to be placed within the print text.
+ * @param[in] ... The text format and arguments to be placed within the print
+ * text destined for <b><c>stderr</c></b>.
  * @since 1.0.0
  */
-#define S_error(format, ...) \
-        _S_log_vararg(_S_ERR_LOC, "ERROR", format, _S_LOG_ERROR, ##__VA_ARGS__)
+#define S_error(...) \
+        _S_log_vararg(_S_ERR_LOC, "ERROR", _S_LOG_ERROR, __VA_ARGS__)
 
 /**
  * @brief Assert a condition and cause a fatal error if the condition is false.
@@ -279,13 +279,12 @@ _S_assert(const Schar *location,
  *
  * @param[in] condition The condition that must be equal to {@link S_TRUE} or
  * else a fatal error will occur and the program be terminated.
- * @param[in] format The text to be printed to <b><c>stderr</c></b> in the case
- * that the assertion fails.
- * @param[in] ... Any additional arguments to be placed within the print text.
+ * @param[in] ... The text format and arguments to be placed within the print
+ * text destined for <b><c>stderr</c></b> in the case that the assertion fails.
  * @since 1.0.0
  */
-#define S_assert(condition, format, ...) \
-        _S_assert(_S_ERR_LOC, condition, format, ##__VA_ARGS__)
+#define S_assert(condition, ...) \
+        _S_assert(_S_ERR_LOC, condition, __VA_ARGS__)
 
 /**
  * @brief Log a warning message to standard error output.
@@ -298,12 +297,12 @@ _S_assert(const Schar *location,
  * All formatting rules supported by <b><c>fprintf</c></b> are supported by this
  * function.
  *
- * @param[in] format The text to be printed to <b><c>stderr</c></b>.
- * @param[in] ... Any additional arguments to be placed within the print text.
+ * @param[in] ... The text format and arguments to be placed within the print
+ * text.
  * @since 1.0.0
  */
-#define S_warning(format, ...) \
-        _S_log_vararg(_S_ERR_LOC, "WARN ", format, _S_LOG_WARN, ##__VA_ARGS__)
+#define S_warning(...) \
+        _S_log_vararg(_S_ERR_LOC, "WARN ", _S_LOG_WARN, __VA_ARGS__)
 
 
 /**
@@ -316,12 +315,12 @@ _S_assert(const Schar *location,
  * All formatting rules supported by <b><c>printf</c></b> are supported by this
  * function.
  *
- * @param[in] format The text to be printed to <b><c>stdout</c></b>.
- * @param[in] ... Any additional arguments to be placed within the print text.
+ * @param[in] ... The text format and arguments to be placed within the print
+ * text.
  * @since 1.0.0
  */
-#define S_log(format, ...) \
-        _S_log_vararg(_S_ERR_LOC, "LOG  ", format, _S_LOG_MSG, ##__VA_ARGS__)
+#define S_log(...) \
+        _S_log_vararg(_S_ERR_LOC, "LOG  ", _S_LOG_MSG, __VA_ARGS__)
 
 /**
  * @}

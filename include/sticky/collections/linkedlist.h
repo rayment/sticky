@@ -92,7 +92,7 @@ typedef struct _Slinkedlist_node_s Slinkedlist_iter;
  *
  * @return A new linked-list allocated on the heap with no elements. To
  * correctly destroy the linked-list, call
- * {@link S_linkedlist_destroy(Slinkedlist *)}.
+ * {@link S_linkedlist_delete(Slinkedlist *)}.
  * @since 1.0.0
  */
 Slinkedlist *S_linkedlist_new(void);
