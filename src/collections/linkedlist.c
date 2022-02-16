@@ -390,7 +390,7 @@ S_linkedlist_get(Slinkedlist *l,
 }
 
 void *
-S_linkedlist_get_head(Slinkedlist *l)
+S_linkedlist_get_head(const Slinkedlist *l)
 {
 	if (!l)
 	{
@@ -403,7 +403,7 @@ S_linkedlist_get_head(Slinkedlist *l)
 }
 
 void *
-S_linkedlist_get_tail(Slinkedlist *l)
+S_linkedlist_get_tail(const Slinkedlist *l)
 {
 	if (!l)
 	{

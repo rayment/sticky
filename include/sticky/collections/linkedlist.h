@@ -239,6 +239,9 @@ void    S_linkedlist_clear(Slinkedlist *);
 /**
  * @brief Get an element at a certain index from a linked-list and return it.
  *
+ * Note that the given linked-list in this function is not marked <c>const</c>
+ * because the internal iterator may be updated while traversing the list.
+ *
  * @param[in,out] l The linked-list from which the element should be retrieved.
  * @param[in] i The index within the linked-list that the element should be
  * retrieved from.
@@ -262,7 +265,7 @@ void   *S_linkedlist_get(Slinkedlist *, Ssize_t);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_get_head(Slinkedlist *);
+void   *S_linkedlist_get_head(const Slinkedlist *);
 
 /**
  * @brief Get the last element from a linked-list and return it.
@@ -274,7 +277,7 @@ void   *S_linkedlist_get_head(Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_get_tail(Slinkedlist *);
+void   *S_linkedlist_get_tail(const Slinkedlist *);
 
 /**
  * @brief Search a linked-list for an element and store the index it is found
