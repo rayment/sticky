@@ -47,6 +47,16 @@ main(void)
 	, "S_linkedlist_add_head");
 
 	TEST(
+		ptr = S_linkedlist_add(list, NULL, NUM_INTS/2);
+	, !ptr
+	, "S_linkedlist_add");
+
+	TEST(
+		b = S_linkedlist_remove_ptr(list, NULL);
+	, b
+	, "S_linkedlist_remove_ptr");
+
+	TEST(
 	, S_linkedlist_size(list) == NUM_INTS
 	, "S_linkedlist_size (full)");
 

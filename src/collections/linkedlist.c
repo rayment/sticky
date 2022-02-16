@@ -196,6 +196,61 @@ S_linkedlist_add_tail(Slinkedlist *l,
 	return val;
 }
 
+Sbool
+S_linkedlist_remove_ptr(Slinkedlist *l,
+                        const void *val)
+{
+	_Slinkedlist_node *n;
+	Ssize_t j;
+	if (!l)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_linkedlist_remove_ptr");
+		return S_FALSE;
+	}
+	n = l->head;
+	j = 0;
+	while (n)
+	{
+		if (n->ptr == val)
+		{
+			if (n->last)
+				n->last->next = n->next;
+			else
+				l->head = l->head->next;
+			if (n->next)
+				n->next->last = n->last;
+			else
+				l->tail = l->tail->last;
+			--l->len;
+			if (l->iter && j == l->iterpos)
+			{
+				if (n->last)
+				{
+					--l->iterpos;
+					l->iter = n->last;
+				}
+				else if (n->next)
+				{
+					l->iter = n->next;
+				}
+				else
+				{
+					l->iter = NULL;
+				}
+			}
+			else if (l->iter && j < l->iterpos)
+			{
+				--l->iterpos;
+			}
+			S_memory_delete(n);
+			return S_TRUE;
+		}
+		++j;
+		n = n->next;
+	}
+	return S_FALSE;
+}
+
 void *
 S_linkedlist_remove(Slinkedlist *l,
                     Ssize_t i)

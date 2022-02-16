@@ -166,6 +166,26 @@ void   *S_linkedlist_add_head(Slinkedlist *, void *);
 void   *S_linkedlist_add_tail(Slinkedlist *, void *);
 
 /**
+ * @brief Remove a given element from a linked-list.
+ *
+ * Attempts to remove a given pointer element from a linked-list and return
+ * {@link S_TRUE} only if the element was in the list and could be removed.
+ *
+ * Removing an element from a linked-list will cause every following element to
+ * be shifted back by one position. Note that removing an element will not free
+ * it from memory.
+ *
+ * @param[in,out] l The linked-list from which the element should be removed.
+ * @param[in] val The element within the linked-list to be removed.
+ * @return {@link S_TRUE} If the element was in the list and could be removed,
+ * otherwise {@link S_FALSE}.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
+ * provided to the function.
+ * @since 1.0.0
+ */
+Sbool   S_linkedlist_remove_ptr(Slinkedlist *, const void *);
+
+/**
  * @brief Remove an element at a certain index from a linked-list and return it.
  *
  * Removing an element from a linked-list will cause every following element to
