@@ -50,9 +50,9 @@ double tmptime, totaltime, besttime, worsttime, avgtime;
 	S_sticky_free()
 #endif /* DEBUG */
 
-#define ATOMIC_PRINT(x,...)                                  \
+#define ATOMIC_PRINT(...)                                    \
 	S_mutex_lock(print_mutex);                               \
-	fprintf(stdout, x, ##__VA_ARGS__);                       \
+	fprintf(stdout, __VA_ARGS__);                            \
 	fflush(stdout);                                          \
 	S_mutex_unlock(print_mutex)
 
