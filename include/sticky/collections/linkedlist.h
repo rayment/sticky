@@ -407,8 +407,8 @@ Sbool   S_linkedlist_iter_hasnext(const Slinkedlist_iter *);
  * @brief Check whether or not a list iterator has a previous element or not.
  *
  * @param[in] i The iterator to check
- * @return {@link S_TRUE} if an iterator has more elements behind it, or {@link
- * S_FALSE} otherwise.
+ * @return {@link S_TRUE} if an iterator has more elements behind it, or
+ * {@link S_FALSE} otherwise.
  * @since 1.0.0
  */
 Sbool   S_linkedlist_iter_hasprev(const Slinkedlist_iter *);
