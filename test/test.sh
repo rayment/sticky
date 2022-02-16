@@ -33,6 +33,7 @@ assert_pass math/mat3
 assert_pass math/mat4
 assert_pass math/quat
 assert_pass math/vec3
+assert_pass math/transform
 
 echo "--- $passed/$total tests passed ---"
 if [ ! $passed -eq $total ];
