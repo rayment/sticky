@@ -195,6 +195,16 @@ main(void)
 	, "S_quat_multiply (Q1.Q2)");
 
 	TEST(
+		a.r = -0.291f; a.i = -0.383f; a.j = -0.848f; a.k =  0.224f;
+		b.r = -0.342f; b.i =  0.448f; b.j =  0.705f; b.k =  0.430f;
+		c.r =  0.773f; c.i = -0.522f; c.j =  0.350f; c.k = -0.092f;
+		S_quat_copy(&tmp, &a);
+		S_quat_multiply(&a, &b);
+		print_3_quats(&tmp, &b, &a);
+	, S_quat_equals(EULER_EPSILON, &a, &c)
+	, "S_quat_multiply (Q1.Q2 arbitrary)");
+
+	TEST(
 		S_quat_identity(&a);
 		b.r = sqrt2on2; b.i = 0.23f; b.j = -0.536f; b.k = 0.4f;
 		S_quat_lerp(&b, &a, 0.0f);
