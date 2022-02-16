@@ -112,7 +112,7 @@ Slinkedlist *S_linkedlist_new(void);
  * provided to the function.
  * @since 1.0.0
  */
-void    S_linkedlist_destroy(Slinkedlist *);
+void    S_linkedlist_delete(Slinkedlist *);
 
 /**
  * @brief Add an element to a given index of a linked-list.

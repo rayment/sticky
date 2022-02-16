@@ -78,11 +78,11 @@ S_linkedlist_new(void)
 }
 
 void
-S_linkedlist_destroy(Slinkedlist *l)
+S_linkedlist_delete(Slinkedlist *l)
 {
 	if (!l)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_linkedlist_free");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_linkedlist_delete");
 		return;
 	}
 	_S_CALL("S_linkedlist_clear", S_linkedlist_clear(l));

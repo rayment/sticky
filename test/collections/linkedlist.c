@@ -172,9 +172,9 @@ main(void)
 	, "S_linkedlist_remove_head");
 
 	TEST(
-		S_linkedlist_destroy(list);
+		S_linkedlist_delete(list);
 	, 1
-	, "S_linkedlist_destroy");
+	, "S_linkedlist_delete");
 
 	FREE();
 
