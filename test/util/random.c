@@ -13,34 +13,35 @@
 #define MIN         32
 #define MAX         64
 
-#define GEN_DATA(var,func)                                   \
-	for (i = 0; i < GENERATIONS; ++i)                        \
+#define GEN_DATA(var,func)                                     \
+	for (i = 0; i < GENERATIONS; ++i)                          \
 		*(var+i) = S_random_next_##func();
 
-#define GEN_MAX_DATA(var,func)                               \
-	for (i = 0; i < GENERATIONS; ++i)                        \
+#define GEN_MAX_DATA(var,func)                                 \
+	for (i = 0; i < GENERATIONS; ++i)                          \
 		*(var+i) = S_random_range_##func(MIN, MAX);
 
-#define TEST_NEXT(var,func)                                  \
-	TEST(                                                    \
-		b = S_TRUE;                                          \
-		for (i = 0; i < GENERATIONS; ++i)                    \
-		{                                                    \
-			if (*(var+i) != S_random_next_##func())          \
-				b = S_FALSE;                                 \
-		}                                                    \
-	, b                                                      \
+#define TEST_NEXT(var,func)                                    \
+	TEST(                                                      \
+		b = S_TRUE;                                            \
+		for (i = 0; i < GENERATIONS; ++i)                      \
+		{                                                      \
+			if (*(var+i) != S_random_next_##func())            \
+				b = S_FALSE;                                   \
+		}                                                      \
+	, b                                                        \
 	, "S_random_next_"#func);
 
-#define TEST_RANGE(var,func)                                 \
-	TEST(                                                    \
-		b = S_TRUE;                                          \
-		for (i = 0; i < GENERATIONS; ++i)                    \
-		{                                                    \
-			if (*(var+i) != S_random_range_##func(MIN, MAX)) \
-				b = S_FALSE;                                 \
-		}                                                    \
-	, b                                                      \
+#define TEST_RANGE(var,func)                                   \
+	TEST(                                                      \
+		b = S_TRUE;                                            \
+		for (i = 0; i < GENERATIONS; ++i)                      \
+		{                                                      \
+			if (*(var+i) != S_random_range_##func(MIN, MAX) || \
+			    *(var+i) < MIN || *(var+i) > MAX)              \
+				b = S_FALSE;                                   \
+		}                                                      \
+	, b                                                        \
 	, "S_random_range_"#func);
 
 int
