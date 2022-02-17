@@ -43,6 +43,8 @@
 #include "sticky/memory/allocator.h"
 #include "sticky/memory/memtrace.h"
 
+#include "sticky/util/random.h"
+
 /**
  * @brief Initialise core engine components.
  *

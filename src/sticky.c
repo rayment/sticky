@@ -10,13 +10,18 @@
  * Date created : 12/02/2022
  */
 
+#include <time.h>
+
 #include "sticky.h"
 
 void
 S_sticky_init()
 {
+	/* error handler init */
 	SERRNO = S_NO_ERROR;
 	SERRLOC = "null";
+	/* random number generator init */
+	_S_CALL("S_random_set_seed", S_random_set_seed(time(NULL)));
 #ifdef DEBUG
 	_S_memtrace_init();
 #endif
