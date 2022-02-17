@@ -173,6 +173,113 @@ typedef uint64_t      Suint64;
  * @}
  */
 
+/**
+ * @addtogroup limits
+ * @{
+ */
+
+/**
+ * @brief Minimum possible value of a {@link Schar}.
+ *
+ * @since 1.0.0
+ */
+#define S_CHAR_MIN   CHAR_MIN
+
+/**
+ * @brief Maximum possible value of a {@link Schar}.
+ *
+ * @since 1.0.0
+ */
+#define S_CHAR_MAX   CHAR_MAX
+
+/**
+ * @brief Minimum possible value of a {@link Sint8}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT8_MIN   INT8_MIN
+
+/**
+ * @brief Minimum possible value of a {@link Sint16}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT16_MIN  INT16_MIN
+
+/**
+ * @brief Minimum possible value of a {@link Sint32}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT32_MIN  INT32_MIN
+
+/**
+ * @brief Minimum possible value of a {@link Sint64}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT64_MIN  INT64_MIN
+
+/**
+ * @brief Maximum possible value of a {@link Sint8}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT8_MAX   INT8_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Sint16}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT16_MAX  INT16_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Sint32}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT32_MAX  INT32_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Sint64}.
+ *
+ * @since 1.0.0
+ */
+#define S_INT64_MAX  INT64_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Suint8}.
+ *
+ * @since 1.0.0
+ */
+#define S_UINT8_MAX  UINT8_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Suint16}.
+ *
+ * @since 1.0.0
+ */
+#define S_UINT16_MAX UINT16_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Suint32}.
+ *
+ * @since 1.0.0
+ */
+#define S_UINT32_MAX UINT32_MAX
+
+/**
+ * @brief Maximum possible value of a {@link Suint64}.
+ *
+ * @since 1.0.0
+ */
+#define S_UINT64_MAX UINT64_MAX
+
+/**
+ * @}
+ */
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

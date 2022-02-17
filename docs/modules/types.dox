@@ -4,3 +4,10 @@
  * @brief General-use data-type definitions.
  */
 
+/**
+ * @defgroup limits Limits
+ * @ingroup types
+ *
+ * @brief Type limits.
+ */
+
