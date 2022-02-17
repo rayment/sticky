@@ -25,6 +25,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 
