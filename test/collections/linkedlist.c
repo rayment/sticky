@@ -1,5 +1,10 @@
 /*
- * linkelist.c
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
+ * linkedlist.c
  * Linked list test suite.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
