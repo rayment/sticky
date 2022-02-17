@@ -1,0 +1,13 @@
+/**
+ * @defgroup util Utilities
+ *
+ * @brief Utility functions and structures.
+ */
+
+/**
+ * @defgroup random Random numbers
+ * @ingroup util
+ *
+ * @brief Random number generation.
+ */
+
