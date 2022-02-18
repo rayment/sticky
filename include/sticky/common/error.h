@@ -29,6 +29,7 @@ extern "C"
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 #ifdef DEBUG
 #include "sticky/memory/memtrace.h"
@@ -321,6 +322,34 @@ _S_assert(const Schar *location,
  */
 #define S_log(...) \
         _S_log_vararg(_S_ERR_LOC, "LOG  ", _S_LOG_MSG, __VA_ARGS__)
+
+
+#define _S_error_sdl(msg)                                \
+        _S_log_vararg(_S_ERR_LOC, "SDL  ", _S_LOG_ERROR, \
+                      "%s: %s", msg, SDL_GetError())
+
+#define _S_error_glew(msg,err)                           \
+        _S_log_vararg(_S_ERR_LOC, "GLEW ", _S_LOG_ERROR, \
+                      "%s: %s", msg, glewGetErrorString(err))
+
+static inline
+void
+_S_error_gl(const Schar *location,
+            const Suint32 line)
+{
+	GLenum err;
+	err = glGetError();
+	if (err == GL_NO_ERROR)
+		return;
+	_S_log_vararg(location, line, "GL   ", _S_LOG_ERROR, "%s",
+	              gluErrorString(err));
+}
+
+#ifdef DEBUG
+#define _S_GL(x) x; _S_error_gl(_S_ERR_LOC)
+#else /* DEBUG */
+#define _S_GL(x) x;
+#endif /* DEBUG */
 
 /**
  * @}
