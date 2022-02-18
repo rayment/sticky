@@ -379,7 +379,7 @@ S_window_get_size(const Swindow *window,
 }
 
 Sfloat
-S_window_get_delta_time(Swindow *window)
+S_window_get_delta_time(const Swindow *window)
 {
 	if (!window)
 	{
@@ -390,7 +390,7 @@ S_window_get_delta_time(Swindow *window)
 }
 
 Sbool
-S_window_is_running(Swindow *window)
+S_window_is_running(const Swindow *window)
 {
 	if (!window)
 	{
@@ -401,7 +401,7 @@ S_window_is_running(Swindow *window)
 }
 
 Sbool
-S_window_is_tick(Swindow *window)
+S_window_is_tick(const Swindow *window)
 {
 	if (!window)
 	{
