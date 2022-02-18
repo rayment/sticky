@@ -160,6 +160,36 @@ S_mat4_inverse(Smat4 *mat)
 }
 
 void
+S_mat4_translate(Smat4 *dest,
+                 const Svec3 *vec)
+{
+	if (!dest || !vec)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_translate");
+		return;
+	}
+	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
+	dest->m03 = vec->x;
+	dest->m13 = vec->y;
+	dest->m23 = vec->z;
+}
+
+void
+S_mat4_scale(Smat4 *dest,
+             const Svec3 *vec)
+{
+	if (!dest || !vec)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_scale");
+		return;
+	}
+	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
+	dest->m00 = vec->x;
+	dest->m11 = vec->y;
+	dest->m22 = vec->z;
+}
+
+void
 S_mat4_copy(Smat4 *dest,
             const Smat4 *src)
 {

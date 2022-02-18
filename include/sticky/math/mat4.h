@@ -120,6 +120,59 @@ void  S_mat4_transpose(Smat4 *);
 Sbool S_mat4_inverse(Smat4 *);
 
 /**
+ * @brief Create a translation matrix.
+ *
+ * Returns a transformation matrix that translates an object on the @f$X@f$ axis
+ * by @f$x@f$, the @f$Y@f$ axis by @f$y@f$ units and the @f$Z@f$ axis by @f$z@f$
+ * units.
+ *
+ * The translation transform is defined by the following:
+ *
+ * @f[
+ *     \left[{\begin{array}{cccc}
+ *         1 & 0 & 0 & x \\
+ *         0 & 1 & 0 & y \\
+ *         0 & 0 & 1 & z \\
+ *         0 & 0 & 0 & 1
+ *     \end{array}}\right]
+ * @f]
+ *
+ * @param[out] dest The destination matrix to put the translation transform
+ * into.
+ * @param[in] vec The scale vector.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix or 3D
+ * vector pointer is provided to the function.
+ * @since 1.0.0
+ */
+void  S_mat4_translate(Smat4 *, const Svec3 *);
+
+/**
+ * @brief Create a scale matrix.
+ *
+ * Returns a transformation matrix that scales an object on the @f$X@f$ axis by
+ * @f$x@f$ units, the @f$Y@f$ axis by @f$y@f$ units and the @f$Z@f$ axis by
+ * @f$z@f$ units.
+ *
+ * The scale transform is defined by the following:
+ *
+ * @f[
+ *     \left[{\begin{array}{cccc}
+ *         x & 0 & 0 & 0 \\
+ *         0 & y & 0 & 0 \\
+ *         0 & 0 & z & 0 \\
+ *         0 & 0 & 0 & 1
+ *     \end{array}}\right]
+ * @f]
+ *
+ * @param[out] dest The destination matrix to put the scale transform into.
+ * @param[in] vec The scale vector.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix or 3D
+ * vector pointer is provided to the function.
+ * @since 1.0.0
+ */
+void  S_mat4_scale(Smat4 *, const Svec3 *);
+
+/**
  * @brief Create a copy of a 4x4 matrix.
  *
  * Creates a duplicate copy of a given matrix to a given destination pointer.

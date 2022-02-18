@@ -73,6 +73,7 @@ main(void)
 {
 	Smat4 a, b, c, tmp;
 	Smat3 d, e;
+	Svec3 vec;
 	Sbool bb;
 
 	INIT();
@@ -164,6 +165,26 @@ main(void)
 		print_2_matrices(&a, &tmp);
 	, bb == S_TRUE && S_mat4_equals(EPSILON, &tmp, &b)
 	, "S_mat4_inverse (M1^-1 = M2)");
+
+	TEST(
+		a.m00 = 1.0f; a.m10 = 0.0f; a.m20 = 0.0f; a.m30 = 0.0f;
+		a.m01 = 0.0f; a.m11 = 1.0f; a.m21 = 0.0f; a.m31 = 0.0f;
+		a.m02 = 0.0f; a.m12 = 0.0f; a.m22 = 1.0f; a.m32 = 0.0f;
+		a.m03 = 5.0f; a.m13 = 3.0f; a.m23 = 2.0f; a.m33 = 1.0f;
+		vec.x = 5.0f; vec.y = 3.0f; vec.z = 2.0f;
+		S_mat4_translate(&b, &vec);
+	, S_mat4_equals(EPSILON, &a, &b)
+	, "S_mat4_translate");
+
+	TEST(
+		a.m00 = 5.0f; a.m10 = 0.0f; a.m20 = 0.0f; a.m30 = 0.0f;
+		a.m01 = 0.0f; a.m11 = 3.0f; a.m21 = 0.0f; a.m31 = 0.0f;
+		a.m02 = 0.0f; a.m12 = 0.0f; a.m22 = 2.0f; a.m32 = 0.0f;
+		a.m03 = 0.0f; a.m13 = 0.0f; a.m23 = 0.0f; a.m33 = 1.0f;
+		vec.x = 5.0f; vec.y = 3.0f; vec.z = 2.0f;
+		S_mat4_scale(&b, &vec);
+	, S_mat4_equals(EPSILON, &a, &b)
+	, "S_mat4_scale");
 
 	a.m00 = 5.0f;   a.m10 = 2.0f;   a.m20 = 8.0f;   a.m30 = 3.0f;
 	a.m01 = 7.0f;   a.m11 = 3.0f;   a.m21 = 10.0f;  a.m31 = 3.0f;
