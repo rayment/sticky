@@ -13,6 +13,7 @@
 
 #include "sticky/common/error.h"
 #include "sticky/math/transform.h"
+#include "sticky/math/mat4.h"
 #include "sticky/math/quat.h"
 #include "sticky/math/vec3.h"
 #include "sticky/memory/allocator.h"
@@ -308,5 +309,22 @@ S_transform_get_scale(const Stransform *transform,
 		return;
 	}
 	_S_CALL("S_vec3_copy", S_vec3_copy(scale, &(transform->scale)));
+}
+
+void
+S_transform_get_transformation_matrix(const Stransform *transform,
+                                      Smat4 *dest)
+{
+	Smat4 tmp;
+	if (!transform || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_transformatiion_matrix");
+		return;
+	}
+	_S_CALL("S_mat4_translate", S_mat4_translate(dest, &(transform->pos)));
+	_S_CALL("S_mat4_rotate", S_mat4_rotate(&tmp, &(transform->rot)));
+	_S_CALL("S_mat4_multiply", S_mat4_multiply(dest, &tmp));
+	_S_CALL("S_mat4_scale", S_mat4_scale(&tmp, &(transform->scale)));
+	_S_CALL("S_mat4_multiply", S_mat4_multiply(dest, &tmp));
 }
 

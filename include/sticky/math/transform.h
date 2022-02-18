@@ -291,6 +291,19 @@ void        S_transform_add_scale(Stransform *, const Svec3 *);
  */
 void        S_transform_get_scale(const Stransform *, Svec3 *);
 
+/* TODO: Add to test suite. */
+/**
+ * @brief Get the local transformation matrix of a transform.
+ *
+ * @param[in] transform The transform from which to get the transformation
+ * matrix.
+ * @param[out] dest The matrix to store the local transform in.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid transform or matrix
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_transform_get_transformation_matrix(const Stransform *, Smat4 *);
+
 /**
  * @}
  */
