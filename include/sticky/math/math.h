@@ -252,6 +252,29 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_abs(x)          fabsf(x)
+
+/**
+ * @brief Return the smallest of two single-precision floating-point numbers.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @param y A single-precision floating-point number.
+ * @return @f$\mathrm{min}(x,y)@f$
+ * @since 1.0.0
+ */
+#define S_min(x,y)        ((x)<(y) ? (x) : (y))
+
+/**
+ * @brief Return the largest of two single-precision floating-point numbers.
+ * @hideinitializer
+ *
+ * @param x A single-precision floating-point number.
+ * @param y A single-precision floating-point number.
+ * @return @f$\mathrm{max}(x,y)@f$
+ * @since 1.0.0
+ */
+#define S_max(x,y)        ((x)>(y) ? (x) : (y))
+
 /**
  * @brief Calculate the square root of a single-precision floating-point number.
  * @hideinitializer
@@ -261,6 +284,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_sqrt(x)         sqrtf(x)
+
 /**
  * @brief Convert a single-precision floating-point number from radians to
  * degrees.
@@ -271,6 +295,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_radians(x)      ((x) * 0.01745329252f)
+
 /**
  * @brief Convert a single-precision floating-point number from degrees to
  * radians.
@@ -281,6 +306,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_degrees(x)      ((x) * 57.2957795131f)
+
 /**
  * @brief Calculate the sine of a single-precision floating-point number.
  * @hideinitializer
@@ -290,6 +316,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_sin(x)          sinf(x)
+
 /**
  * @brief Calculate the cosine of a single-precision floating-point number.
  * @hideinitializer
@@ -299,6 +326,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_cos(x)          cosf(x)
+
 /**
  * @brief Calculate the tangent of a single-precision floating-point number.
  * @hideinitializer
@@ -308,6 +336,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_tan(x)          tanf(x)
+
 /**
  * @brief Calculate the inverse sine of a single-precision floating-point number.
  * @hideinitializer
@@ -317,6 +346,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_arcsin(x)       asinf(x)
+
 /**
  * @brief Calculate the inverse cosine of a single-precision floating-point
  * number.
@@ -327,6 +357,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_arccos(x)       acosf(x)
+
 /**
  * @brief Calculate the inverse tangent of a single-precision floating-point
  * number.
@@ -337,6 +368,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_arctan(x)       atanf(x)
+
 /**
  * @brief Calculate the 2-argument inverse tangent of a single-precision
  * floating-point number.
@@ -348,6 +380,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_arctan2(x,y)    atan2f(x,y)
+
 /**
  * @brief Compare two single-precision floating-point numbers given a maximum
  * acceptable of error.
@@ -371,6 +404,7 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_epsilon(x,y,z) ((y) > ((z)-(x)) && (y) < ((z)+(x)))
+
 /**
  * @brief Clamp a single-precision floating-point number between a maximum and
  * minimum value.
