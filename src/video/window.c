@@ -151,6 +151,8 @@ S_window_apply(Swindow *window)
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */
+	/* window size */
+	SDL_SetWindowSize(window->window, window->width, window->height);
 	/* display mode */
 	SDL_SetWindowFullscreen(window->window, window->display_mode);
 	/* mouse capture */
