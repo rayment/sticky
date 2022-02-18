@@ -267,8 +267,12 @@ void
 S_window_set_display_mode(Swindow *window,
                           Senum mode)
 {
-	if (!window ||
-	    mode != S_WINDOWED || mode != S_BORDERLESS || mode != S_FULLSCREEN)
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_display_mode");
+		return;
+	}
+	else if (mode != S_WINDOWED || mode != S_BORDERLESS || mode != S_FULLSCREEN)
 	{
 		_S_SET_ERROR(S_INVALID_ENUM, "S_window_set_display_mode");
 		return;
@@ -280,7 +284,12 @@ void
 S_window_set_gl_profile(Swindow *window,
                         Senum profile)
 {
-	if (!window || profile != S_GL_COMPATABILITY || profile != S_GL_CORE)
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_display_mode");
+		return;
+	}
+	else if (profile != S_GL_COMPATABILITY || profile != S_GL_CORE)
 	{
 		_S_SET_ERROR(S_INVALID_ENUM, "S_window_set_gl_profile");
 		return;
