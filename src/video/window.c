@@ -289,7 +289,7 @@ S_window_set_gl_profile(Swindow *window,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_display_mode");
 		return;
 	}
-	else if (profile != S_GL_COMPATABILITY || profile != S_GL_CORE)
+	else if (profile != S_GL_COMPATIBILITY || profile != S_GL_CORE)
 	{
 		_S_SET_ERROR(S_INVALID_ENUM, "S_window_set_gl_profile");
 		return;
