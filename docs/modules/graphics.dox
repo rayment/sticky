@@ -1,0 +1,13 @@
+/**
+ * @defgroup graphics Graphics
+ *
+ * @brief Graphical rendering.
+ */
+
+/**
+ * @defgroup window Window
+ * @ingroup graphics
+ *
+ * @brief The base display window.
+ */
+
