@@ -12,7 +12,7 @@ jobs:
           sudo apt-get update && \
           sudo apt-get install \
                libglew-dev libsdl2-dev libopenal-dev libassimp-dev \
-               libfreetype6-dev libopengl-dev doxygen
+               libfreetype6-dev libopengl-dev
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Compile contrib dependencies
@@ -27,9 +27,6 @@ jobs:
       - name: Execute test suite
         run: |
           cd test && sh stats.sh && sh test.sh
-      - name: Generate documentation
-        run: |
-          make docs
   build-macos:
     name: macOS build
     runs-on: macos-latest
@@ -38,7 +35,7 @@ jobs:
         run: |
           brew update && \
           brew install \
-            pkg-config glew sdl2 assimp freetype libomp doxygen
+            pkg-config glew sdl2 assimp freetype libomp
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Compile contrib dependencies
@@ -53,9 +50,6 @@ jobs:
       - name: Execute test suite
         run: |
           cd test && sh stats.sh && sh test.sh
-      - name: Generate documentation
-        run: |
-          make docs
   #build-windows:
   #  name: Windows build
   #  runs-on: windows-latest
