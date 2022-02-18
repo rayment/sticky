@@ -71,7 +71,7 @@ void   S_vec2_fill(Svec2 *, Sfloat);
  *     \vec{V}=\left[\begin{array}{c}x \\ y\end{array}\right]
  * @f]
  *
- * @param[out] dest The vector to set.
+ * @param[out] vec The vector to set.
  * @param[in] x The scar value for the @f$x@f$ axis.
  * @param[in] y The scar value for the @f$y@f$ axis.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 2D vector is provided

@@ -71,7 +71,7 @@ void   S_vec4_fill(Svec4 *, Sfloat);
  *     \vec{V}=\left[\begin{array}{c}x \\ y \\ z \\ w\end{array}\right]
  * @f]
  *
- * @param[out] dest The vector to set.
+ * @param[out] vec The vector to set.
  * @param[in] x The scar value for the @f$x@f$ axis.
  * @param[in] y The scar value for the @f$y@f$ axis.
  * @param[in] z The scar value for the @f$z@f$ axis.
