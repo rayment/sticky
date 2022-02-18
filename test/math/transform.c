@@ -35,8 +35,9 @@ int
 main(void)
 {
 	Stransform *a, *b, *c, *tmp, *tmp2, *tmp3;
-	Svec3 vec1, vec2;
+	Svec3 vec1, vec2, vec3;
 	Squat quat1, quat2, quat3;
+	Smat4 mat1, mat2, mat3, mat4;
 	Ssize_t i, j, k;
 
 	INIT();
@@ -214,6 +215,23 @@ main(void)
 		S_transform_get_scale(a, &vec1);
 	, S_vec3_equals(EPSILON, &vec1, &vec2)
 	, "S_transform_add_scale");
+
+	TEST(
+		S_vec3_set(&vec1, 1.1f, 2.2f, 3.3f);
+		S_vec3_set(&vec2, 5.0f, S_PI, S_HALFPI);
+		S_vec3_set(&vec3, 90.0f, 90.0f, 45.0f);
+		S_vec3_to_quat(&quat1, &vec3);
+		S_transform_set_pos(a, &vec1);
+		S_transform_set_scale(a, &vec2);
+		S_transform_set_rot(a, &quat1);
+		S_transform_get_transformation_matrix(a, &mat4);
+		S_mat4_translate(&mat1, &vec1);
+		S_mat4_rotate(&mat2, &quat1);
+		S_mat4_scale(&mat3, &vec2);
+		S_mat4_multiply(&mat1, &mat2);
+		S_mat4_multiply(&mat1, &mat3);
+	, S_mat4_equals(EPSILON, &mat1, &mat4)
+	, "S_transform_get_transformation_matrix");
 
 	TEST(
 		S_transform_delete(a);

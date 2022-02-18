@@ -291,7 +291,6 @@ void        S_transform_add_scale(Stransform *, const Svec3 *);
  */
 void        S_transform_get_scale(const Stransform *, Svec3 *);
 
-/* TODO: Add to test suite. */
 /**
  * @brief Get the local transformation matrix of a transform.
  *
