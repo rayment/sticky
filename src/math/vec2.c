@@ -42,6 +42,15 @@ S_vec2_fill(Svec2 *vec,
 }
 
 void
+S_vec2_set(Svec2 *dest,
+           Sfloat x,
+           Sfloat y)
+{
+	dest->x = x;
+	dest->y = y;
+}
+
+void
 S_vec2_add(Svec2 *dest,
            const Svec2 *src)
 {

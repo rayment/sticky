@@ -65,6 +65,11 @@ main(void)
 	, "S_vec3_fill");
 
 	TEST(
+		S_vec3_set(&a, S_PI, S_HALFPI, 0.5f);
+	, a.x == S_PI && a.y == S_HALFPI && a.z == 0.5f
+	, "S_vec3_set");
+
+	TEST(
 		a.x = 0.0f; a.y = S_HALFPI; a.z = S_PI;
 		b.x = S_PI; b.y = S_HALFPI; b.z = 0.0f;
 		c.x = S_PI; c.y = S_PI;     c.z = S_PI;

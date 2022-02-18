@@ -46,6 +46,19 @@ S_vec4_fill(Svec4 *vec,
 }
 
 void
+S_vec4_set(Svec4 *dest,
+           Sfloat x,
+           Sfloat y,
+           Sfloat z,
+           Sfloat w)
+{
+	dest->x = x;
+	dest->y = y;
+	dest->z = z;
+	dest->w = w;
+}
+
+void
 S_vec4_add(Svec4 *dest,
            const Svec4 *src)
 {

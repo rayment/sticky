@@ -62,6 +62,26 @@ void   S_vec3_zero(Svec3 *);
 void   S_vec3_fill(Svec3 *, Sfloat);
 
 /**
+ * @brief Set the three vector components of a vector.
+ *
+ * Takes a vector @f$V@f$ and three scalars @f$x@f$, @f$y@f$ and @f$z@f$ and
+ * sets the vector to:
+ *
+ * @f[
+ *     \vec{V}=\left[\begin{array}{c}x \\ y \\ z\end{array}\right]
+ * @f]
+ *
+ * @param[out] vec The vector to set.
+ * @param[in] x The scar value for the @f$x@f$ axis.
+ * @param[in] y The scar value for the @f$y@f$ axis.
+ * @param[in] z The scar value for the @f$z@f$ axis.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec3_set(Svec3 *, Sfloat, Sfloat, Sfloat);
+
+/**
  * @brief Add two vectors together.
  *
  * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and adds together each

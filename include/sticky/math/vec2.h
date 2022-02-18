@@ -62,6 +62,25 @@ void   S_vec2_zero(Svec2 *);
 void   S_vec2_fill(Svec2 *, Sfloat);
 
 /**
+ * @brief Set the two vector components of a vector.
+ *
+ * Takes a vector @f$V@f$ and two scalars @f$x@f$ and @f$y@f$ and sets the
+ * vector to:
+ *
+ * @f[
+ *     \vec{V}=\left[\begin{array}{c}x \\ y\end{array}\right]
+ * @f]
+ *
+ * @param[out] vec The vector to set.
+ * @param[in] x The scar value for the @f$x@f$ axis.
+ * @param[in] y The scar value for the @f$y@f$ axis.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 2D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec2_set(Svec2 *, Sfloat, Sfloat);
+
+/**
  * @brief Add two vectors together.
  *
  * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and adds together each

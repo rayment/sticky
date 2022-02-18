@@ -62,6 +62,27 @@ void   S_vec4_zero(Svec4 *);
 void   S_vec4_fill(Svec4 *, Sfloat);
 
 /**
+ * @brief Set the four vector components of a vector.
+ *
+ * Takes a vector @f$V@f$ and four scalars @f$x@f$, @f$y@f$, @f$z@f$ and
+ * @f$w@f$ and sets the vector to:
+ *
+ * @f[
+ *     \vec{V}=\left[\begin{array}{c}x \\ y \\ z \\ w\end{array}\right]
+ * @f]
+ *
+ * @param[out] vec The vector to set.
+ * @param[in] x The scar value for the @f$x@f$ axis.
+ * @param[in] y The scar value for the @f$y@f$ axis.
+ * @param[in] z The scar value for the @f$z@f$ axis.
+ * @param[in] w The scar value for the @f$w@f$ axis.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec4_set(Svec4 *, Sfloat, Sfloat, Sfloat, Sfloat);
+
+/**
  * @brief Add two vectors together.
  *
  * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and adds together each

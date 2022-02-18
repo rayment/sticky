@@ -54,6 +54,11 @@ main(void)
 	, "S_vec2_fill");
 
 	TEST(
+		S_vec2_set(&a, S_PI, S_HALFPI);
+	, a.x == S_PI && a.y == S_HALFPI
+	, "S_vec2_set");
+
+	TEST(
 		a.x = 0.0f; a.y = S_HALFPI;
 		b.x = S_PI; b.y = S_HALFPI;
 		c.x = S_PI; c.y = S_PI;

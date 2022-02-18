@@ -54,6 +54,11 @@ main(void)
 	, "S_vec4_fill");
 
 	TEST(
+		S_vec4_set(&a, S_PI, S_HALFPI, 0.5f, -1.3f);
+	, a.x == S_PI && a.y == S_HALFPI && a.z == 0.5f && a.w == -1.3f
+	, "S_vec4_set");
+
+	TEST(
 		a.x = 0.0f; a.y = S_HALFPI; a.z = S_PI; a.w = S_TWOPI;
 		b.x = S_PI; b.y = S_HALFPI; b.z = 0.0f; b.w = S_TWOPI;
 		c.x = S_PI; c.y = S_PI;     c.z = S_PI; c.w = 2.0f*S_TWOPI;
