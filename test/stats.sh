@@ -15,7 +15,7 @@ tags="TODO FIXME"
 for i in $tags;
 do
 	search=`cd .. && grep --color=always -B1 -A3 -e "$i" -n -r $folders`
-	numsearch=`printf "%s" "$search" | grep -c "^"`
+	numsearch=`printf "%s" "$search" | grep "$i" | grep -c "^"`
 
 	echo "-----------"
 	echo "There are $numsearch $i tags in the project."
