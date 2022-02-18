@@ -175,6 +175,27 @@ S_mat4_translate(Smat4 *dest,
 }
 
 void
+S_mat4_rotate(Smat4 *dest,
+              const Squat *quat)
+{
+	if (!dest || !quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_rotate");
+		return;
+	}
+	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
+	dest->m00 = 1.0f - 2.0f*quat->j*quat->j - 2.0f*quat->k*quat->k;
+	dest->m10 = 2.0f*quat->i*quat->j + 2.0f*quat->r*quat->k;
+	dest->m20 = 2.0f*quat->i*quat->k - 2.0f*quat->r*quat->j;
+	dest->m01 = 2.0f*quat->i*quat->j - 2.0f*quat->r*quat->k;
+	dest->m11 = 1.0f - 2.0f*quat->i*quat->i - 2.0f*quat->k*quat->k;
+	dest->m21 = 2.0f*quat->j*quat->k + 2.0f*quat->r*quat->i;
+	dest->m02 = 2.0f*quat->i*quat->k + 2.0f*quat->r*quat->j;
+	dest->m12 = 2.0f*quat->j*quat->k - 2.0f*quat->r*quat->i;
+	dest->m22 = 1.0f - 2.0f*quat->i*quat->i - 2.0f*quat->j*quat->j;
+}
+
+void
 S_mat4_scale(Smat4 *dest,
              const Svec3 *vec)
 {

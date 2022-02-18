@@ -74,6 +74,7 @@ main(void)
 	Smat4 a, b, c, tmp;
 	Smat3 d, e;
 	Svec3 vec;
+	Squat quat;
 	Sbool bb;
 
 	INIT();
@@ -175,6 +176,17 @@ main(void)
 		S_mat4_translate(&b, &vec);
 	, S_mat4_equals(EPSILON, &a, &b)
 	, "S_mat4_translate");
+
+	TEST(
+		a.m00 =  0.75847f; a.m10 = 0.23395f; a.m20 =  0.60827f; a.m30 = 0.0f;
+		a.m01 = -0.03270f; a.m11 = 0.94583f; a.m21 = -0.32300f; a.m31 = 0.0f;
+		a.m02 = -0.65089f; a.m12 = 0.22510f; a.m22 =  0.72504f; a.m32 = 0.0f;
+		a.m03 =  0.0f;     a.m13 = 0.0f;     a.m23 = 0.0f;      a.m33 = 1.0f;
+		quat.r = -0.926f; quat.i = 0.148f; quat.j = 0.340f; quat.k = -0.072f;
+		S_quat_normalize(&quat);
+		S_mat4_rotate(&b, &quat);
+	, S_mat4_equals(EPSILON, &a, &b)
+	, "S_mat4_rotate");
 
 	TEST(
 		a.m00 = 5.0f; a.m10 = 0.0f; a.m20 = 0.0f; a.m30 = 0.0f;

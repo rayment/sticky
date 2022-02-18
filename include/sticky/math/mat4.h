@@ -139,12 +139,37 @@ Sbool S_mat4_inverse(Smat4 *);
  *
  * @param[out] dest The destination matrix to put the translation transform
  * into.
- * @param[in] vec The scale vector.
+ * @param[in] vec The translation vector.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix or 3D
  * vector pointer is provided to the function.
  * @since 1.0.0
  */
 void  S_mat4_translate(Smat4 *, const Svec3 *);
+
+/**
+ * @brief Create a rotation matrix.
+ *
+ * The rotation transform is defined by the following:
+ *
+ * @f[
+ *     \left[{\begin{array}{cccc}
+ *         1-2y^2-2z^2 & 2xy-2wz & 2xz+2wy & 0 \\
+ *         2xy+2wz & 1-2x^2-2z^2 & 2yz-2wx & 0 \\
+ *         2xz-2wy & 2yz+2wx & 1-2x^2-2y^2 & 0 \\
+ *         0       & 0       & 0           & 1
+ *     \end{array}}\right]
+ * @f]
+ *
+ * Where @f$w@f$, @f$x@f$, @f$y@f$ and @f$z@f$ are the @f$r@f$, @f$i@f$, @f$j@f$
+ * and @f$k@f$ components respectively of the quaternion.
+ *
+ * @param[out] dest The destination matrix to put the rotation transform into.
+ * @param[in] quat The rotation quaternion.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix or
+ * quaternion pointer is provided to the function.
+ * @since 1.0.0
+ */
+void  S_mat4_rotate(Smat4 *, const Squat *);
 
 /**
  * @brief Create a scale matrix.
