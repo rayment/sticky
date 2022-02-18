@@ -10,14 +10,14 @@
  * Date created : 12/02/2022
  */
 
+#ifndef FR_RAYMENT_STICKY_STICKY_H
+#define FR_RAYMENT_STICKY_STICKY_H 1
+
 /**
  * @file sticky.h
  * @addtogroup memory Memory management
  * @{
  */
-
-#ifndef FR_RAYMENT_STICKY_STICKY_H
-#define FR_RAYMENT_STICKY_STICKY_H 1
 
 /* these must come before all other includes */
 #include "sticky/common/defines.h"
@@ -42,6 +42,8 @@
 
 #include "sticky/memory/allocator.h"
 #include "sticky/memory/memtrace.h"
+
+#include "sticky/video/window.h"
 
 #include "sticky/util/random.h"
 
