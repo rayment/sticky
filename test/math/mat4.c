@@ -76,6 +76,7 @@ main(void)
 	Svec3 vec;
 	Squat quat;
 	Sbool bb;
+	Sfloat near, far, aspect, fovy, f;
 
 	INIT();
 
@@ -197,6 +198,23 @@ main(void)
 		S_mat4_scale(&b, &vec);
 	, S_mat4_equals(EPSILON, &a, &b)
 	, "S_mat4_scale");
+
+	TEST(
+		near = 0.01f;
+		far = 100.0f;
+		aspect = 1.6f;
+		fovy = 65.0f;
+		f = S_tan(fovy / 2.0f);
+		S_mat4_identity(&a);
+		a.m00 = 1.0f / (aspect*f);
+		a.m11 = 1.0f/f;
+		a.m22 = -(far+near)/(far-near);
+		a.m23 = -(2.0f*far*near)/(far-near);
+		a.m32 = -1.0f;
+		a.m33 = 0.0f;
+		S_mat4_perspective(&b, fovy, aspect, near, far);
+	, S_mat4_equals(EPSILON, &a, &b)
+	, "S_mat4_perspective");
 
 	a.m00 = 5.0f;   a.m10 = 2.0f;   a.m20 = 8.0f;   a.m30 = 3.0f;
 	a.m01 = 7.0f;   a.m11 = 3.0f;   a.m21 = 10.0f;  a.m31 = 3.0f;
