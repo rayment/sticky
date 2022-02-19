@@ -198,6 +198,51 @@ void  S_mat4_rotate(Smat4 *, const Squat *);
 void  S_mat4_scale(Smat4 *, const Svec3 *);
 
 /**
+ * @brief Generate a perspective projection matrix.
+ *
+ * This function generates a perspective view matrix relative to the world
+ * coordinates to be used for the camera. The @p aspect parameter signifies the
+ * aspect ratio of width to height of the viewport. If rendering to an instance
+ * of {@link Swindow}, then the width and height of the window should be used.
+ *
+ * The field of view is measured in degrees in the @f$y@f$ direction.
+ *
+ * @p znear and @p zfar should be positive only, and @p zfar > @p znear, or else
+ * the behaviour of this function is undefined.
+ *
+ * Note that @p znear and @p zfar should not be too far apart or else Z-fighting
+ * may occur when rendering objects at different depths beside or on top of one
+ * another. This happens because the entire 3D space must be compressed from
+ * depths @p znear to @p zfar into a space of only -1 to 1. As such,
+ * floating-point precision errors may occur, leading to the aformentioned
+ * Z-fighting.
+ *
+ * The perspective projection is defined by the following:
+ *
+ * @f[
+ *     \left[{\begin{array}{cccc}
+ *         \frac{1}{f\times aspect} & 0 & 0 & 0 \\
+ *         0 & \frac{1}{f} & 0 & 0 \\
+ *         0 & 0 & -\frac{zfar+znear}{zfar-znear} &
+ *         -\frac{2\times zfar\times znear}{zfar-znear} \\
+ *         0 & 0 & -1 & 0
+ *     \end{array}}\right]
+ * @f]
+ *
+ * Where @f$f=\tan{\frac{fovy}{2}}@f$.
+ *
+ * @param[out] dest The destination matrix to put the perspective into.
+ * @param[in] fovy The field of view, in degrees, in the @f$y@f$ direction.
+ * @param[in] aspect The aspect ratio of width to height of the perspective.
+ * @param[in] znear Distance of the near clipping plane to the camera's eye.
+ * @param[in] zfar Distance of the far clipping plane to the camera's eye.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void  S_mat4_perspective(Smat4 *, Sfloat, Sfloat, Sfloat, Sfloat);
+
+/**
  * @brief Create a copy of a 4x4 matrix.
  *
  * Creates a duplicate copy of a given matrix to a given destination pointer.

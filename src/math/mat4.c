@@ -210,6 +210,33 @@ S_mat4_scale(Smat4 *dest,
 	dest->m22 = vec->z;
 }
 
+/*
+ * See:
+ * https://khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+ */
+void
+S_mat4_perspective(Smat4 *dest,
+                   Sfloat fovy,
+                   Sfloat aspect,
+                   Sfloat znear,
+                   Sfloat zfar)
+{
+	Sfloat f;
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_perspective");
+		return;
+	}
+	f = S_tan(fovy / 2.0f);
+	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
+	dest->m00 = 1.0f / (aspect*f);
+	dest->m11 = 1.0f / f;
+	dest->m22 = -(zfar+znear) / (zfar-znear);
+	dest->m23 = -(2.0f*zfar*znear) / (zfar-znear);
+	dest->m32 = -1.0f;
+	dest->m33 = 0.0f;
+}
+
 void
 S_mat4_copy(Smat4 *dest,
             const Smat4 *src)
