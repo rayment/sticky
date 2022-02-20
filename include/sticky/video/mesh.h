@@ -38,6 +38,8 @@ Smesh *S_mesh_new(const Sfloat *, Ssize_t,
 
 void   S_mesh_delete(Smesh *);
 
+void  _S_mesh_draw(const Smesh *);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
