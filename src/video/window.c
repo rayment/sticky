@@ -283,6 +283,18 @@ S_window_set_size(Swindow *window,
 }
 
 void
+S_window_set_capture_mouse(Swindow *window,
+                           Sbool capture)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_capture_mouse");
+		return;
+	}
+	window->capture_mouse = capture;
+}
+
+void
 S_window_set_centered(Swindow *window,
                      Sbool centered)
 {

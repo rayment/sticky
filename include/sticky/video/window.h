@@ -341,6 +341,26 @@ void     S_window_set_title(Swindow *, const Schar *);
 void     S_window_set_size(Swindow *, Suint16, Suint16);
 
 /**
+ * @brief Set the mouse-capture rule for a window.
+ *
+ * If @p capture is set to {@link S_TRUE} then the mouse will automatically be
+ * grabbed by the window and made invisible. Any user attempt to move the mouse
+ * outside of the window will fail and the mouse will remain invisible until
+ * either the window loses focus, the window closes, or this function is called
+ * again with {@link S_FALSE}.
+ *
+ * Note that this function will not apply immediately. To do so, use
+ * {@link S_window_apply(Swindow *)}.
+ *
+ * @param[in,out] window The window.
+ * @param[in] capture Whether or not to capture the mouse inside of the window.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_capture_mouse(Swindow *, Sbool);
+
+/**
  * @brief Set the centering rule for a window.
  *
  * If @p centered is equal to {@link S_TRUE}, then the window will automatically
