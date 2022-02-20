@@ -30,31 +30,43 @@ extern "C"
  *
  * @since 1.0.0
  */
-#define S_EPSILON  0.0001f
+#define S_EPSILON    0.0001f
 /**
  * @brief The value of @f$\pi@f$.
  *
  * @since 1.0.0
  */
-#define S_PI       3.1415926536f
+#define S_PI         3.1415926536f
 /**
  * @brief The value of @f$2\pi@f$.
  *
  * @since 1.0.0
  */
-#define S_TWOPI    6.2831853072f
+#define S_TWOPI      6.2831853072f
 /**
  * @brief The value of @f$\frac{\pi}{2}@f$.
  *
  * @since 1.0.0
  */
-#define S_HALFPI   1.5707963268f
+#define S_HALFPI     1.5707963268f
+/**
+ * @brief The value of @f$\sqrt{\pi}@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_SQRTPI     1.7724538509f
+/**
+ * @brief The value of @f$\frac{\sqrt{\pi}}{2}@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_HALFSQRTPI 0.8862269255f
 /**
  * @brief The infinity value for single-precision floating-point numbers.
  *
  * @since 1.0.0
  */
-#define S_INFINITY INFINITY
+#define S_INFINITY   INFINITY
 
 /**
  * @}
