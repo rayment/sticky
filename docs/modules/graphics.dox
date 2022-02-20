@@ -11,3 +11,10 @@
  * @brief The base display window.
  */
 
+/**
+ * @defgroup camera Camera
+ * @ingroup graphics
+ *
+ * @brief The graphical viewing camera.
+ */
+
