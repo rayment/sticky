@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "sticky/common/error.h"
+#include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
@@ -23,6 +24,7 @@
 #include "sticky/video/window.h"
 
 static Sbool init = S_FALSE;
+static Sbool exists = S_FALSE;
 
 Swindow *
 S_window_new(void)
@@ -31,8 +33,13 @@ S_window_new(void)
 	if (!init)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
-			_S_error_sdl("S_sticky_init");
+			_S_error_sdl("S_window_new");
 		init = S_TRUE;
+	}
+	if (exists)
+	{
+		_S_SET_ERROR(S_INVALID_OPERATION, "S_window_new");
+		return NULL;
 	}
 	window = (Swindow *) S_memory_new(sizeof(Swindow));
 	window->window = NULL;
@@ -51,6 +58,7 @@ S_window_new(void)
 	window->doublebuf = S_FALSE;
 	window->centered = S_FALSE;
 	memset(window->title, 0, 64 * sizeof(Schar));
+	window->input_mode = S_KEYBOARD | S_MOUSE;
 	/* tick init */
 	window->delta_time = 0;
 	window->current_frame = 0;
@@ -61,6 +69,7 @@ S_window_new(void)
 	window->ticks = 0;
 
 	window->running = S_FALSE;
+	exists = S_TRUE;
 	return window;
 }
 
@@ -75,6 +84,7 @@ S_window_delete(Swindow *window)
 	SDL_GL_DeleteContext(window->context);
 	SDL_DestroyWindow(window->window);
 	S_memory_delete(window);
+	exists = S_FALSE;
 }
 
 void
@@ -101,6 +111,7 @@ void
 S_window_apply(Swindow *window)
 {
 	Suint32 glew;
+	Senum windowpos;
 	if (!window)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_apply");
@@ -126,10 +137,12 @@ S_window_apply(Swindow *window)
 		        _S_window_set_attrib(SDL_GL_ACCELERATED_VISUAL,
 		                             window->hwaccel));
 		/* create window */
+		if (window->centered)
+			windowpos = SDL_WINDOWPOS_CENTERED;
+		else
+			windowpos = SDL_WINDOWPOS_UNDEFINED;
 		window->window =
-			SDL_CreateWindow(window->title,
-			                 window->centered ? SDL_WINDOWPOS_CENTERED : 0,
-			                 window->centered ? SDL_WINDOWPOS_CENTERED : 0,
+			SDL_CreateWindow(window->title, windowpos, windowpos,
 			                 window->width, window->height, SDL_WINDOW_OPENGL);
 		if (!window->window)
 			_S_error_sdl("S_window_apply");
@@ -191,6 +204,21 @@ S_window_clear(Swindow *window)
 	window->ticks = 0;
 	/* TODO: Allow clearing manually? */
 	_S_GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
+
+void
+S_window_poll(Swindow *window)
+{
+	SDL_Event e;
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_poll");
+		return;
+	}
+	while (SDL_PollEvent(&e) != 0)
+	{
+		/* TODO: Implement input and event handler. */
+	}
 }
 
 void
@@ -376,6 +404,18 @@ S_window_set_ticks_per_second(Swindow *window,
 	if (ticks == 0 || ticks > 500)
 		ticks = 30;
 	window->tick_limit = ticks;
+}
+
+void
+S_window_set_input_mode(Swindow *window,
+                        Senum mode)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_input_mode");
+		return;
+	}
+	window->input_mode = mode;
 }
 
 void

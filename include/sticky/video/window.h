@@ -23,6 +23,7 @@ extern "C"
 #include "sticky/common/types.h"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
+#include "sticky/math/vec4.h"
 
 /**
  * @addtogroup window
@@ -65,6 +66,10 @@ extern "C"
  * @since 1.0.0
  */
 #define S_FULLSCREEN       (SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN)
+
+#define S_KEYBOARD 0x1
+#define S_MOUSE    0x2
+#define S_GAMEPAD  0x4
 
 /**
  * @brief Compatibility GL profile.
@@ -113,6 +118,9 @@ extern "C"
  * other video function, whether it be the creation or modification of meshes,
  * cameras, textures, etc. be called, or else the function behaviour will be
  * undefined, due to the GL context not yet being created.
+ * @warning Only one active window at a time is supported by <b>sticky</b>.
+ * Trying to create a second window without having previously called
+ * {@link S_window_delete(Swindow *)} on the first will throw an error.
  * @since 1.0.0
  */
 typedef struct
@@ -127,6 +135,7 @@ Swindow_s
 	Svec4 clear_color;
 	Sbool centered, capture_mouse, vsync, hwaccel, doublebuf;
 	Schar title[64];
+	Senum input_mode;
 	Sbool running;
 	Suint16 ticks, tick_limit, skip_ticks, next_tick;
 	Suint32 delta_time, current_frame, last_frame;
@@ -143,6 +152,9 @@ Swindow_s
  * needs to be called.
  *
  * @return A new window.
+ * @exception S_INVALID_OPERATION If a window already exists and
+ * {@link S_window_delete(Swindow *)} has not yet been called.
+ * the function.
  * @since 1.0.0
  */
 Swindow *S_window_new(void);
@@ -214,6 +226,23 @@ void     S_window_close(Swindow *);
  * @since 1.0.0
  */
 void     S_window_clear(Swindow *);
+
+/**
+ * @brief Polls a window for input or events.
+ *
+ * This function is mandatory for a given window to be able to respond to OS
+ * requests such as focus or display, accept input or close and as such should
+ * be called once at the beginning of a game loop.
+ *
+ * After calling this function, any input-related functions can be used to
+ * ascertain if a certain key, mouse button, gamepad button, etc. was pressed.
+ *
+ * @param[in,out] window The window to poll.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_poll(Swindow *);
 
 /**
  * @brief Clears a window.
