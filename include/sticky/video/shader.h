@@ -190,7 +190,7 @@ void     S_shader_set_uniform_mat3(Sshader *, const Schar *, const Smat3 *);
  */
 void     S_shader_set_uniform_mat4(Sshader *, const Schar *, const Smat4 *);
 
-void     _S_shader_attach(const Sshader *);
+void    _S_shader_attach(const Sshader *);
 
 /**
  * @}
