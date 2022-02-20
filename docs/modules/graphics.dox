@@ -18,3 +18,10 @@
  * @brief The graphical viewing camera.
  */
 
+/**
+ * @defgroup shader Shaders
+ * @ingroup graphics
+ *
+ * @brief OpenGL shader programming.
+ */
+

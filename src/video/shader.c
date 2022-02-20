@@ -160,17 +160,6 @@ S_shader_delete(Sshader *shader)
 	S_memory_delete(shader);
 }
 
-void
-S_shader_attach(const Sshader *shader)
-{
-	if (!shader)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_attach");
-		return;
-	}
-	_S_GL(glUseProgram(shader->program));
-}
-
 static
 GLint
 _S_shader_get_uniform(const Sshader *shader,
@@ -280,5 +269,16 @@ S_shader_set_uniform_mat4(Sshader *shader,
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniformMatrix4fv(uniform, 1, GL_FALSE, (Sfloat *) val));
+}
+
+void
+_S_shader_attach(const Sshader *shader)
+{
+	if (!shader)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_attach");
+		return;
+	}
+	_S_GL(glUseProgram(shader->program));
 }
 
