@@ -186,6 +186,7 @@ S_shader_set_uniform_float(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_float");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniform1f(uniform, val));
@@ -202,6 +203,7 @@ S_shader_set_uniform_int32(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_int32");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniform1i(uniform, val));
@@ -218,6 +220,7 @@ S_shader_set_uniform_vec3(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_vec3");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniform3f(uniform, val->x, val->y, val->z));
@@ -234,6 +237,7 @@ S_shader_set_uniform_vec4(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_vec4");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniform4f(uniform, val->x, val->y, val->z, val->w));
@@ -250,6 +254,7 @@ S_shader_set_uniform_mat3(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_mat3");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniformMatrix3fv(uniform, 1, GL_FALSE, (Sfloat *) val));
@@ -266,11 +271,13 @@ S_shader_set_uniform_mat4(Sshader *shader,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_shader_set_uniform_mat4");
 		return;
 	}
+	_S_CALL("_S_shader_attach", _S_shader_attach(shader));
 	_S_CALL("_S_shader_get_uniform",
 	        uniform = _S_shader_get_uniform(shader, name));
 	_S_GL(glUniformMatrix4fv(uniform, 1, GL_FALSE, (Sfloat *) val));
 }
 
+inline
 void
 _S_shader_attach(const Sshader *shader)
 {
