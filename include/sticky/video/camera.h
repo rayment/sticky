@@ -49,6 +49,7 @@ Scamera_s
  * near-plane of <c>1.0f</c>, far-plane of <c>100.0f</c> and field-of-view of
  * 60 degrees will be applied to the new camera.
  *
+ * @return A new camera.
  * @since 1.0.0
  */
 Scamera    *S_camera_new(void);

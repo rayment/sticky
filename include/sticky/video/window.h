@@ -137,6 +137,7 @@ Swindow_s
  * called. To actually display the window, {@link S_window_apply(Swindow *)}
  * needs to be called.
  *
+ * @return A new window.
  * @since 1.0.0
  */
 Swindow *S_window_new(void);
