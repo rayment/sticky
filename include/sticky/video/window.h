@@ -67,8 +67,37 @@ extern "C"
  */
 #define S_FULLSCREEN       (SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN)
 
+/**
+ * @brief Keyboard input mode.
+ * @hideinitializer
+ *
+ * Denotes the keyboard input method that a window may accept as input.
+ *
+ * @see {@link S_window_set_input_mode(Swindow *, Senum)} To set the input mode.
+ * @since 1.0.0
+ */
 #define S_KEYBOARD 0x1
+
+/**
+ * @brief Mouse input mode.
+ * @hideinitializer
+ *
+ * Denotes the mouse input method that a window may accept as input.
+ *
+ * @see {@link S_window_set_input_mode(Swindow *, Senum)} To set the input mode.
+ * @since 1.0.0
+ */
 #define S_MOUSE    0x2
+
+/**
+ * @brief Gamepad input mode.
+ * @hideinitializer
+ *
+ * Denotes the gamepad input method that a window may accept as input.
+ *
+ * @see {@link S_window_set_input_mode(Swindow *, Senum)} To set the input mode.
+ * @since 1.0.0
+ */
 #define S_GAMEPAD  0x4
 
 /**
@@ -507,6 +536,33 @@ void     S_window_set_double_buffer(Swindow *, Sbool);
  * @since 1.0.0
  */
 void     S_window_set_ticks_per_second(Swindow *, Suint16);
+
+/**
+ * @brief Sets the input mode for a window.
+ *
+ * Setting the input mode to {@link S_KEYBOARD} will cause the window to only
+ * accept input from the keyboard.
+ *
+ * Setting the input mode to {@link S_MOUSE} will cause the window to only
+ * accept input from the mouse.
+ *
+ * Setting the input mode to {@link S_GAMEPAD} will cause the window to only
+ * accept input from a gamepad.
+ *
+ * Setting the input mode to a combination of any of the above modes by OR'ing
+ * them together (eg. a mouse and keyboard combination would be
+ * <c>S_MOUSE | S_KEYBOARD</c>) will allow all of those modes of input to be
+ * used.
+ *
+ * The default input mode is both mouse and keyboard.
+ *
+ * @param[in,out] window The window.
+ * @param[in] mode The input mode.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_input_mode(Swindow *, Senum);
 
 /**
  * @brief Get the size of a window.
