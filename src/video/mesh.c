@@ -73,6 +73,7 @@ S_mesh_new(const Sfloat *vertices, Ssize_t vlen,
 
 	xset = yset = zset = S_FALSE;
 	minx = miny = minz = maxx = maxy = maxz = 0.0f;
+	/* TODO: Parallelise. */
 	for (i = 0; i < vlen / 3; ++i)
 	{
 		for (j = 0; j < 3; ++j)
@@ -170,7 +171,7 @@ S_mesh_delete(Smesh *mesh)
 
 /* TODO: Redo when framebuffers are implemented? */
 void
-_S_mesh_draw(Smesh *mesh)
+_S_mesh_draw(const Smesh *mesh)
 {
 	if (!mesh)
 	{
