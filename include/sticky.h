@@ -43,6 +43,7 @@
 #include "sticky/memory/allocator.h"
 #include "sticky/memory/memtrace.h"
 
+#include "sticky/video/camera.h"
 #include "sticky/video/window.h"
 
 #include "sticky/util/random.h"
