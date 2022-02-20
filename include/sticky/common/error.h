@@ -193,17 +193,17 @@ _S_log(const Schar *location,
 	if (err == _S_LOG_ERROR)
 	{
 		out = stderr;
-		fprintf(out, "\n\x1b[1;31m%s\x1b[0m: %s:%d: ", type, location, line);
+		fprintf(out, "\n\x1b[1;31m%-5s\x1b[0m: %s:%d: ", type, location, line);
 	}
 	else if (err == _S_LOG_WARN)
 	{
 		out = stderr;
-		fprintf(out, "\x1b[1;33m%s\x1b[0m: %s:%d: ", type, location, line);
+		fprintf(out, "\x1b[1;33m%-5s\x1b[0m: %s:%d: ", type, location, line);
 	}
 	else
 	{
 		out = stdout;
-		fprintf(out, "%s: %s:%d: ", type, location, line);
+		fprintf(out, "%-5s: %s:%d: ", type, location, line);
 	}
 	vfprintf(out, format, va);
 	va_end(va);
@@ -334,7 +334,7 @@ _S_assert(const Schar *location,
 
 #define _S_error_other(category,...)                     \
         _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
-                      "%-5s: " __VA_ARGS__)
+                      "%s: " __VA_ARGS__)
 
 static inline
 void
