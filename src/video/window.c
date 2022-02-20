@@ -56,6 +56,7 @@ S_window_new(void)
 	        S_vec4_set(&(window->clear_color), 0.0f, 0.0f, 0.0f, 1.0f));
 	window->hwaccel = S_TRUE;
 	window->doublebuf = S_FALSE;
+	window->capture_mouse = S_FALSE;
 	window->centered = S_FALSE;
 	memset(window->title, 0, 64 * sizeof(Schar));
 	window->input_mode = S_KEYBOARD | S_MOUSE;
@@ -256,11 +257,11 @@ S_window_set_title(Swindow *window,
 	}
 	if (title)
 	{
-		len = S_min(strlen(title), 64);
+		len = S_min(strlen(title), 63);
 		if (len > 0)
 		{
 			memcpy(window->title, title, len * sizeof(Schar));
-			*(window->title+len-1) = '\0'; /* null terminate */
+			*(window->title+len) = '\0'; /* null terminate */
 			return;
 		}
 	}
