@@ -39,9 +39,10 @@ S_window_new(void)
 	window->context = NULL;
 	window->icon = NULL;
 	window->display_mode = S_WINDOWED;
+	window->vsync = S_FALSE;
 	window->gl_profile = S_GL_CORE;
-	window->gl_major = 2;
-	window->gl_minor = 0;
+	window->gl_major = 3;
+	window->gl_minor = 2;
 	window->width = 800;
 	window->height = 600;
 	_S_CALL("S_vec4_set",
@@ -169,6 +170,7 @@ S_window_apply(Swindow *window)
 	                   window->clear_color.w));
 	/* viewport */
 	_S_GL(glViewport(0, 0, window->width, window->height));
+	_S_GL(glEnable(GL_DEPTH_TEST));
 	/* ticks */
 	window->skip_ticks = 1000 / window->tick_limit;
 	window->next_tick = SDL_GetTicks();
@@ -278,6 +280,18 @@ S_window_set_display_mode(Swindow *window,
 		return;
 	}
 	window->display_mode = mode;
+}
+
+void
+S_window_set_vsync(Swindow *window,
+                   Sbool vsync)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_vsync");
+		return;
+	}
+	window->vsync = vsync;
 }
 
 void

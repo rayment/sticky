@@ -108,6 +108,11 @@ extern "C"
  * rending with {@link S_window_close(Swindow *)} and finally freeing it from
  * memory with {@link S_window_delete(Swindow *)}.
  *
+ * @warning Due to limitations in the way GL contexts are created in
+ * <b>sticky</b>, an <c>Swindow</c> <b>must</b> have been created before any
+ * other video function, whether it be the creation or modification of meshes,
+ * cameras, textures, etc. be called, or else the function behaviour will be
+ * undefined, due to the GL context not yet being created.
  * @since 1.0.0
  */
 typedef struct
@@ -321,6 +326,23 @@ void     S_window_set_centered(Swindow *, Sbool);
  * @since 1.0.0
  */
 void     S_window_set_display_mode(Swindow *, Senum);
+
+/**
+ * @brief Toggle vsync for a window.
+ *
+ * Toggle vertical synchronisation for a window. If this is turned off, screen
+ * tearing may occur in rendering.
+ *
+ * Note that this function will not apply immediately. To do so, use
+ * {@link S_window_apply(Swindow *)}.
+ *
+ * @param[in,out] window The window.
+ * @param[in] vsync Whether or not to use vsync in rendering.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_vsync(Swindow *, Sbool);
 
 /**
  * @brief Set the OpenGL profile for a window.
