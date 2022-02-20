@@ -326,11 +326,15 @@ _S_assert(const Schar *location,
 
 #define _S_error_sdl(msg)                                \
         _S_log_vararg(_S_ERR_LOC, "SDL  ", _S_LOG_ERROR, \
-                      "%s: %s", msg, SDL_GetError())
+                      "%s: %s\n", msg, SDL_GetError())
 
 #define _S_error_glew(msg,err)                           \
         _S_log_vararg(_S_ERR_LOC, "GLEW ", _S_LOG_ERROR, \
-                      "%s: %s", msg, glewGetErrorString(err))
+                      "%s: %s\n", msg, glewGetErrorString(err))
+
+#define _S_error_other(category,...)                     \
+        _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
+                      "%-5s: " __VA_ARGS__)
 
 static inline
 void
