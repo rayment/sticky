@@ -168,7 +168,23 @@ Swindow_s
 	Sbool running;
 	Suint16 ticks, tick_limit, skip_ticks, next_tick;
 	Suint32 delta_time, current_frame, last_frame;
+
+	void (*on_exit)(struct Swindow_s *);
 } Swindow;
+
+/**
+ * @brief Window callback function.
+ *
+ * Defines a callback function that interacts with a window.
+ *
+ * When a certain event occurs, such as the user attempting to close a window or
+ * presses a key on the keyboard (and the keyboard input method is enabled),
+ * then the window will handle the event, but may optionally call a callback
+ * function as well, which may be defined by the user for their own purposes.
+ *
+ * @since 1.0.0
+ */
+typedef void (*Swindow_callback)(Swindow *);
 
 /**
  * @brief Create a new window.
@@ -583,6 +599,23 @@ void     S_window_set_ticks_per_second(Swindow *, Suint16);
  * @since 1.0.0
  */
 void     S_window_set_input_mode(Swindow *, Senum);
+
+/**
+ * @brief Sets the exit callback for a window.
+ *
+ * The exit callback will be called when the window receives a signal to exit
+ * from the OS from the user.
+ *
+ * If a <c>NULL</c> callback is provided, the default behaviour will occur,
+ * which is a direct call to {@link S_window_close(Swindow *)}.
+ *
+ * @param[in,out] window The window.
+ * @param[in] callback The exit callback function.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_callback_on_exit(Swindow *, Swindow_callback);
 
 /**
  * @brief Get the size of a window.

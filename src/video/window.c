@@ -69,6 +69,8 @@ S_window_new(void)
 	window->next_tick = 0;
 	window->ticks = 0;
 
+	window->on_exit = NULL;
+
 	window->running = S_FALSE;
 	exists = S_TRUE;
 	return window;
@@ -219,6 +221,18 @@ S_window_poll(Swindow *window)
 	while (SDL_PollEvent(&e) != 0)
 	{
 		/* TODO: Implement input and event handler. */
+		if (e.type == SDL_QUIT)
+		{
+			if (window->on_exit)
+			{
+				window->on_exit(window);
+			}
+			else
+			{
+				/* if no callback method was registered, then just close */
+				_S_CALL("S_window_close", S_window_close(window));
+			}
+		}
 	}
 }
 
@@ -429,6 +443,18 @@ S_window_set_input_mode(Swindow *window,
 		return;
 	}
 	window->input_mode = mode;
+}
+
+void
+S_window_set_callback_on_exit(Swindow *window,
+                              Swindow_callback callback)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_callback_on_exit");
+		return;
+	}
+	window->on_exit = callback;
 }
 
 void
