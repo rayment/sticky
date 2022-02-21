@@ -367,7 +367,7 @@ S_window_set_display_mode(Swindow *window,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_display_mode");
 		return;
 	}
-	else if (mode != S_WINDOWED || mode != S_BORDERLESS || mode != S_FULLSCREEN)
+	else if (mode != S_WINDOWED && mode != S_BORDERLESS && mode != S_FULLSCREEN)
 	{
 		_S_SET_ERROR(S_INVALID_ENUM, "S_window_set_display_mode");
 		return;
