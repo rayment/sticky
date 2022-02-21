@@ -57,6 +57,7 @@ S_window_new(void)
 	window->hwaccel = S_TRUE;
 	window->doublebuf = S_FALSE;
 	window->capture_mouse = S_FALSE;
+	window->resizable = S_FALSE;
 	window->centered = S_FALSE;
 	memset(window->title, 0, 64 * sizeof(Schar));
 	window->input_mode = S_KEYBOARD | S_MOUSE;
@@ -70,6 +71,7 @@ S_window_new(void)
 	window->ticks = 0;
 
 	window->on_exit = NULL;
+	window->on_resize = NULL;
 
 	window->running = S_FALSE;
 	exists = S_TRUE;
@@ -108,6 +110,13 @@ _S_window_set_attrib(SDL_GLattr attrib,
 {
 	if (SDL_GL_SetAttribute(attrib, val) != 0)
 		_S_error_sdl("_S_window_set_attrib");
+}
+
+static inline
+void
+_S_window_recalculate_viewport(Swindow *window)
+{
+	_S_GL(glViewport(0, 0, window->width, window->height));
 }
 
 void
@@ -163,13 +172,13 @@ S_window_apply(Swindow *window)
 		/* init GLEW */
 		if ((glew = glewInit()) != GLEW_OK)
 			_S_error_glew("S_sticky_init", glew);
-		/* disable resizing */
-		SDL_SetWindowResizable(window->window, SDL_FALSE);
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */
 	/* window size */
 	SDL_SetWindowSize(window->window, window->width, window->height);
+	/* resizing */
+	SDL_SetWindowResizable(window->window, window->resizable);
 	/* display mode */
 	SDL_SetWindowFullscreen(window->window, window->display_mode);
 	/* mouse capture */
@@ -185,7 +194,8 @@ S_window_apply(Swindow *window)
 	                   window->clear_color.z,
 	                   window->clear_color.w));
 	/* viewport */
-	_S_GL(glViewport(0, 0, window->width, window->height));
+	_S_CALL("_S_window_recalculate_viewport",
+	        _S_window_recalculate_viewport(window));
 	_S_GL(glEnable(GL_DEPTH_TEST));
 	/* ticks */
 	window->skip_ticks = 1000 / window->tick_limit;
@@ -223,6 +233,7 @@ S_window_poll(Swindow *window)
 		/* TODO: Implement input and event handler. */
 		if (e.type == SDL_QUIT)
 		{
+			/* window or program exit */
 			if (window->on_exit)
 			{
 				window->on_exit(window);
@@ -231,6 +242,21 @@ S_window_poll(Swindow *window)
 			{
 				/* if no callback method was registered, then just close */
 				_S_CALL("S_window_close", S_window_close(window));
+			}
+		}
+		if (e.type == SDL_WINDOWEVENT)
+		{
+			switch (e.window.event)
+			{
+			case SDL_WINDOWEVENT_RESIZED:
+				/* window resize */
+				window->width = (Suint16) e.window.data1;
+				window->height = (Suint16) e.window.data2;
+				_S_CALL("_S_window_recalculate_viewport",
+				        _S_window_recalculate_viewport(window));
+				if (window->on_resize)
+					window->on_resize(window);
+				break;
 			}
 		}
 	}
@@ -306,6 +332,18 @@ S_window_set_capture_mouse(Swindow *window,
 		return;
 	}
 	window->capture_mouse = capture;
+}
+
+void
+S_window_set_resizable(Swindow *window,
+                       Sbool resizable)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_resizable");
+		return;
+	}
+	window->resizable = resizable;
 }
 
 void
@@ -455,6 +493,18 @@ S_window_set_callback_on_exit(Swindow *window,
 		return;
 	}
 	window->on_exit = callback;
+}
+
+void
+S_window_set_callback_on_resize(Swindow *window,
+                                Swindow_callback callback)
+{
+	if (!window)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_set_callback_on_resize");
+		return;
+	}
+	window->on_resize = callback;
 }
 
 void

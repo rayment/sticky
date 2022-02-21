@@ -40,7 +40,7 @@ extern "C"
  * mode.
  * @since 1.0.0
  */
-#define S_WINDOWED         (SDL_WINDOW_OPENGL)
+#define S_WINDOWED         (0)
 
 /**
  * @brief Borderless display mode.
@@ -53,7 +53,7 @@ extern "C"
  * mode.
  * @since 1.0.0
  */
-#define S_BORDERLESS       (SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP)
+#define S_BORDERLESS       (SDL_WINDOW_FULLSCREEN_DESKTOP)
 
 /**
  * @brief Fullscreen display mode.
@@ -65,7 +65,7 @@ extern "C"
  * mode.
  * @since 1.0.0
  */
-#define S_FULLSCREEN       (SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN)
+#define S_FULLSCREEN       (SDL_WINDOW_FULLSCREEN)
 
 /**
  * @brief Keyboard input mode.
@@ -162,7 +162,7 @@ Swindow_s
 	Suint8 gl_major, gl_minor;
 	Suint16 width, height;
 	Svec4 clear_color;
-	Sbool centered, capture_mouse, vsync, hwaccel, doublebuf;
+	Sbool centered, resizable, capture_mouse, vsync, hwaccel, doublebuf;
 	Schar title[64];
 	Senum input_mode;
 	Sbool running;
@@ -170,6 +170,7 @@ Swindow_s
 	Suint32 delta_time, current_frame, last_frame;
 
 	void (*on_exit)(struct Swindow_s *);
+	void (*on_resize)(struct Swindow_s *);
 } Swindow;
 
 /**
@@ -355,6 +356,26 @@ void     S_window_set_title(Swindow *, const Schar *);
  * @since 1.0.0
  */
 void     S_window_set_size(Swindow *, Suint16, Suint16);
+
+/**
+ * @brief Allow a window to be resized.
+ *
+ * By default, windows are not resizable. Calling this function with @p resize
+ * set to {@link S_TRUE} will allow the window to be resized by the user.
+ *
+ * Note that resizing can be turned off but size changes that occur due to
+ * entering or exiting fullscreen mode from a window will still be permitted.
+ *
+ * Note that this function will not apply immediately. To do so, use
+ * {@link S_window_apply(Swindow *)}.
+ *
+ * @param[in,out] window The window.
+ * @param[in] resizable Whether or not to allow the window to be resized.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_resizable(Swindow *, Sbool);
 
 /**
  * @brief Set the mouse-capture rule for a window.
@@ -616,6 +637,23 @@ void     S_window_set_input_mode(Swindow *, Senum);
  * @since 1.0.0
  */
 void     S_window_set_callback_on_exit(Swindow *, Swindow_callback);
+
+/**
+ * @brief Sets the resize callback for a window.
+ *
+ * The resize callback will be called when the window is resized by the user or
+ * enters or exits from fullscreen mode.
+ *
+ * If a <c>NULL</c> callback is provided, the default behaviour will occur,
+ * which is nothing.
+ *
+ * @param[in,out] window The window.
+ * @param[in] callback The resize callback function.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void     S_window_set_callback_on_resize(Swindow *, Swindow_callback);
 
 /**
  * @brief Get the size of a window.
