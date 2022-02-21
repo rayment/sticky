@@ -204,7 +204,7 @@ main(void)
 		far = 100.0f;
 		aspect = 1.6f;
 		fovy = 65.0f;
-		f = S_tan(fovy / 2.0f);
+		f = S_tan(S_radians(fovy) / 2.0f);
 		S_mat4_identity(&a);
 		a.m00 = 1.0f / (aspect*f);
 		a.m11 = 1.0f/f;
