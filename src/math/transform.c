@@ -342,3 +342,54 @@ S_transform_get_view_matrix(const Stransform *transform,
 	_S_CALL("S_mat4_inverse", S_mat4_inverse(dest));
 }
 
+void
+S_transform_get_forward(const Stransform *transform,
+                        Svec3 *dest)
+{
+	const Squat *q;
+	if (!transform || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_forward");
+		return;
+	}
+	q = &transform->rot;
+	_S_CALL("S_vec3_set", S_vec3_set(dest,
+	                                 2.0f*(q->i*q->k + q->j*q->r),
+	                                 2.0f*(q->j*q->k - q->i*q->r),
+	                                 1.0f-(2.0f*(q->i*q->i + q->j*q->j))));
+}
+
+void
+S_transform_get_right(const Stransform *transform,
+                      Svec3 *dest)
+{
+	const Squat *q;
+	if (!transform || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_right");
+		return;
+	}
+	q = &transform->rot;
+	_S_CALL("S_vec3_set", S_vec3_set(dest,
+	                                 1.0f-(2.0f*(q->j*q->j + q->k*q->k)),
+	                                 2.0f*(q->i*q->j + q->r*q->k),
+	                                 2.0f*(q->i*q->k - q->r*q->j)));
+}
+
+void
+S_transform_get_up(const Stransform *transform,
+                   Svec3 *dest)
+{
+	const Squat *q;
+	if (!transform || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_up");
+		return;
+	}
+	q = &transform->rot;
+	_S_CALL("S_vec3_set", S_vec3_set(dest,
+	                                 2.0f*(q->i*q->j - q->r*q->k),
+	                                 1.0f-(2.0f*(q->i*q->i + q->k*q->k)),
+	                                 2.0f*(q->j*q->k + q->r*q->i)));
+}
+

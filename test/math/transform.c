@@ -240,6 +240,28 @@ main(void)
 	, S_mat4_equals(EPSILON, &mat1, &mat2)
 	, "S_transform_get_view_matrix");
 
+	S_vec3_set(&vec1, 39.0f, 14.719f, -22.4f);
+	S_vec3_to_quat(&quat1, &vec1);
+	S_transform_set_rot(a, &quat1);
+
+	TEST(
+		S_vec3_set(&vec1, 0.197456f, -0.629321f, 0.751643f);
+		S_transform_get_forward(a, &vec2);
+	, S_vec3_equals(EPSILON, &vec1, &vec2)
+	, "S_transform_get_forward");
+
+	TEST(
+		S_vec3_set(&vec1, 0.833274f, -0.296147f, -0.466853f);
+		S_transform_get_right(a, &vec2);
+	, S_vec3_equals(EPSILON, &vec1, &vec2)
+	, "S_transform_get_right");
+
+	TEST(
+		S_vec3_set(&vec1, 0.516397f, 0.718507f, 0.465920f);
+		S_transform_get_up(a, &vec2);
+	, S_vec3_equals(EPSILON, &vec1, &vec2)
+	, "S_transform_get_up");
+
 	TEST(
 		S_transform_delete(a);
 		S_transform_delete(b);

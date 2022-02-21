@@ -317,6 +317,48 @@ void        S_transform_get_transformation_matrix(const Stransform *, Smat4 *);
 void        S_transform_get_view_matrix(const Stransform *, Smat4 *);
 
 /**
+ * @brief Get the forward vector of a transform.
+ *
+ * The forward vector is the vector that points in the direction that the
+ * transform is facing in local space.
+ *
+ * @param[in] transform The transform from which to get the vector.
+ * @param[out] dest The destination for the forward vector.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid transform or vector
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_transform_get_forward(const Stransform *, Svec3 *);
+
+/**
+ * @brief Get the right vector of a transform.
+ *
+ * The right vector is the vector that points to the right of the direction
+ * that the transform is facing in local space.
+ *
+ * @param[in] transform The transform from which to get the vector.
+ * @param[out] dest The destination for the right vector.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid transform or vector
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_transform_get_right(const Stransform *, Svec3 *);
+
+/**
+ * @brief Get the upward vector of a transform.
+ *
+ * The upward vector is the vector that points up from the transform orientated
+ * in the direction that it is facing in local space.
+ *
+ * @param[in] transform The transform from which to get the vector.
+ * @param[out] dest The destination for the upward vector.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid transform or vector
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_transform_get_up(const Stransform *, Svec3 *);
+
+/**
  * @}
  */
 
