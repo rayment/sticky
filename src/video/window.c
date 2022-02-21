@@ -18,6 +18,7 @@
 #include "sticky/common/types.h"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
+#include "sticky/input/keyboard.h"
 #include "sticky/math/math.h"
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
@@ -34,6 +35,7 @@ S_window_new(void)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			_S_error_sdl("S_window_new");
+		_S_input_keyboard_init();
 		init = S_TRUE;
 	}
 	if (exists)
@@ -228,11 +230,14 @@ S_window_poll(Swindow *window)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_poll");
 		return;
 	}
+	if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
+		_S_input_keyboard_reset();
 	while (SDL_PollEvent(&e) != 0)
 	{
 		/* TODO: Implement input and event handler. */
-		if (e.type == SDL_QUIT)
+		switch (e.type)
 		{
+		case SDL_QUIT:
 			/* window or program exit */
 			if (window->on_exit)
 			{
@@ -243,9 +248,8 @@ S_window_poll(Swindow *window)
 				/* if no callback method was registered, then just close */
 				_S_CALL("S_window_close", S_window_close(window));
 			}
-		}
-		if (e.type == SDL_WINDOWEVENT)
-		{
+			break;
+		case SDL_WINDOWEVENT:
 			switch (e.window.event)
 			{
 			case SDL_WINDOWEVENT_RESIZED:
@@ -258,6 +262,12 @@ S_window_poll(Swindow *window)
 					window->on_resize(window);
 				break;
 			}
+			break;
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
+				_S_input_keyboard_event(e);
+			break;
 		}
 	}
 }

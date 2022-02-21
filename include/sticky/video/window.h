@@ -23,6 +23,7 @@ extern "C"
 #include "sticky/common/types.h"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
+#include "sticky/input/keyboard.h"
 #include "sticky/math/vec4.h"
 
 /**
@@ -728,8 +729,6 @@ Sbool    S_window_is_running(const Swindow *);
  * @since 1.0.0
  */
 Sbool    S_window_is_tick(const Swindow *);
-
-void *  _S_window_thread(void *);
 
 /**
  * @}
