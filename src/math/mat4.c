@@ -227,7 +227,7 @@ S_mat4_perspective(Smat4 *dest,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_perspective");
 		return;
 	}
-	f = S_tan(fovy / 2.0f);
+	f = S_tan(S_radians(fovy) / 2.0f);
 	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
 	dest->m00 = 1.0f / (aspect*f);
 	dest->m11 = 1.0f / f;
