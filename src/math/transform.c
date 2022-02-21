@@ -318,7 +318,7 @@ S_transform_get_transformation_matrix(const Stransform *transform,
 	Smat4 tmp;
 	if (!transform || !dest)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_transformatiion_matrix");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_transformation_matrix");
 		return;
 	}
 	_S_CALL("S_mat4_translate", S_mat4_translate(dest, &(transform->pos)));
@@ -326,5 +326,19 @@ S_transform_get_transformation_matrix(const Stransform *transform,
 	_S_CALL("S_mat4_multiply", S_mat4_multiply(dest, &tmp));
 	_S_CALL("S_mat4_scale", S_mat4_scale(&tmp, &(transform->scale)));
 	_S_CALL("S_mat4_multiply", S_mat4_multiply(dest, &tmp));
+}
+
+void
+S_transform_get_view_matrix(const Stransform *transform,
+                            Smat4 *dest)
+{
+	if (!transform || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_view_matrix");
+		return;
+	}
+	_S_CALL("S_transform_get_transformation_matrix",
+	        S_transform_get_transformation_matrix(transform, dest));
+	_S_CALL("S_mat4_inverse", S_mat4_inverse(dest));
 }
 

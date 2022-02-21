@@ -234,6 +234,13 @@ main(void)
 	, "S_transform_get_transformation_matrix");
 
 	TEST(
+		S_transform_get_transformation_matrix(a, &mat1);
+		S_mat4_inverse(&mat1);
+		S_transform_get_view_matrix(a, &mat2);
+	, S_mat4_equals(EPSILON, &mat1, &mat2)
+	, "S_transform_get_view_matrix");
+
+	TEST(
 		S_transform_delete(a);
 		S_transform_delete(b);
 		S_transform_delete(c);
