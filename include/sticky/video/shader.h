@@ -31,6 +31,22 @@ extern "C"
  * @{
  */
 
+/**
+ * @brief OpenGL shader.
+ *
+ * Shaders are programs that run on the GPU. <b>sticky</b> makes use of shaders
+ * to render images to the screen to display a scene and its objects.
+ *
+ * The vertex shader currently has access to three attributes:
+ *
+ * <ol>
+ *     <li><c>vec3</c>: vertex coordinates</li>
+ *     <li><c>vec3</c>: normal coordinates</li>
+ *     <li><c>vec2</c>: uv coordinates</li>
+ * </ol>
+ *
+ * @since 1.0.0
+ */
 typedef struct
 Sshader_s
 {
@@ -64,6 +80,8 @@ Sshader *S_shader_new(const Schar *, Sint64, const Schar *, Sint64);
  * files.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid file path is provided
  * to the function.
+ * @exception S_IO_ERROR If an I/O error occurs trying to load either shader
+ * file.
  * @since 1.0.0
  */
 Sshader *S_shader_load(const Schar *, const Schar *);
