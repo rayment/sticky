@@ -175,6 +175,11 @@ Swindow_s
 } Swindow;
 
 /**
+ * @addtogroup window_callback
+ * @{
+ */
+
+/**
  * @brief Window callback function.
  *
  * Defines a callback function that interacts with a window.
@@ -187,6 +192,10 @@ Swindow_s
  * @since 1.0.0
  */
 typedef void (*Swindow_callback)(Swindow *);
+
+/**
+ * @}
+ */
 
 /**
  * @brief Create a new window.
@@ -623,6 +632,11 @@ void     S_window_set_ticks_per_second(Swindow *, Suint16);
 void     S_window_set_input_mode(Swindow *, Senum);
 
 /**
+ * @addtogroup window_callback
+ * @{
+ */
+
+/**
  * @brief Sets the exit callback for a window.
  *
  * The exit callback will be called when the window receives a signal to exit
@@ -655,6 +669,10 @@ void     S_window_set_callback_on_exit(Swindow *, Swindow_callback);
  * @since 1.0.0
  */
 void     S_window_set_callback_on_resize(Swindow *, Swindow_callback);
+
+/**
+ * @}
+ */
 
 /**
  * @brief Get the size of a window.

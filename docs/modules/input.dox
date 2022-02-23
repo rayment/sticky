@@ -1,0 +1,20 @@
+/**
+ * @defgroup input Input
+ *
+ * @brief Input handlers.
+ */
+
+/**
+ * @defgroup keyboard Keyboard
+ * @ingroup input
+ *
+ * @brief Keyboard input handling.
+ */
+
+/**
+ * @defgroup mouse Mouse
+ * @ingroup input
+ *
+ * @brief Mouse input handling.
+ */
+

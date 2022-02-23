@@ -12,6 +12,13 @@
  */
 
 /**
+ * @defgroup window_callback Window callbacks
+ * @ingroup window
+ *
+ * @brief Window callback handlers.
+ */
+
+/**
  * @defgroup camera Camera
  * @ingroup graphics
  *
@@ -23,5 +30,12 @@
  * @ingroup graphics
  *
  * @brief OpenGL shader programming.
+ */
+
+/**
+ * @defgroup mesh Meshes
+ * @ingroup graphics
+ *
+ * @brief Model meshes.
  */
 
