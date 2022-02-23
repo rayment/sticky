@@ -22,6 +22,11 @@ extern "C"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 
+/**
+ * @addtogroup keyboard
+ * @{
+ */
+
 #define S_KEY_0               SDLK_0            /* 0 */
 #define S_KEY_1               SDLK_1            /* 1 */
 #define S_KEY_2               SDLK_2            /* 2 */
@@ -173,15 +178,53 @@ extern "C"
 
 #define S_KEY_ANY             0                 /* any key */
 
+/**
+ * @brief Keycode type.
+ *
+ * A simple typedef for SDL keycodes. This is the type that is passed to the
+ * functions {@link S_input_is_key_down(Skey)} and
+ * {@link S_input_is_key_pressed(Skey)}.
+ *
+ * @since 1.0.0
+ */
 typedef SDL_Keycode Skey;
 
+/**
+ * @brief Check if a given key is currently being pressed down.
+ *
+ * Each time {@link S_window_poll(Swindow *)} is called, input is polled for.
+ * This function is typically called once per frame. During the period of one
+ * frame, if a key is detected as being depressed, then this function will
+ * return {@link S_TRUE} for that given key. When the polling function is called
+ * a second time, typically on the next frame, this function will return
+ * {@link S_FALSE} if the key is released or kept down. The only way for it to
+ * return {@link S_TRUE} again is to release the key and depress it again.
+ *
+ * @return {@link S_TRUE} if the given key is being pressed down on the current
+ * poll period. If {@link S_KEY_ANY} is specified and the condition holds true
+ * for <i>any</i> key, then {@link S_TRUE} will also be returned. Otherwise,
+ * {@link S_FALSE}.
+ * @since 1.0.0
+ */
 Sbool  S_input_is_key_down(Skey);
 
+/**
+ * @brief Check if a given key is currently being held down.
+ *
+ * @return {@link S_TRUE} if the given key is being held down.
+ * If {@link S_KEY_ANY} is specified and <i>any</i> key is down, then
+ * {@link S_TRUE} will also be returned. Otherwise, {@link S_FALSE}.
+ * @since 1.0.0
+ */
 Sbool  S_input_is_key_pressed(Skey);
 
 void  _S_input_keyboard_init(void);
 void  _S_input_keyboard_reset(void);
 void  _S_input_keyboard_event(SDL_Event);
+
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
