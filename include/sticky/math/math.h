@@ -15,6 +15,8 @@ extern "C"
 
 #include <math.h>
 
+#include "sticky/common/defines.h"
+
 /**
  * @file math.h
  */
@@ -86,11 +88,11 @@ extern "C"
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Svec2_s
 {
 	Sfloat x, y;
-} Svec2;
+}) Svec2;
 
 /**
  * @}
@@ -110,11 +112,11 @@ Svec2_s
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Svec3_s
 {
 	Sfloat x, y, z;
-} Svec3;
+}) Svec3;
 
 /**
  * @}
@@ -132,11 +134,11 @@ Svec3_s
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Svec4_s
 {
 	Sfloat x, y, z, w;
-} Svec4;
+}) Svec4;
 
 /**
  * @}
@@ -166,11 +168,11 @@ Svec4_s
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Squat_s
 {
 	Sfloat r, i, j, k;
-} Squat;
+}) Squat;
 
 /**
  * @}
@@ -200,13 +202,13 @@ Squat_s
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Smat3_s
 {
 	Sfloat m00, m10, m20,
 	       m01, m11, m21,
 	       m02, m12, m22;
-} Smat3;
+}) Smat3;
 
 /**
  * @}
@@ -237,14 +239,14 @@ Smat3_s
  *
  * @since 1.0.0
  */
-typedef struct
+PACK(typedef struct
 Smat4_s
 {
 	Sfloat m00, m10, m20, m30,
 	       m01, m11, m21, m31,
 	       m02, m12, m22, m32,
 	       m03, m13, m23, m33;
-} Smat4;
+}) Smat4;
 
 /**
  * @}

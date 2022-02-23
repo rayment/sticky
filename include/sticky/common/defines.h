@@ -41,5 +41,12 @@
 #error Unsupported operating system! Please compile on Linux, Windows or macOS.
 #endif /* !(STICKY_WINDOWS || STICKY_LINUX || STICKY_MACOS) */
 
+/* GNU / MSVC detection and relevant macros */
+#if defined(__GNUC__)
+#define PACK(...) __VA_ARGS__ __attribute__((__packed__))
+#elif defined(_MSC_VER)
+#define PACK(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
+#endif
+
 #endif /* FR_RAYMENT_STICKY_DEFINES_H */
 
