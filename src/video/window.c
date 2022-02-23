@@ -23,6 +23,7 @@
 #include "sticky/math/math.h"
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
+#include "sticky/video/texture.h"
 #include "sticky/video/window.h"
 
 static Sbool init = S_FALSE;
@@ -176,6 +177,8 @@ S_window_apply(Swindow *window)
 		/* init GLEW */
 		if ((glew = glewInit()) != GLEW_OK)
 			_S_error_glew("S_sticky_init", glew);
+		/* other init that requires GL */
+		_S_texture_init();
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */
