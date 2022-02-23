@@ -139,8 +139,19 @@ S_shader_load(const Schar *vertex_file,
 
 	_S_CALL("_S_shader_read_file",
 	        vbuf = _S_shader_read_file(vertex_file, &vlen));
+	if (!vbuf)
+	{
+		_S_SET_ERROR(S_IO_ERROR, "S_shader_load");
+		return NULL;
+	}
 	_S_CALL("_S_shader_read_file",
 	        fbuf = _S_shader_read_file(fragment_file, &flen));
+	if (!fbuf)
+	{
+		_S_SET_ERROR(S_IO_ERROR, "S_shader_load");
+		S_memory_delete(vbuf);
+		return NULL;
+	}
 	_S_CALL("S_shader_new", shader = S_shader_new(vbuf, vlen, fbuf, flen));
 	S_memory_delete(vbuf);
 	S_memory_delete(fbuf);
