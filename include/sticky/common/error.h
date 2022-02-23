@@ -128,6 +128,11 @@ static Schar  *_S_error_loc;
  * @since 1.0.0
  */
 #define S_INVALID_INDEX     107
+/**
+ * @brief An error occurred because an invalid number of channels was given.
+ * @since 1.0.0
+ */
+#define S_INVALID_CHANNELS  108
 /* system errors */
 /**
  * @brief An error occurred because the machine or program ran out of available
@@ -135,6 +140,11 @@ static Schar  *_S_error_loc;
  * @since 1.0.0
  */
 #define S_OUT_OF_MEMORY     201
+/**
+ * @brief An error occurred because of a system IO error.
+ * @since 1.0.0
+ */
+#define S_IO_ERROR          202
 
 /**
  * @}
@@ -170,7 +180,9 @@ S_error_string(void)
 	case S_INVALID_ACCESS    : return "Invalid access.";
 	case S_INVALID_FORMAT    : return "Invalid format.";
 	case S_INVALID_INDEX     : return "Invalid index.";
+	case S_INVALID_CHANNELS  : return "Invalid number of channels.";
 	case S_OUT_OF_MEMORY     : return "Out of memory.";
+	case S_IO_ERROR          : return "I/O error.";
 	default                  : return "Unknown error.";
 	}
 }
@@ -302,7 +314,7 @@ _S_assert(const Schar *location,
  * @since 1.0.0
  */
 #define S_warning(...) \
-        _S_log_vararg(_S_ERR_LOC, "WARN ", _S_LOG_WARN, __VA_ARGS__)
+        _S_log_vararg(_S_ERR_LOC, "WARN", _S_LOG_WARN, __VA_ARGS__)
 
 
 /**
@@ -320,18 +332,45 @@ _S_assert(const Schar *location,
  * @since 1.0.0
  */
 #define S_log(...) \
-        _S_log_vararg(_S_ERR_LOC, "LOG  ", _S_LOG_MSG, __VA_ARGS__)
+        _S_log_vararg(_S_ERR_LOC, "LOG", _S_LOG_MSG, __VA_ARGS__)
 
+/**
+ * @brief Log a debug message to standard output.
+ * @hideinitializer
+ *
+ * This function is only called if <b>sticky</b> is compiled in debug mode. In
+ * normal circumstances, this function will be optimised out at compile-time.
+ *
+ * Wrapper for the standard function <b><c>printf(const char *, ...)</c></b> and
+ * will additionally print the file and location that the log event occurred at.
+ *
+ * All formatting rules supported by <b><c>printf</c></b> are supported by this
+ * function.
+ *
+ * @param[in] ... The text format and arguments to be placed within the print
+ * text.
+ * @since 1.0.0
+ */
+#ifdef DEBUG
+#define S_debug(...) \
+        _S_log_vararg(_S_ERR_LOC, "DEBUG", _S_LOG_MSG, __VA_ARGS__)
+#else /* DEBUG */
+#define S_debug(...)
+#endif /* DEBUG */
 
-#define _S_error_sdl(msg)                                \
-        _S_log_vararg(_S_ERR_LOC, "SDL  ", _S_LOG_ERROR, \
+#define _S_error_sdl(msg)                                 \
+        _S_log_vararg(_S_ERR_LOC, "SDL", _S_LOG_ERROR,    \
                       "%s: %s\n", msg, SDL_GetError())
 
-#define _S_error_glew(msg,err)                           \
-        _S_log_vararg(_S_ERR_LOC, "GLEW ", _S_LOG_ERROR, \
+#define _S_error_glew(msg,err)                            \
+        _S_log_vararg(_S_ERR_LOC, "GLEW", _S_LOG_ERROR,   \
                       "%s: %s\n", msg, glewGetErrorString(err))
 
-#define _S_error_other(category,...)                     \
+#define _S_error_stb(msg)                                 \
+        _S_log_vararg(_S_ERR_LOC, "STB", _S_LOG_ERROR,    \
+                      "%s: %s\n", msg, stbi_failure_reason())
+
+#define _S_error_other(category,...)                      \
         _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
                       "%s: " __VA_ARGS__)
 
@@ -344,7 +383,7 @@ _S_error_gl(const Schar *location,
 	err = glGetError();
 	if (err == GL_NO_ERROR)
 		return;
-	_S_log_vararg(location, line, "GL   ", _S_LOG_ERROR, "%s",
+	_S_log_vararg(location, line, "GL", _S_LOG_ERROR, "%s",
 	              gluErrorString(err));
 }
 
