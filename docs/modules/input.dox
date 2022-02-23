@@ -12,6 +12,13 @@
  */
 
 /**
+ * @defgroup keycodes Keycodes
+ * @ingroup keyboard
+ *
+ * @brief Keyboard keycodes.
+ */
+
+/**
  * @defgroup mouse Mouse
  * @ingroup input
  *
