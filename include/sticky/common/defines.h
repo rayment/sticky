@@ -44,8 +44,10 @@
 /* GNU / MSVC detection and relevant macros */
 #if defined(__GNUC__)
 #define PACK(...) __VA_ARGS__ __attribute__((__packed__))
+#define ALIGN(x,...) __VA_ARGS__ __attribute__((aligned(x)))
 #elif defined(_MSC_VER) /* __GNUC__ and _MSC_VER */
 #define PACK(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
+#define ALIGN(x,...) __VA_ARGS__ __declspec(align(x))
 #endif /* __GNUC__ and _MSC_VER */
 
 #endif /* FR_RAYMENT_STICKY_DEFINES_H */

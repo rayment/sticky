@@ -88,7 +88,8 @@ extern "C"
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Svec2_s
 {
 	Sfloat x, y;
@@ -112,7 +113,8 @@ Svec2_s
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Svec3_s
 {
 	Sfloat x, y, z;
@@ -134,7 +136,8 @@ Svec3_s
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Svec4_s
 {
 	Sfloat x, y, z, w;
@@ -168,7 +171,8 @@ Svec4_s
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Squat_s
 {
 	Sfloat r, i, j, k;
@@ -202,7 +206,8 @@ Squat_s
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Smat3_s
 {
 	Sfloat m00, m10, m20,
@@ -239,7 +244,8 @@ Smat3_s
  *
  * @since 1.0.0
  */
-PACK(typedef struct
+ALIGN(4,
+typedef struct
 Smat4_s
 {
 	Sfloat m00, m10, m20, m30,
