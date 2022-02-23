@@ -23,7 +23,6 @@ extern "C"
 #include "sticky/math/math.h"
 
 /**
- * @file vec2.h
  * @addtogroup vec2
  * @{
  */

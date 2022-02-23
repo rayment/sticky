@@ -22,6 +22,11 @@ extern "C"
 #include "sticky/common/types.h"
 #include "sticky/math/vec3.h"
 
+/**
+ * @addtogroup mesh
+ * @{
+ */
+
 typedef struct
 Smesh_s
 {
@@ -39,6 +44,10 @@ Smesh *S_mesh_new(const Sfloat *, Ssize_t,
 void   S_mesh_delete(Smesh *);
 
 void  _S_mesh_draw(const Smesh *);
+
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }

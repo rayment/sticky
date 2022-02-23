@@ -11,12 +11,6 @@
  * Date created : 11/04/2021
  */
 
-/**
- * @file error.h
- * @addtogroup error
- * @{
- */
-
 #ifndef FR_RAYMENT_STICKY_ERROR_H
 #define FR_RAYMENT_STICKY_ERROR_H 1
 
@@ -34,6 +28,11 @@ extern "C"
 #ifdef DEBUG
 #include "sticky/memory/memtrace.h"
 #endif /* DEBUG */
+
+/**
+ * @addtogroup error
+ * @{
+ */
 
 static Senum   _S_error;
 static Schar  *_S_error_loc;

@@ -10,14 +10,6 @@
  * Date created : 12/02/2022
  */
 
-/**
- * @file thread.h
- * @addtogroup concurrency
- * @{
- * @addtogroup thread
- * @{
- */
-
 #ifndef FR_RAYMENT_STICKY_THREAD_H
 #define FR_RAYMENT_STICKY_THREAD_H 1
 
@@ -36,6 +28,12 @@ extern "C"
 typedef pthread_t _Sthread_raw;
 typedef void *(*Sthread_func)(void *);
 #elif defined(DOXYGEN)
+
+/**
+ * @addtogroup thread
+ * @{
+ */
+
 /**
  * @brief Function type to be used for thread calls.
  *
@@ -104,7 +102,6 @@ Sthread S_thread_new(Sthread_func, void *);
 void   *S_thread_join(Sthread);
 
 /**
- * @}
  * @}
  */
 

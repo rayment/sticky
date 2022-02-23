@@ -22,10 +22,6 @@ extern "C"
 #include "sticky/common/types.h"
 
 /**
- * @file random.h
- */
-
-/**
  * @addtogroup random
  * @{
  */

@@ -11,12 +11,6 @@
  * Date created : 05/09/2021
  */
 
-/**
- * @file allocator.h
- * @addtogroup memory
- * @{
- */
-
 #ifndef FR_RAYMENT_STICKY_ALLOCATOR_H
 #define FR_RAYMENT_STICKY_ALLOCATOR_H 1
 
@@ -26,6 +20,11 @@ extern "C"
 #endif /* __cplusplus */
 
 #include "sticky/common/types.h"
+
+/**
+ * @addtogroup memory
+ * @{
+ */
 
 void  *_S_memory_new(const Ssize_t, const Schar *, const Suint32);
 void   _S_memory_delete(void *, const Schar *, const Suint32);

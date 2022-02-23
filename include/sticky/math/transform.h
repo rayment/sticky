@@ -24,7 +24,6 @@ extern "C"
 #include "sticky/math/math.h"
 
 /**
- * @file transform.h
  * @addtogroup transform
  * @{
  */

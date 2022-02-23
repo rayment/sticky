@@ -23,7 +23,6 @@ extern "C"
 #include "sticky/math/math.h"
 
 /**
- * @file mat4.h
  * @addtogroup mat4
  * @{
  */

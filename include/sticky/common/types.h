@@ -11,12 +11,6 @@
  * Date created : 11/04/2021
  */
 
-/**
- * @file types.h
- * @addtogroup types
- * @{
- */
-
 #ifndef FR_RAYMENT_STICKY_TYPES_H
 #define FR_RAYMENT_STICKY_TYPES_H 1
 
@@ -28,6 +22,11 @@ extern "C"
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+/**
+ * @addtogroup types
+ * @{
+ */
 
 /**
  * @brief Boolean value that represents statement truth.

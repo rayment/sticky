@@ -11,14 +11,6 @@
  * Date created : 01/05/2021
  */
 
-/**
- * @file mutex.h
- * @addtogroup concurrency
- * @{
- * @addtogroup mutex
- * @{
- */
-
 #ifndef FR_RAYMENT_STICKY_MUTEX_H
 #define FR_RAYMENT_STICKY_MUTEX_H 1
 
@@ -36,6 +28,12 @@ extern "C"
 #include <pthread.h>
 typedef pthread_mutex_t _Smutex_raw;
 #endif /* STICKY_WINDOWS */
+
+/**
+ * @addtogroup mutex
+ * @{
+ */
+
 /**
  * @brief The generic mutex data-type.
  *
@@ -132,7 +130,6 @@ Sbool  S_mutex_trylock(Smutex);
 void   S_mutex_unlock(Smutex);
 
 /**
- * @}
  * @}
  */
 

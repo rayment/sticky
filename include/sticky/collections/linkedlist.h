@@ -22,7 +22,6 @@ extern "C"
 #include "sticky/common/types.h"
 
 /**
- * @file linkedlist.h
  * @addtogroup linkedlist
  * @{
  */
