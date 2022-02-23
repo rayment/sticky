@@ -14,7 +14,6 @@
 #define FR_RAYMENT_STICKY_STICKY_H 1
 
 /**
- * @file sticky.h
  * @addtogroup memory Memory management
  * @{
  */
@@ -32,6 +31,7 @@
 #include "sticky/concurrency/thread.h"
 
 #include "sticky/input/keyboard.h"
+#include "sticky/input/mouse.h"
 
 #include "sticky/math/math.h"
 #include "sticky/math/mat3.h"

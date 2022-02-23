@@ -19,6 +19,7 @@
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
 #include "sticky/input/keyboard.h"
+#include "sticky/input/mouse.h"
 #include "sticky/math/math.h"
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
@@ -36,6 +37,7 @@ S_window_new(void)
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			_S_error_sdl("S_window_new");
 		_S_input_keyboard_init();
+		_S_input_mouse_init();
 		init = S_TRUE;
 	}
 	if (exists)
@@ -232,6 +234,8 @@ S_window_poll(Swindow *window)
 	}
 	if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
 		_S_input_keyboard_reset();
+	if ((window->input_mode & S_MOUSE) == S_MOUSE)
+		_S_input_mouse_reset();
 	while (SDL_PollEvent(&e) != 0)
 	{
 		/* TODO: Implement input and event handler. */
@@ -267,6 +271,13 @@ S_window_poll(Swindow *window)
 		case SDL_KEYUP:
 			if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
 				_S_input_keyboard_event(e);
+			break;
+		case SDL_MOUSEMOTION:
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEWHEEL:
+			if ((window->input_mode & S_MOUSE) == S_MOUSE)
+				_S_input_mouse_event(e);
 			break;
 		}
 	}
