@@ -11,17 +11,6 @@
  * Date created : 11/04/2021
  */
 
-/*
-typedef struct
-Smesh_s
-{
-	Suint32 vbo, vao, ebo, normals, uv;
-	Ssize_t vlen, ilen, uvlen;
-	Sbool use_indices;
-	Svec3 bounds_min, bounds_max;
-} Smesh;
-*/
-
 #include "sticky/common/error.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
