@@ -115,6 +115,14 @@ S_texture_load_cubemap(const Schar *px_filename,
 	      format_py, format_ny,
 	      format_pz, format_nz;
 
+	if (!px_filename || !nx_filename ||
+	    !py_filename || !ny_filename ||
+	    !pz_filename || !nz_filename)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_texture_load_cubemap");
+		return NULL;
+	}
+
 	i = 0;
 	_S_CALL("_S_texture_load_tex",
 	        i += _S_texture_load_tex(px_filename, &w_px, &h_px,
