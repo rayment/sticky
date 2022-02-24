@@ -89,8 +89,8 @@ Sshader *S_shader_load(const Schar *, const Schar *);
 /**
  * @brief Free a shader program from memory.
  *
- * Once this function is called for a give shader program, that shader becomes
- * invalid cand may not be used in any other shader or rendering function.
+ * Once this function is called for a given shader program, that shader becomes
+ * invalid and may not be used in any other shader or rendering function.
  *
  * @param[in,out] shader The shader to free.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid shader is provided to
