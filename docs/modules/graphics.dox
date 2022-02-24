@@ -33,6 +33,13 @@
  */
 
 /**
+ * @defgroup texture Textures
+ * @ingroup graphics
+ *
+ * @brief 2D and Cubemap textures.
+ */
+
+/**
  * @defgroup mesh Meshes
  * @ingroup graphics
  *
