@@ -160,6 +160,25 @@ void   S_vec3_scale(Svec3 *, Sfloat);
 Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
 
 /**
+ * @brief Calculate the Euclidian distance between two vectors.
+ *
+ * The Euclidian distance between two 3D vectors @f$V_1@f$ and @f$V_1@f$ is
+ * defined as:
+ *
+ * @f[
+ *     d=\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}
+ * @f]
+ *
+ * @param[in] a The first vector from which to calculate the distance.
+ * @param[in] b The second vector from which to calculate the distance.
+ * @return The distance from a vector @f$V_1@f$ to another vector @f$V_2@f$.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+Sfloat S_vec3_distance(const Svec3 *, const Svec3 *);
+
+/**
  * @brief Calculate the cross product of two vectors.
  *
  * The cross product of two 3D vectors @f$V_1@f$ and @f$V_1@f$ is defined as:

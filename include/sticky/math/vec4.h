@@ -161,6 +161,25 @@ void   S_vec4_scale(Svec4 *, Sfloat);
 Sfloat S_vec4_dot(const Svec4 *, const Svec4 *);
 
 /**
+ * @brief Calculate the Euclidian distance between two vectors.
+ *
+ * The Euclidian distance between two 4D vectors @f$V_1@f$ and @f$V_1@f$ is
+ * defined as:
+ *
+ * @f[
+ *     d=\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2 + (w_2-w_1)^2}
+ * @f]
+ *
+ * @param[in] a The first vector from which to calculate the distance.
+ * @param[in] b The second vector from which to calculate the distance.
+ * @return The distance from a vector @f$V_1@f$ to another vector @f$V_2@f$.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+Sfloat S_vec4_distance(const Svec4 *, const Svec4 *);
+
+/**
  * @brief Normalise a vector.
  *
  * Takes a vector and overwrites it with its normalised equivalent. A normalised

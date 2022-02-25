@@ -101,6 +101,21 @@ S_vec2_dot(const Svec2 *a,
 	return a->x*b->x + a->y*b->y;
 }
 
+Sfloat
+S_vec2_distance(const Svec2 *a,
+                const Svec2 *b)
+{
+	Sfloat x, y;
+	if (!a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec2_distance");
+		return 0.0f;
+	}
+	x = a->x - b->x;
+	y = a->y - b->y;
+	return S_sqrt((x*x) + (y*y));
+}
+
 void
 S_vec2_normalize(Svec2 *vec)
 {

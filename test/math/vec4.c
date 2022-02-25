@@ -111,6 +111,13 @@ main(void)
 	, "S_vec4_dot (0)");
 
 	TEST(
+		a.x = 1.0f; a.y = 1.0f; a.z = 14.0f; a.w = S_PI;
+		b.x = 4.0f; b.y = 5.0f; b.z = 7.0f;  b.w = S_HALFPI;
+		f = S_vec4_distance(&a, &b);
+	, S_epsilon(EPSILON, f, 8.744564f)
+	, "S_vec4_distance");
+
+	TEST(
 		a.x = 4.0f;  a.y = 1.0f; a.z = -2.0f; a.w = 10.0f;
 		b.x = 0.25f; b.y = 1.0f; b.z = -0.5f; b.w = 0.1f;
 		S_vec4_inverse(&a);

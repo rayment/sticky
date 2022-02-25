@@ -109,6 +109,13 @@ main(void)
 	, "S_vec2_dot (0)");
 
 	TEST(
+		a.x = 1.0f; a.y = 1.0f;
+		b.x = 4.0f; b.y = 5.0f;
+		f = S_vec2_distance(&a, &b);
+	, S_epsilon(EPSILON, f, 5.0f)
+	, "S_vec2_distance");
+
+	TEST(
 		a.x = 4.0f;  a.y = 1.0f;
 		b.x = 0.25f; b.y = 1.0f;
 		S_vec2_inverse(&a);

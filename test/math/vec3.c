@@ -121,6 +121,13 @@ main(void)
 	, "S_vec3_dot (0)");
 
 	TEST(
+		a.x = 1.0f; a.y = 1.0f; a.z = 14.0f;
+		b.x = 4.0f; b.y = 5.0f; b.z = 7.0f;
+		f = S_vec3_distance(&a, &b);
+	, S_epsilon(EPSILON, f, 8.602326f)
+	, "S_vec3_distance");
+
+	TEST(
 		a.x = 3.0f;   a.y = -3.0f; a.z = 1.0f;
 		b.x = 4.0f;   b.y = 9.0f;  b.z = 2.0f;
 		c.x = -15.0f; c.y = -2.0f; c.z = 39.0f;

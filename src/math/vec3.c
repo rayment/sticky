@@ -108,6 +108,22 @@ S_vec3_dot(const Svec3 *a,
 	return a->x*b->x + a->y*b->y + a->z*b->z;
 }
 
+Sfloat
+S_vec3_distance(const Svec3 *a,
+                const Svec3 *b)
+{
+	Sfloat x, y, z;
+	if (!a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec3_distance");
+		return 0.0f;
+	}
+	x = a->x - b->x;
+	y = a->y - b->y;
+	z = a->z - b->z;
+	return S_sqrt((x*x) + (y*y) + (z*z));
+}
+
 void
 S_vec3_cross(Svec3 *dest,
              const Svec3 *src)

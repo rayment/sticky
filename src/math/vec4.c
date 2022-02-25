@@ -115,6 +115,23 @@ S_vec4_dot(const Svec4 *a,
 	return a->x*b->x + a->y*b->y + a->z*b->z + a->w*b->w;
 }
 
+Sfloat
+S_vec4_distance(const Svec4 *a,
+                const Svec4 *b)
+{
+	Sfloat x, y, z, w;
+	if (!a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec4_distance");
+		return 0.0f;
+	}
+	x = a->x - b->x;
+	y = a->y - b->y;
+	z = a->z - b->z;
+	w = a->w - b->w;
+	return S_sqrt((x*x) + (y*y) + (z*z) + (w*w));
+}
+
 void
 S_vec4_normalize(Svec4 *vec)
 {
