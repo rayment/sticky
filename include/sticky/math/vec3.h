@@ -150,7 +150,7 @@ void   S_vec3_scale(Svec3 *, Sfloat);
  *     \vec{V_1}\cdot \vec{V_2}=x_1 x_2+y_1 y_2+z_1 z_2
  * @f]
  *
- * @param[in,out] a The first vector from which to extract the dot product.
+ * @param[in] a The first vector from which to extract the dot product.
  * @param[in] b The second vector from which to extract the dot product.
  * @return The dot product @f$V_1\cdot V_2@f$ of two vectors.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector is provided
