@@ -21,6 +21,12 @@ typedef struct
 Sfrustum_s
 {
 	Svec3 fnear[3], ffar[3], center;
+	struct
+	Splane_s
+	{
+		Svec3 vec;
+		Sfloat d;
+	} planes[6];
 } Sfrustum;
 
 Sfrustum *S_frustum_new(void);
