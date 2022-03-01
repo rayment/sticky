@@ -18,6 +18,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#include "sticky/math/mat4.h"
 #include "sticky/math/transform.h"
 
 /**
@@ -38,7 +39,7 @@ typedef struct
 Scamera_s
 {
 	Stransform *transform;
-	Sfloat near, far, fov;
+	Sfloat near, far, fov, aspect;
 } Scamera;
 
 /**
@@ -49,10 +50,12 @@ Scamera_s
  * near-plane of <c>1.0f</c>, far-plane of <c>100.0f</c> and field-of-view of
  * 60 degrees will be applied to the new camera.
  *
+ * @param[in] width The width of the camera frame in pixels.
+ * @param[in] height The height of the camera frame in pixels.
  * @return A new camera.
  * @since 1.0.0
  */
-Scamera    *S_camera_new(void);
+Scamera    *S_camera_new(Suint32, Suint32);
 
 /**
  * @brief Free a camera from memory.
@@ -112,6 +115,19 @@ void        S_camera_set_far_plane(Scamera *, Sfloat);
 void        S_camera_set_field_of_view(Scamera *, Sfloat);
 
 /**
+ * @brief Set the aspect-ratio of a camera.
+ *
+ * Sets the width to height aspect-ratio of a given camera.
+ *
+ * @param[in,out] camera The camera.
+ * @param[in] aspect The aspect-ratio for the camera.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void        S_camera_set_aspect_ratio(Scamera *, Sfloat);
+
+/**
  * @brief Get the near-plane of a camera.
  *
  * Returns the current near-plane of a given camera.
@@ -148,6 +164,18 @@ Sfloat      S_camera_get_far_plane(const Scamera *);
 Sfloat      S_camera_get_field_of_view(const Scamera *);
 
 /**
+ * @brief Get the aspect-ratio of a camera.
+ *
+ * Returns the current aspect-ratio of a given camera.
+ *
+ * @param[in] camera The camera.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
+ * the function.
+ * @since 1.0.0
+ */
+Sfloat      S_camera_get_aspect_ratio(const Scamera *);
+
+/**
  * @brief Get the transform of a camera.
  *
  * Returns the transform of a given camera. Any movement or rotation
@@ -160,6 +188,8 @@ Sfloat      S_camera_get_field_of_view(const Scamera *);
  * @since 1.0.0
  */
 Stransform *S_camera_get_transform(const Scamera *);
+
+void       _S_camera_perspective(const Scamera *, Smat4 *);
 
 /**
  * @}

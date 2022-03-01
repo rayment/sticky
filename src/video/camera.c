@@ -12,11 +12,13 @@
 
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
+#include "sticky/math/mat4.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/video/camera.h"
 
 Scamera *
-S_camera_new(void)
+S_camera_new(Suint32 width,
+             Suint32 height)
 {
 	Scamera *camera;
 	camera = S_memory_new(sizeof(Scamera));
@@ -24,6 +26,7 @@ S_camera_new(void)
 	camera->near = 1.0f;
 	camera->far = 100.0f;
 	camera->fov = 60.0f;
+	camera->aspect = (Sfloat) width / (Sfloat) height;
 	return camera;
 }
 
@@ -75,6 +78,18 @@ S_camera_set_field_of_view(Scamera *camera,
 	camera->fov = fov;
 }
 
+void
+S_camera_set_aspect_ratio(Scamera *camera,
+                          Sfloat aspect)
+{
+	if (!camera)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_aspect_ratio");
+		return;
+	}
+	camera->aspect = aspect;
+}
+
 Sfloat
 S_camera_get_near_plane(const Scamera *camera)
 {
@@ -108,6 +123,17 @@ S_camera_get_field_of_view(const Scamera *camera)
 	return camera->fov;
 }
 
+Sfloat
+S_camera_get_aspect_ratio(const Scamera *camera)
+{
+	if (!camera)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_aspect_ratio");
+		return 0.0f;
+	}
+	return camera->aspect;
+}
+
 Stransform *
 S_camera_get_transform(const Scamera *camera)
 {
@@ -117,5 +143,21 @@ S_camera_get_transform(const Scamera *camera)
 		return NULL;
 	}
 	return camera->transform;
+}
+
+void
+_S_camera_perspective(const Scamera *camera,
+                      Smat4 *dest)
+{
+	if (!camera || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "_S_camera_perspective");
+		return;
+	}
+	_S_CALL("S_mat4_perspective", S_mat4_perspective(dest,
+	                                                 camera->fov,
+	                                                 camera->aspect,
+	                                                 camera->near,
+	                                                 camera->far));
 }
 
