@@ -163,7 +163,7 @@ Sfloat S_vec4_dot(const Svec4 *, const Svec4 *);
 /**
  * @brief Calculate the Euclidian distance between two vectors.
  *
- * The Euclidian distance between two 4D vectors @f$V_1@f$ and @f$V_1@f$ is
+ * The Euclidian distance between two 4D vectors @f$V_1@f$ and @f$V_2@f$ is
  * defined as:
  *
  * @f[

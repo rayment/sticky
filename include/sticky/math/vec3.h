@@ -162,7 +162,7 @@ Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
 /**
  * @brief Calculate the Euclidian distance between two vectors.
  *
- * The Euclidian distance between two 3D vectors @f$V_1@f$ and @f$V_1@f$ is
+ * The Euclidian distance between two 3D vectors @f$V_1@f$ and @f$V_2@f$ is
  * defined as:
  *
  * @f[
