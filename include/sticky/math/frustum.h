@@ -16,25 +16,27 @@ extern "C"
 
 #include "sticky/common/types.h"
 #include "sticky/math/vec3.h"
+#include "sticky/video/camera.h"
+
+#define S_FRUSTUM_RIGHT  0
+#define S_FRUSTUM_LEFT   1
+#define S_FRUSTUM_BOTTOM 2
+#define S_FRUSTUM_TOP    3
+#define S_FRUSTUM_BACK   4
+#define S_FRUSTUM_FRONT  5
 
 typedef struct
 Sfrustum_s
 {
-	Svec3 fnear[3], ffar[3], center;
-	struct
-	Splane_s
-	{
-		Svec3 vec;
-		Sfloat d;
-	} planes[6];
+	Svec3 plane[6];
+	Sfloat dist[6];
 } Sfrustum;
 
-Sfrustum *S_frustum_new(void);
-void      S_frustum_delete(Sfrustum *);
+void  S_frustum_load(Sfrustum *, const Scamera *);
 
-Sbool     S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
-Sbool     S_frustum_intersects_bounds(const Sfrustum *,
-                                      const Svec3 *, const Svec3 *);
+Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
+Sbool S_frustum_intersects_bounds(const Sfrustum *,
+                                  const Svec3 *, const Svec3 *);
 
 #ifdef __cplusplus
 }
