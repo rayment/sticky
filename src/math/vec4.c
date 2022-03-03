@@ -74,6 +74,21 @@ S_vec4_add(Svec4 *dest,
 }
 
 void
+S_vec4_subtract(Svec4 *dest,
+                const Svec4 *src)
+{
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec4_subtract");
+		return;
+	}
+	dest->x -= src->x;
+	dest->y -= src->y;
+	dest->z -= src->z;
+	dest->w -= src->w;
+}
+
+void
 S_vec4_multiply(Svec4 *dest,
                 const Svec4 *src)
 {
@@ -161,6 +176,20 @@ S_vec4_inverse(Svec4 *vec)
 	vec->y = 1.0f / vec->y;
 	vec->z = 1.0f / vec->z;
 	vec->w = 1.0f / vec->w;
+}
+
+void
+S_vec4_negative(Svec4 *vec)
+{
+	if (!vec)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec4_negative");
+		return;
+	}
+	vec->x = -vec->x;
+	vec->y = -vec->y;
+	vec->z = -vec->z;
+	vec->w = -vec->w;
 }
 
 void

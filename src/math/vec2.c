@@ -64,6 +64,19 @@ S_vec2_add(Svec2 *dest,
 }
 
 void
+S_vec2_subtract(Svec2 *dest,
+                const Svec2 *src)
+{
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec2_subtract");
+		return;
+	}
+	dest->x -= src->x;
+	dest->y -= src->y;
+}
+
+void
 S_vec2_multiply(Svec2 *dest,
                 const Svec2 *src)
 {
@@ -141,6 +154,18 @@ S_vec2_inverse(Svec2 *vec)
 	}
 	vec->x = 1.0f / vec->x;
 	vec->y = 1.0f / vec->y;
+}
+
+void
+S_vec2_negative(Svec2 *vec)
+{
+	if (!vec)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec2_negative");
+		return;
+	}
+	vec->x = -vec->x;
+	vec->y = -vec->y;
 }
 
 void

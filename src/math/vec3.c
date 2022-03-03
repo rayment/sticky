@@ -69,6 +69,20 @@ S_vec3_add(Svec3 *dest,
 }
 
 void
+S_vec3_subtract(Svec3 *dest,
+                const Svec3 *src)
+{
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec3_subtract");
+		return;
+	}
+	dest->x -= src->x;
+	dest->y -= src->y;
+	dest->z -= src->z;
+}
+
+void
 S_vec3_multiply(Svec3 *dest,
                 const Svec3 *src)
 {
@@ -167,6 +181,19 @@ S_vec3_inverse(Svec3 *vec)
 	vec->x = 1.0f / vec->x;
 	vec->y = 1.0f / vec->y;
 	vec->z = 1.0f / vec->z;
+}
+
+void
+S_vec3_negative(Svec3 *vec)
+{
+	if (!vec)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_vec3_negative");
+		return;
+	}
+	vec->x = -vec->x;
+	vec->y = -vec->y;
+	vec->z = -vec->z;
 }
 
 void

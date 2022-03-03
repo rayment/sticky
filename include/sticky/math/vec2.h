@@ -100,6 +100,26 @@ void   S_vec2_set(Svec2 *, Sfloat, Sfloat);
 void   S_vec2_add(Svec2 *, const Svec2 *);
 
 /**
+ * @brief Subtract a vector from another.
+ *
+ * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and subtract each
+ * @f$x@f$ and @f$y@f$ component as follows:
+ *
+ * @f[
+ *     \vec{V_1}+\vec{V_2}=\left[\begin{array}{c}
+ *         x_1-x_2 \\ y_1-y_2
+ *     \end{array}\right]
+ * @f]
+ *
+ * @param[out] dest The vector to subtract from, and the result destination.
+ * @param[in] src The vector to subtract.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 2D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec2_subtract(Svec2 *, const Svec2 *);
+
+/**
  * @brief Multiply two vectors together.
  *
  * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and multiplies together
@@ -217,6 +237,24 @@ void   S_vec2_normalize(Svec2 *);
  * @since 1.0.0
  */
 void   S_vec2_inverse(Svec2 *);
+
+/**
+ * @brief Negate a vector.
+ *
+ * The negation of a 2D vector @f$V@f$ is defined as:
+ *
+ * @f[
+ *     \left[\begin{array}{c}
+ *         -x \\ -y
+ *     \end{array}\right]
+ * @f]
+ *
+ * @param[in,out] vec The vector to negate.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 2D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec2_negative(Svec2 *);
 
 /**
  * @brief Perform a linear interpolation on two vectors.

@@ -102,6 +102,26 @@ void   S_vec4_set(Svec4 *, Sfloat, Sfloat, Sfloat, Sfloat);
 void   S_vec4_add(Svec4 *, const Svec4 *);
 
 /**
+ * @brief Subtract a vector from another.
+ *
+ * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and subtract each
+ * @f$x@f$, @f$y@f$, @f$z@f$ and @f$w@f$ component as follows:
+ *
+ * @f[
+ *     \vec{V_1}+\vec{V_2}=\left[\begin{array}{c}
+ *         x_1-x_2 \\ y_1-y_2 \\ z_1-z_2 \\ w_1-w_2
+ *     \end{array}\right]
+ * @f]
+ *
+ * @param[out] dest The vector to subtract from, and the result destination.
+ * @param[in] src The vector to subtract.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec4_subtract(Svec4 *, const Svec4 *);
+
+/**
  * @brief Multiply two vectors together.
  *
  * Takes two vectors @f$\vec{V_1}@f$ and @f$\vec{V_2}@f$ and multiplies together
@@ -219,6 +239,24 @@ void   S_vec4_normalize(Svec4 *);
  * @since 1.0.0
  */
 void   S_vec4_inverse(Svec4 *);
+
+/**
+ * @brief Negate a vector.
+ *
+ * The negation of a 4D vector @f$V@f$ is defined as:
+ *
+ * @f[
+ *     \left[\begin{array}{c}
+ *         -x \\ -y \\ -z \\ -w
+ *     \end{array}\right]
+ * @f]
+ *
+ * @param[in,out] vec The vector to negate.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4D vector is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void   S_vec4_negative(Svec4 *);
 
 /**
  * @brief Perform a linear interpolation on two vectors.

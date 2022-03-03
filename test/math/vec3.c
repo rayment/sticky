@@ -78,6 +78,14 @@ main(void)
 	, "S_vec3_add");
 
 	TEST(
+		a.x = 0.0f;  a.y = S_HALFPI; a.z = S_PI;
+		b.x = S_PI;  b.y = S_HALFPI; b.z = 0.0f;
+		c.x = -S_PI; c.y = 0.0f;     c.z = S_PI;
+		S_vec3_subtract(&a, &b);
+	, S_vec3_equals(EPSILON, &a, &c)
+	, "S_vec3_subtract");
+
+	TEST(
 		a.x = 2.0f; a.y = -1.5f;  a.z = -10.0f;
 		b.x = 4.0f; b.y = -4.5f;  b.z = 100.0f;
 		c.x = 8.0f; c.y = 6.75f;  c.z = -1000.0f;
@@ -141,6 +149,13 @@ main(void)
 		S_vec3_inverse(&a);
 	, S_vec3_equals(EPSILON, &a, &b)
 	, "S_vec3_inverse");
+
+	TEST(
+		a.x =  4.0f; a.y =  1.0f; a.z = -2.0f;
+		b.x = -4.0f; b.y = -1.0f; b.z =  2.0f;
+		S_vec3_negative(&a);
+	, S_vec3_equals(EPSILON, &a, &b)
+	, "S_vec3_negative");
 
 	TEST(
 		S_vec3_zero(&a);
