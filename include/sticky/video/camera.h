@@ -40,6 +40,7 @@ Scamera_s
 {
 	Stransform *transform;
 	Sfloat near, far, fov, aspect;
+	Smat4 perspective;
 } Scamera;
 
 /**

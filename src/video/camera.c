@@ -16,6 +16,17 @@
 #include "sticky/memory/allocator.h"
 #include "sticky/video/camera.h"
 
+static inline
+void
+_S_camera_set_perspective(Scamera *camera)
+{
+	_S_CALL("S_mat4_perspective", S_mat4_perspective(&camera->perspective,
+	                                                 camera->fov,
+	                                                 camera->aspect,
+	                                                 camera->near,
+	                                                 camera->far));
+}
+
 Scamera *
 S_camera_new(Suint32 width,
              Suint32 height)
@@ -26,7 +37,8 @@ S_camera_new(Suint32 width,
 	camera->near = 1.0f;
 	camera->far = 100.0f;
 	camera->fov = 60.0f;
-	camera->aspect = (Sfloat) width / (Sfloat) height;
+	camera->aspect = ((Sfloat) width) / ((Sfloat) height);
+	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
 	return camera;
 }
 
@@ -52,6 +64,7 @@ S_camera_set_near_plane(Scamera *camera,
 		return;
 	}
 	camera->near = near;
+	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
 }
 
 void
@@ -64,6 +77,7 @@ S_camera_set_far_plane(Scamera *camera,
 		return;
 	}
 	camera->far = far;
+	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
 }
 
 void
@@ -76,6 +90,7 @@ S_camera_set_field_of_view(Scamera *camera,
 		return;
 	}
 	camera->fov = fov;
+	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
 }
 
 void
@@ -88,6 +103,7 @@ S_camera_set_aspect_ratio(Scamera *camera,
 		return;
 	}
 	camera->aspect = aspect;
+	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
 }
 
 Sfloat
@@ -154,10 +170,6 @@ _S_camera_perspective(const Scamera *camera,
 		_S_SET_ERROR(S_INVALID_VALUE, "_S_camera_perspective");
 		return;
 	}
-	_S_CALL("S_mat4_perspective", S_mat4_perspective(dest,
-	                                                 camera->fov,
-	                                                 camera->aspect,
-	                                                 camera->near,
-	                                                 camera->far));
+	_S_CALL("S_mat4_copy", S_mat4_copy(dest, &camera->perspective));
 }
 
