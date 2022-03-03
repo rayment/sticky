@@ -30,6 +30,7 @@ S_sticky_init()
 void
 S_sticky_free()
 {
+	SDL_Quit();
 #ifdef DEBUG
 	_S_memtrace_free();
 #endif
