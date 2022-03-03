@@ -11,36 +11,20 @@
 #include "sticky/math/frustum.h"
 #include "sticky/math/math.h"
 #include "sticky/math/vec3.h"
+#include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/video/camera.h"
 
-#define NUM_SIDES 6
-
-static
-void
-_S_frustum_normalize(Sfrustum *frustum,
-                     Senum side)
-{
-	Sfloat mag;
-	Svec3 zero;
-	_S_CALL("S_vec3_zero", S_vec3_zero(&zero));
-	_S_CALL("S_vec3_distance",
-	        mag = S_vec3_distance(frustum->plane+side, &zero));
-	frustum->plane[side].x /= mag;
-	frustum->plane[side].y /= mag;
-	frustum->plane[side].z /= mag;
-	frustum->dist[side] /= mag;
-}
-
 /*
- * See: https://github.com/gametutorials/tutorials
+ * See: https://gdbooks.gitbooks.io/legacyopengl/content/Chapter8/frustum.html
  */
 void
 S_frustum_load(Sfrustum *frustum,
                const Scamera *camera)
 {
-	Smat4 perspective, view;
+	Smat4 persp, view;
 	Stransform *transform;
+	Svec4 r0, r1, r2;
 
 	if (!frustum || !camera)
 	{
@@ -49,44 +33,51 @@ S_frustum_load(Sfrustum *frustum,
 	}
 
 	_S_CALL("_S_camera_perspective",
-	        _S_camera_perspective(camera, &perspective));
+	        _S_camera_perspective(camera, &persp));
 	_S_CALL("S_camera_get_transform",
 	        transform = S_camera_get_transform(camera));
 	_S_CALL("S_transform_get_view_matrix",
-	        S_transform_get_transformation_matrix(transform, &view));
-	_S_CALL("S_mat4_multiply", S_mat4_multiply(&view, &perspective));
+	        S_transform_get_view_matrix(transform, &view));
+	_S_CALL("S_mat4_multiply", S_mat4_multiply(&persp, &view));
 
-	frustum->plane[S_FRUSTUM_RIGHT] .x    = view.m03 - view.m00;
-	frustum->plane[S_FRUSTUM_RIGHT] .y    = view.m13 - view.m10;
-	frustum->plane[S_FRUSTUM_RIGHT] .z    = view.m23 - view.m20;
-	frustum->plane[S_FRUSTUM_LEFT]  .x    = view.m03 + view.m00;
-	frustum->plane[S_FRUSTUM_LEFT]  .y    = view.m13 + view.m10;
-	frustum->plane[S_FRUSTUM_LEFT]  .z    = view.m23 + view.m20;
-	frustum->plane[S_FRUSTUM_TOP]   .x    = view.m03 - view.m01;
-	frustum->plane[S_FRUSTUM_TOP]   .y    = view.m13 - view.m11;
-	frustum->plane[S_FRUSTUM_TOP]   .z    = view.m23 - view.m21;
-	frustum->plane[S_FRUSTUM_BOTTOM].x    = view.m03 + view.m01;
-	frustum->plane[S_FRUSTUM_BOTTOM].y    = view.m13 + view.m11;
-	frustum->plane[S_FRUSTUM_BOTTOM].z    = view.m23 + view.m21;
-	frustum->plane[S_FRUSTUM_BACK]  .x    = view.m03 - view.m02;
-	frustum->plane[S_FRUSTUM_BACK]  .y    = view.m13 - view.m12;
-	frustum->plane[S_FRUSTUM_BACK]  .z    = view.m23 - view.m22;
-	frustum->plane[S_FRUSTUM_FRONT] .x    = view.m03 + view.m02;
-	frustum->plane[S_FRUSTUM_FRONT] .y    = view.m13 + view.m12;
-	frustum->plane[S_FRUSTUM_FRONT] .z    = view.m23 + view.m22;
-	frustum->dist[S_FRUSTUM_RIGHT]        = view.m33 - view.m30;
-	frustum->dist[S_FRUSTUM_LEFT]         = view.m33 + view.m30;
-	frustum->dist[S_FRUSTUM_TOP]          = view.m33 - view.m31;
-	frustum->dist[S_FRUSTUM_BOTTOM]       = view.m33 + view.m31;
-	frustum->dist[S_FRUSTUM_BACK]         = view.m33 - view.m32;
-	frustum->dist[S_FRUSTUM_FRONT]        = view.m33 + view.m32;
-	/* normalise planes */
-	_S_frustum_normalize(frustum, S_FRUSTUM_RIGHT);
-	_S_frustum_normalize(frustum, S_FRUSTUM_LEFT);
-	_S_frustum_normalize(frustum, S_FRUSTUM_TOP);
-	_S_frustum_normalize(frustum, S_FRUSTUM_BOTTOM);
-	_S_frustum_normalize(frustum, S_FRUSTUM_BACK);
-	_S_frustum_normalize(frustum, S_FRUSTUM_FRONT);
+	_S_CALL("S_vec4_set",
+		S_vec4_set(&r0, persp.m00, persp.m01, persp.m02, persp.m03));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(&r1, persp.m10, persp.m11, persp.m12, persp.m13));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(&r2, persp.m20, persp.m21, persp.m22, persp.m23));
+
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_RIGHT),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_LEFT),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_TOP),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_BOTTOM),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_FAR),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+	_S_CALL("S_vec4_set",
+		S_vec4_set(*(frustum+S_FRUSTUM_NEAR),
+		           persp.m30, persp.m31, persp.m32, persp.m33));
+
+	_S_CALL("S_vec4_subtract",
+		S_vec4_subtract(*(frustum+S_FRUSTUM_RIGHT), &r0));
+	_S_CALL("S_vec4_add",
+		S_vec4_add(     *(frustum+S_FRUSTUM_LEFT), &r0));
+	_S_CALL("S_vec4_subtract",
+		S_vec4_subtract(*(frustum+S_FRUSTUM_TOP), &r1));
+	_S_CALL("S_vec4_add",
+		S_vec4_add(     *(frustum+S_FRUSTUM_BOTTOM), &r1));
+	_S_CALL("S_vec4_subtract",
+		S_vec4_subtract(*(frustum+S_FRUSTUM_FAR), &r2));
+	_S_CALL("S_vec4_add",
+		S_vec4_add(     *(frustum+S_FRUSTUM_NEAR), &r2));
 }
 
 Sbool
@@ -100,10 +91,12 @@ S_frustum_intersects_point(const Sfrustum *frustum,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_frustum_intersects_point");
 		return S_FALSE;
 	}
-	for (i = 0; i < NUM_SIDES; ++i)
+	for (i = 0; i < 6; ++i)
 	{
-		_S_CALL("S_vec3_dot", dot = S_vec3_dot(frustum->plane+i, point));
-		if (dot + *(frustum->dist+i) <= 0)
+		dot = (*(frustum+i))->x*point->x +
+		      (*(frustum+i))->y*point->y +
+		      (*(frustum+i))->z*point->z;
+		if (dot + (*(frustum+i))->w < 0.0f)
 			return S_FALSE;
 	}
 	return S_TRUE;

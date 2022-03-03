@@ -16,21 +16,17 @@ extern "C"
 
 #include "sticky/common/types.h"
 #include "sticky/math/vec3.h"
+#include "sticky/math/vec4.h"
 #include "sticky/video/camera.h"
 
 #define S_FRUSTUM_RIGHT  0
 #define S_FRUSTUM_LEFT   1
 #define S_FRUSTUM_BOTTOM 2
 #define S_FRUSTUM_TOP    3
-#define S_FRUSTUM_BACK   4
-#define S_FRUSTUM_FRONT  5
+#define S_FRUSTUM_FAR    4
+#define S_FRUSTUM_NEAR   5
 
-typedef struct
-Sfrustum_s
-{
-	Svec3 plane[6];
-	Sfloat dist[6];
-} Sfrustum;
+typedef Svec4 Sfrustum[6];
 
 void  S_frustum_load(Sfrustum *, const Scamera *);
 

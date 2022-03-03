@@ -33,6 +33,7 @@
 #include "sticky/input/keyboard.h"
 #include "sticky/input/mouse.h"
 
+#include "sticky/math/frustum.h"
 #include "sticky/math/math.h"
 #include "sticky/math/mat3.h"
 #include "sticky/math/mat4.h"
