@@ -102,6 +102,94 @@ S_frustum_intersects_point(const Sfrustum *frustum,
 	return S_TRUE;
 }
 
-Sbool     S_frustum_intersects_bounds(const Sfrustum *,
-                                      const Svec3 *, const Svec3 *);
+Sbool
+S_frustum_intersects_sphere(const Sfrustum *frustum,
+                            const Svec3 *point,
+                            Sfloat radius)
+{
+	Suint8 i;
+	Sfloat dot;
+	if (!frustum || !point)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_frustum_intersects_sphere");
+		return S_FALSE;
+	}
+	for (i = 0; i < 6; ++i)
+	{
+		dot = (*(frustum+i))->x*point->x +
+		      (*(frustum+i))->y*point->y +
+		      (*(frustum+i))->z*point->z;
+		if (dot + (*(frustum+i))->w < -radius)
+			return S_FALSE;
+	}
+	return S_TRUE;
+}
+
+Sbool
+S_frustum_intersects_bounds(const Sfrustum *frustum,
+                            const Svec3 *min,
+                            const Svec3 *max)
+{
+	Suint8 i;
+	Sfloat dot;
+	Svec3 a, b, c, d, e, f, g, h;
+	if (!frustum || !min || !max)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_frustum_intersects_bounds");
+		return S_FALSE;
+	}
+	a.x = min->x; a.y = min->y; a.z=min->z;
+	b.x = min->x; b.y = min->y; b.z=max->z;
+	c.x = min->x; c.y = max->y; c.z=min->z;
+	d.x = min->x; d.y = max->y; d.z=max->z;
+	e.x = max->x; e.y = min->y; e.z=min->z;
+	f.x = max->x; f.y = min->y; f.z=max->z;
+	g.x = max->x; g.y = max->y; g.z=min->z;
+	h.x = max->x; h.y = max->y; h.z=max->z;
+	for (i = 0; i < 6; ++i)
+	{
+		dot = (*(frustum+i))->x*a.x +
+		      (*(frustum+i))->y*a.y +
+		      (*(frustum+i))->z*a.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*b.x +
+		      (*(frustum+i))->y*b.y +
+		      (*(frustum+i))->z*b.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*c.x +
+		      (*(frustum+i))->y*c.y +
+		      (*(frustum+i))->z*c.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*d.x +
+		      (*(frustum+i))->y*d.y +
+		      (*(frustum+i))->z*d.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*e.x +
+		      (*(frustum+i))->y*e.y +
+		      (*(frustum+i))->z*e.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*f.x +
+		      (*(frustum+i))->y*f.y +
+		      (*(frustum+i))->z*f.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*g.x +
+		      (*(frustum+i))->y*g.y +
+		      (*(frustum+i))->z*g.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		dot = (*(frustum+i))->x*h.x +
+		      (*(frustum+i))->y*h.y +
+		      (*(frustum+i))->z*h.z;
+		if (dot + (*(frustum+i))->w >= 0)
+			continue;
+		return S_FALSE;
+	}
+	return S_TRUE;
+}
 

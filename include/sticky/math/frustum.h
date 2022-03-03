@@ -31,6 +31,7 @@ typedef Svec4 Sfrustum[6];
 void  S_frustum_load(Sfrustum *, const Scamera *);
 
 Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
+Sbool S_frustum_intersects_sphere(const Sfrustum *, const Svec3 *, Sfloat);
 Sbool S_frustum_intersects_bounds(const Sfrustum *,
                                   const Svec3 *, const Svec3 *);
 
