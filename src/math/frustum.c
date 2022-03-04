@@ -1,4 +1,9 @@
 /*
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
  * frustum.c
  * Culling frustum math source.
  *
@@ -14,6 +19,21 @@
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/video/camera.h"
+
+static
+void
+_S_frustum_normalize(Sfrustum *frustum,
+                     Senum side)
+{
+	Sfloat mag;
+	mag = S_sqrt((*(frustum+side))->x*(*(frustum+side))->x +
+	      (*(frustum+side))->y*(*(frustum+side))->y +
+	      (*(frustum+side))->z*(*(frustum+side))->z);
+	(*(frustum+side))->x /= mag;
+	(*(frustum+side))->y /= mag;
+	(*(frustum+side))->z /= mag;
+	(*(frustum+side))->w /= mag;
+}
 
 /*
  * See: https://gdbooks.gitbooks.io/legacyopengl/content/Chapter8/frustum.html
@@ -78,6 +98,13 @@ S_frustum_load(Sfrustum *frustum,
 		S_vec4_subtract(*(frustum+S_FRUSTUM_FAR), &r2));
 	_S_CALL("S_vec4_add",
 		S_vec4_add(     *(frustum+S_FRUSTUM_NEAR), &r2));
+
+	_S_frustum_normalize(frustum, S_FRUSTUM_RIGHT);
+	_S_frustum_normalize(frustum, S_FRUSTUM_LEFT);
+	_S_frustum_normalize(frustum, S_FRUSTUM_TOP);
+	_S_frustum_normalize(frustum, S_FRUSTUM_BOTTOM);
+	_S_frustum_normalize(frustum, S_FRUSTUM_FAR);
+	_S_frustum_normalize(frustum, S_FRUSTUM_NEAR);
 }
 
 Sbool
@@ -109,7 +136,7 @@ S_frustum_intersects_sphere(const Sfrustum *frustum,
 {
 	Suint8 i;
 	Sfloat dot;
-	if (!frustum || !point)
+	if (!frustum || !point || radius < 0)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_frustum_intersects_sphere");
 		return S_FALSE;
@@ -119,6 +146,7 @@ S_frustum_intersects_sphere(const Sfrustum *frustum,
 		dot = (*(frustum+i))->x*point->x +
 		      (*(frustum+i))->y*point->y +
 		      (*(frustum+i))->z*point->z;
+		printf("%d %f\n", i, dot + (*(frustum+i))->w);
 		if (dot + (*(frustum+i))->w < -radius)
 			return S_FALSE;
 	}

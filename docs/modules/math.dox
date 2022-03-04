@@ -67,3 +67,10 @@
  * @brief Math functions for object transforms.
  */
 
+/**
+ * @defgroup frustum Frustum math
+ * @ingroup math
+ *
+ * @brief Frustum and plane math for culling and camera operations.
+ */
+
