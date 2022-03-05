@@ -101,7 +101,10 @@ main(void)
 	, "S_linkedlist_size (empty)");
 
 	TEST(
-	, S_linkedlist_get(list, 2) == NULL
+		b = S_linkedlist_get(list, 2) == NULL;
+		b = b && SERRNO != S_NO_ERROR;
+		SERRNO = S_NO_ERROR; /* reset error trip */
+	, b
 	, "S_linkedlist_get (out of range)");
 
 	TEST(
