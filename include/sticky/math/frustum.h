@@ -36,7 +36,11 @@ extern "C"
 #define S_FRUSTUM_FAR    4
 #define S_FRUSTUM_NEAR   5
 
-typedef Svec4 Sfrustum[6];
+typedef struct
+Sfrustum_s
+{
+	Svec4 p[6];
+} Sfrustum;
 
 /**
  * @brief Load a frustum for a given camera.

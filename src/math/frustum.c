@@ -26,13 +26,13 @@ _S_frustum_normalize(Sfrustum *frustum,
                      Senum side)
 {
 	Sfloat mag;
-	mag = S_sqrt((*(frustum+side))->x*(*(frustum+side))->x +
-	      (*(frustum+side))->y*(*(frustum+side))->y +
-	      (*(frustum+side))->z*(*(frustum+side))->z);
-	(*(frustum+side))->x /= mag;
-	(*(frustum+side))->y /= mag;
-	(*(frustum+side))->z /= mag;
-	(*(frustum+side))->w /= mag;
+	mag = S_sqrt((frustum->p+side)->x*(frustum->p+side)->x +
+	      (frustum->p+side)->y*(frustum->p+side)->y +
+	      (frustum->p+side)->z*(frustum->p+side)->z);
+	(frustum->p+side)->x /= mag;
+	(frustum->p+side)->y /= mag;
+	(frustum->p+side)->z /= mag;
+	(frustum->p+side)->w /= mag;
 }
 
 /*
@@ -68,36 +68,36 @@ S_frustum_load(Sfrustum *frustum,
 		S_vec4_set(&r2, persp.m20, persp.m21, persp.m22, persp.m23));
 
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_RIGHT),
+		S_vec4_set(frustum->p+S_FRUSTUM_RIGHT,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_LEFT),
+		S_vec4_set(frustum->p+S_FRUSTUM_LEFT,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_TOP),
+		S_vec4_set(frustum->p+S_FRUSTUM_TOP,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_BOTTOM),
+		S_vec4_set(frustum->p+S_FRUSTUM_BOTTOM,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_FAR),
+		S_vec4_set(frustum->p+S_FRUSTUM_FAR,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 	_S_CALL("S_vec4_set",
-		S_vec4_set(*(frustum+S_FRUSTUM_NEAR),
+		S_vec4_set(frustum->p+S_FRUSTUM_NEAR,
 		           persp.m30, persp.m31, persp.m32, persp.m33));
 
 	_S_CALL("S_vec4_subtract",
-		S_vec4_subtract(*(frustum+S_FRUSTUM_RIGHT), &r0));
+		S_vec4_subtract(frustum->p+S_FRUSTUM_RIGHT,  &r0));
 	_S_CALL("S_vec4_add",
-		S_vec4_add(     *(frustum+S_FRUSTUM_LEFT), &r0));
+		S_vec4_add(     frustum->p+S_FRUSTUM_LEFT,   &r0));
 	_S_CALL("S_vec4_subtract",
-		S_vec4_subtract(*(frustum+S_FRUSTUM_TOP), &r1));
+		S_vec4_subtract(frustum->p+S_FRUSTUM_TOP,    &r1));
 	_S_CALL("S_vec4_add",
-		S_vec4_add(     *(frustum+S_FRUSTUM_BOTTOM), &r1));
+		S_vec4_add(     frustum->p+S_FRUSTUM_BOTTOM, &r1));
 	_S_CALL("S_vec4_subtract",
-		S_vec4_subtract(*(frustum+S_FRUSTUM_FAR), &r2));
+		S_vec4_subtract(frustum->p+S_FRUSTUM_FAR,    &r2));
 	_S_CALL("S_vec4_add",
-		S_vec4_add(     *(frustum+S_FRUSTUM_NEAR), &r2));
+		S_vec4_add(     frustum->p+S_FRUSTUM_NEAR,   &r2));
 
 	_S_frustum_normalize(frustum, S_FRUSTUM_RIGHT);
 	_S_frustum_normalize(frustum, S_FRUSTUM_LEFT);
@@ -120,10 +120,10 @@ S_frustum_intersects_point(const Sfrustum *frustum,
 	}
 	for (i = 0; i < 6; ++i)
 	{
-		dot = (*(frustum+i))->x*point->x +
-		      (*(frustum+i))->y*point->y +
-		      (*(frustum+i))->z*point->z;
-		if (dot + (*(frustum+i))->w < 0.0f)
+		dot = (frustum->p+i)->x*point->x +
+		      (frustum->p+i)->y*point->y +
+		      (frustum->p+i)->z*point->z;
+		if (dot + (frustum->p+i)->w < 0.0f)
 			return S_FALSE;
 	}
 	return S_TRUE;
@@ -143,11 +143,11 @@ S_frustum_intersects_sphere(const Sfrustum *frustum,
 	}
 	for (i = 0; i < 6; ++i)
 	{
-		dot = (*(frustum+i))->x*point->x +
-		      (*(frustum+i))->y*point->y +
-		      (*(frustum+i))->z*point->z;
-		printf("%d %f\n", i, dot + (*(frustum+i))->w);
-		if (dot + (*(frustum+i))->w < -radius)
+		dot = (frustum->p+i)->x*point->x +
+		      (frustum->p+i)->y*point->y +
+		      (frustum->p+i)->z*point->z;
+		printf("%d %f\n", i, dot + (frustum->p+i)->w);
+		if (dot + (frustum->p+i)->w < -radius)
 			return S_FALSE;
 	}
 	return S_TRUE;
@@ -176,45 +176,45 @@ S_frustum_intersects_bounds(const Sfrustum *frustum,
 	h.x = max->x; h.y = max->y; h.z=max->z;
 	for (i = 0; i < 6; ++i)
 	{
-		dot = (*(frustum+i))->x*a.x +
-		      (*(frustum+i))->y*a.y +
-		      (*(frustum+i))->z*a.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*a.x +
+		      (frustum->p+i)->y*a.y +
+		      (frustum->p+i)->z*a.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*b.x +
-		      (*(frustum+i))->y*b.y +
-		      (*(frustum+i))->z*b.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*b.x +
+		      (frustum->p+i)->y*b.y +
+		      (frustum->p+i)->z*b.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*c.x +
-		      (*(frustum+i))->y*c.y +
-		      (*(frustum+i))->z*c.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*c.x +
+		      (frustum->p+i)->y*c.y +
+		      (frustum->p+i)->z*c.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*d.x +
-		      (*(frustum+i))->y*d.y +
-		      (*(frustum+i))->z*d.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*d.x +
+		      (frustum->p+i)->y*d.y +
+		      (frustum->p+i)->z*d.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*e.x +
-		      (*(frustum+i))->y*e.y +
-		      (*(frustum+i))->z*e.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*e.x +
+		      (frustum->p+i)->y*e.y +
+		      (frustum->p+i)->z*e.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*f.x +
-		      (*(frustum+i))->y*f.y +
-		      (*(frustum+i))->z*f.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*f.x +
+		      (frustum->p+i)->y*f.y +
+		      (frustum->p+i)->z*f.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*g.x +
-		      (*(frustum+i))->y*g.y +
-		      (*(frustum+i))->z*g.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*g.x +
+		      (frustum->p+i)->y*g.y +
+		      (frustum->p+i)->z*g.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
-		dot = (*(frustum+i))->x*h.x +
-		      (*(frustum+i))->y*h.y +
-		      (*(frustum+i))->z*h.z;
-		if (dot + (*(frustum+i))->w >= 0)
+		dot = (frustum->p+i)->x*h.x +
+		      (frustum->p+i)->y*h.y +
+		      (frustum->p+i)->z*h.z;
+		if (dot + (frustum->p+i)->w >= 0)
 			continue;
 		return S_FALSE;
 	}
