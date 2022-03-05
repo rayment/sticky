@@ -15,6 +15,7 @@
 #include "sticky/common/types.h"
 #include "sticky/math/math.h"
 #include "sticky/math/quat.h"
+#include "sticky/math/vec3.h"
 #include "sticky/memory/memtrace.h"
 
 void
@@ -170,6 +171,65 @@ S_quat_angle(Squat *dest,
 	_S_CALL("S_quat_multiply", S_quat_multiply(dest, &inverse));
 	return S_degrees(2.0f * S_arccos(dest->r));
 }
+
+void
+S_quat_angleaxis(Squat *dest,
+                 const Svec3 *axis,
+                 Sfloat angle)
+{
+	Sfloat s, c;
+	if (!dest || !axis)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_angleaxis");
+		return;
+	}
+	s = S_sin(S_radians(angle / 2.0f));
+	c = S_cos(S_radians(angle / 2.0f));
+	dest->i = axis->x * s;
+	dest->j = axis->y * s;
+	dest->k = axis->z * s;
+	dest->r = c;
+}
+
+void
+S_quat_lookpoint(Squat *dest,
+                 const Svec3 *from,
+                 const Svec3 *to)
+{
+	Svec3 forward, world_forward, world_up;
+	Sfloat dot, rotangle;
+	if (!dest || !from || !to)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_lookat");
+		return;
+	}
+	_S_CALL("S_vec3_set", S_vec3_set(&world_forward, 0.0f, 0.0f, -1.0f));
+	/* calculate forward vector */
+	_S_CALL("S_vec3_copy", S_vec3_copy(&forward, to));
+	_S_CALL("S_vec3_subtract", S_vec3_subtract(&forward, from));
+	_S_CALL("S_vec3_normalize", S_vec3_normalize(&forward));
+
+	_S_CALL("S_vec3_dot", dot = S_vec3_dot(&world_forward, &forward));
+	if (S_epsilon(S_EPSILON, dot, -1.0f))
+	{
+		/* directly up */
+		_S_CALL("S_vec3_set", S_vec3_set(&world_up, 0.0f, 1.0f, 0.0f));
+		_S_CALL("S_quat_angleaxis", S_quat_angleaxis(dest, &world_up, 180.0f));
+		return;
+	}
+	if (S_epsilon(S_EPSILON, dot, 1.0f))
+	{
+		/* directly down */
+		_S_CALL("S_quat_identity", S_quat_identity(dest));
+		return;
+	}
+	/* build rotation */
+	rotangle = S_degrees(S_arccos(dot));
+	_S_CALL("S_vec3_cross", S_vec3_cross(&forward, &world_forward));
+	_S_CALL("S_vec3_normalize", S_vec3_normalize(&forward));
+	_S_CALL("S_quat_angleaxis", S_quat_angleaxis(dest, &forward, rotangle));
+}
+
 
 void
 S_quat_copy(Squat *dest,

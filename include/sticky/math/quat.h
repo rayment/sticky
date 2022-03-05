@@ -207,7 +207,7 @@ void   S_quat_slerp(Squat *, const Squat *, Sfloat);
  * given quaternions.
  *
  * @warning This function expects both quaternions to be normalised. The output
- * of any other quaternions cannot be guaranteed to be correct.
+ * for any other quaternions cannot be guaranteed to be correct.
  * @param[in,out] dest The @f$q_2@f$ quaternion to which the angle is measured,
  * and the result destination.
  * @param[in] src The @f$q_1@f$ quaternion from which the angle is measured.
@@ -217,6 +217,38 @@ void   S_quat_slerp(Squat *, const Squat *, Sfloat);
  * @since 1.0.0
  */
 Sfloat S_quat_angle(Squat *, const Squat *);
+
+/**
+ * @brief Rotate a number of degrees around an axis.
+ *
+ * @warning This function expects the axis to be normalised. The output for any
+ * other axis cannot be guaranteed to be correct.
+ * @param[out] dest The quaternion in which the rotation is stored.
+ * @param[in] axis The axis on which the rotation should occur.
+ * @param[in] angle The angle in degrees to rotate upon a given axis.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid quaternion or 3D
+ * vector is provided to the function.
+ * @since 1.0.0
+ */
+void   S_quat_angleaxis(Squat *, const Svec3 *, Sfloat);
+
+/**
+ * @brief Return the rotation from one point to another.
+ *
+ * The returned rotation is a rotation such that the point @p from, the
+ * observor, may rotate to face towards @p to, the point observed.
+ *
+ * Note that this function makes no guarantees to the up vector, and as such
+ * rolling may occur.
+ *
+ * @param[out] dest The quaternion in which the rotation is stored.
+ * @param[in] from The observor, or point of observation.
+ * @param[in] to The observed point.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid quaternion or 3D
+ * vector is provided to the function.
+ * @since 1.0.0
+ */
+void   S_quat_lookpoint(Squat *, const Svec3 *, const Svec3 *);
 
 /**
  * @brief Create a copy of a quaternion.
