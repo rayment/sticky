@@ -61,7 +61,7 @@ S_pencil_new(void)
 	Spencil *pencil;
 	Svec3 color;
 
-	pencil = S_memory_new(sizeof(Spencil));
+	pencil = (Spencil *) S_memory_new(sizeof(Spencil));
 
 	_S_GL(glEnable(GL_PROGRAM_POINT_SIZE));
 	_S_CALL("S_shader_new",
