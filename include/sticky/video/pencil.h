@@ -93,11 +93,27 @@ void   S_pencil_delete(Spencil *);
  * @param[in] pencil The pencil to draw with.
  * @param[in] from The first point of the line.
  * @param[in] to The second point of the line.
- * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil is provided to
- * the function.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil or 3D vector
+ * is provided to the function.
  * @since 1.0.0
  */
 void   S_pencil_draw_line(const Spencil *, const Svec3 *, const Svec3 *);
+
+/**
+ * @brief Draw a point in 3D space.
+ *
+ * Draws a point for a given camera in 3D space.
+ *
+ * The draw colour can be modified by calling the
+ * {@link S_pencil_set_camera(Spencil *, const Scamera *)} function.
+ *
+ * @param[in] pencil The pencil to draw with.
+ * @param[in] point The location of the point in 3D space.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil or 3D vector
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void   S_pencil_draw_point(const Spencil *, const Svec3 *);
 
 /**
  * @brief Set the camera of a pencil.

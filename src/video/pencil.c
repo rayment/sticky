@@ -44,6 +44,8 @@
 "	o_color = vec4(u_color, 1.0);                                          "\
 "}"
 
+#define POINT_SIZE 0.005f
+
 static
 Sfloat vertices[6] =
 {
@@ -150,6 +152,27 @@ S_pencil_draw_line(const Spencil *pencil,
 	_S_GL(glDrawArrays(GL_LINES, 0, 2));
 	/* TODO: Unbind necessary? */
 	_S_GL(glBindVertexArray(0));
+}
+
+void
+S_pencil_draw_point(const Spencil *pencil,
+                    const Svec3 *point)
+{
+	Svec3 a, b, c, d, e, f;
+	if (!pencil || !point)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_pencil_draw_point");
+		return;
+	}
+	a.x = point->x - POINT_SIZE; a.y = point->y; a.z = point->z;
+	b.x = point->x + POINT_SIZE; b.y = point->y; b.z = point->z;
+	c.x = point->x; c.y = point->y - POINT_SIZE; c.z = point->z;
+	d.x = point->x; d.y = point->y + POINT_SIZE; d.z = point->z;
+	e.x = point->x; e.y = point->y; e.z = point->z - POINT_SIZE;
+	f.x = point->x; f.y = point->y; f.z = point->z + POINT_SIZE;
+	_S_CALL("S_pencil_draw_line", S_pencil_draw_line(pencil, &a, &b));
+	_S_CALL("S_pencil_draw_line", S_pencil_draw_line(pencil, &c, &d));
+	_S_CALL("S_pencil_draw_line", S_pencil_draw_line(pencil, &e, &f));
 }
 
 void
