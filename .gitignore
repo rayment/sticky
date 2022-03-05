@@ -2,7 +2,7 @@
 [.]_*
 *.swp
 build
-docs
+docs/html
 obj
 *.a
 *.dll
