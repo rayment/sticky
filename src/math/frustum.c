@@ -43,7 +43,6 @@ S_frustum_load(Sfrustum *frustum,
                const Scamera *camera)
 {
 	Smat4 persp, view;
-	Stransform *transform;
 	Svec4 r0, r1, r2;
 
 	if (!frustum || !camera)
@@ -52,12 +51,10 @@ S_frustum_load(Sfrustum *frustum,
 		return;
 	}
 
-	_S_CALL("_S_camera_perspective",
-	        _S_camera_perspective(camera, &persp));
-	_S_CALL("S_camera_get_transform",
-	        transform = S_camera_get_transform(camera));
-	_S_CALL("S_transform_get_view_matrix",
-	        S_transform_get_view_matrix(transform, &view));
+	_S_CALL("S_camera_get_projection_matrix",
+	         S_camera_get_projection_matrix(camera, &persp));
+	_S_CALL("S_camera_get_view_matrix",
+	         S_camera_get_view_matrix(camera, &view));
 	_S_CALL("S_mat4_multiply", S_mat4_multiply(&persp, &view));
 
 	_S_CALL("S_vec4_set",

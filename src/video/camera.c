@@ -13,6 +13,7 @@
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
 #include "sticky/math/mat4.h"
+#include "sticky/math/transform.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/video/camera.h"
 
@@ -162,14 +163,28 @@ S_camera_get_transform(const Scamera *camera)
 }
 
 void
-_S_camera_perspective(const Scamera *camera,
-                      Smat4 *dest)
+S_camera_get_projection_matrix(const Scamera *camera,
+                               Smat4 *dest)
 {
 	if (!camera || !dest)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "_S_camera_perspective");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_projection_matrix");
 		return;
 	}
 	_S_CALL("S_mat4_copy", S_mat4_copy(dest, &camera->perspective));
+}
+
+void
+S_camera_get_view_matrix(const Scamera *camera,
+                         Smat4 *dest)
+{
+	if (!camera || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_view_matrix");
+		return;
+	}
+	_S_CALL("S_transform_get_transformation_matrix",
+	        S_transform_get_transformation_matrix(camera->transform, dest));
+	_S_CALL("S_mat4_inverse", S_mat4_inverse(dest));
 }
 

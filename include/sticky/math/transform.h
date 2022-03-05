@@ -303,19 +303,6 @@ void        S_transform_get_scale(const Stransform *, Svec3 *);
 void        S_transform_get_transformation_matrix(const Stransform *, Smat4 *);
 
 /**
- * @brief Get the local view matrix of a transform.
- *
- * The view matrix is equivalent to the inverse of the transformation matrix.
- *
- * @param[in] transform The transform from which to get the view matrix.
- * @param[out] dest The matrix to store the local view matrix in.
- * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid transform or matrix
- * is provided to the function.
- * @since 1.0.0
- */
-void        S_transform_get_view_matrix(const Stransform *, Smat4 *);
-
-/**
  * @brief Get the forward vector of a transform.
  *
  * The forward vector is the vector that points in the direction that the

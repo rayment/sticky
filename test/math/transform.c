@@ -233,13 +233,6 @@ main(void)
 	, S_mat4_equals(EPSILON, &mat1, &mat4)
 	, "S_transform_get_transformation_matrix");
 
-	TEST(
-		S_transform_get_transformation_matrix(a, &mat1);
-		S_mat4_inverse(&mat1);
-		S_transform_get_view_matrix(a, &mat2);
-	, S_mat4_equals(EPSILON, &mat1, &mat2)
-	, "S_transform_get_view_matrix");
-
 	S_vec3_set(&vec1, 39.0f, 14.719f, -22.4f);
 	S_vec3_to_quat(&quat1, &vec1);
 	S_transform_set_rot(a, &quat1);

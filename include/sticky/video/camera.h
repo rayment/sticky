@@ -190,7 +190,31 @@ Sfloat      S_camera_get_aspect_ratio(const Scamera *);
  */
 Stransform *S_camera_get_transform(const Scamera *);
 
-void       _S_camera_perspective(const Scamera *, Smat4 *);
+/**
+ * @brief Get the projection matrix of a camera.
+ *
+ * Returns the projection matrix of a given camera.
+ *
+ * @param[in] camera The camera.
+ * @param[out] dest The matrix to store the projection in.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera or 4x4 matrix
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_camera_get_projection_matrix(const Scamera *, Smat4 *);
+
+/**
+ * @brief Get the view matrix of a camera.
+ *
+ * The view matrix is equivalent to the inverse of the transformation matrix.
+ *
+ * @param[in] camera The camera.
+ * @param[out] dest The matrix to store the view matrix in.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera or 4x4 matrix
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_camera_get_view_matrix(const Scamera *, Smat4 *);
 
 /**
  * @}

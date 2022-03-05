@@ -329,20 +329,6 @@ S_transform_get_transformation_matrix(const Stransform *transform,
 }
 
 void
-S_transform_get_view_matrix(const Stransform *transform,
-                            Smat4 *dest)
-{
-	if (!transform || !dest)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_transform_get_view_matrix");
-		return;
-	}
-	_S_CALL("S_transform_get_transformation_matrix",
-	        S_transform_get_transformation_matrix(transform, dest));
-	_S_CALL("S_mat4_inverse", S_mat4_inverse(dest));
-}
-
-void
 S_transform_get_forward(const Stransform *transform,
                         Svec3 *dest)
 {
