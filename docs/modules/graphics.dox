@@ -46,3 +46,10 @@
  * @brief Model meshes.
  */
 
+/**
+ * @defgroup pencil Drawing primitives
+ * @ingroup graphics
+ *
+ * @brief Primitive pencil graphics.
+ */
+
