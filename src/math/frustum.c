@@ -146,7 +146,6 @@ S_frustum_intersects_sphere(const Sfrustum *frustum,
 		dot = (frustum->p+i)->x*point->x +
 		      (frustum->p+i)->y*point->y +
 		      (frustum->p+i)->z*point->z;
-		printf("%d %f\n", i, dot + (frustum->p+i)->w);
 		if (dot + (frustum->p+i)->w < -radius)
 			return S_FALSE;
 	}
