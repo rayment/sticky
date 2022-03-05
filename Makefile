@@ -82,7 +82,7 @@ else
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		CXXFLAGS+=-Wno-deprecated-declarations -Wno-typedef-redefinition \
-		          -Wno-pedantic
+		          -Wno-static-in-inline
 		LDFLAGS+=-framework OpenGL -framework OpenAL -pthread
 		ifeq ($(ENABLE_OPENMP),1)
 			CXXFLAGS+=-Xpreprocessor -fopenmp -DENABLE_OPENMP=1
