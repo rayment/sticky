@@ -160,22 +160,48 @@ S_mesh_delete(Smesh *mesh)
 
 /* TODO: Redo when framebuffers are implemented? */
 void
-_S_mesh_draw(const Smesh *mesh)
+_S_mesh_draw(const Smesh *mesh,
+             Senum mode)
 {
-	if (!mesh)
+	Suint64 count;
+	if (!mesh || (mode != S_MESH_TRIANGLES &&
+	              mode != S_MESH_LINES &&
+	              mode != S_MESH_POINTS))
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_mesh_draw");
 		return;
 	}
+	if (mesh->use_indices)
+		count = mesh->ilen;
+	else
+		count = mesh->vlen / sizeof(Sfloat) / 3;
+	_S_CALL("_S_mesh_draw_count", _S_mesh_draw_count(mesh, mode, count));
+}
+
+void
+_S_mesh_draw_count(const Smesh *mesh,
+                   Senum mode,
+                   Suint64 count)
+{
+	if (!mesh || (mode != S_MESH_TRIANGLES &&
+	              mode != S_MESH_LINES &&
+	              mode != S_MESH_POINTS))
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mesh_draw_count");
+		return;
+	}
+	if (count == 0)
+		return;
 	_S_GL(glBindVertexArray(mesh->vao));
 	if (mesh->use_indices)
 	{
-		_S_GL(glDrawElements(GL_TRIANGLES, mesh->ilen, GL_UNSIGNED_INT, 0));
+		_S_GL(glDrawElements(mode, count, GL_UNSIGNED_INT, 0));
 	}
 	else
 	{
-		_S_GL(glDrawArrays(GL_TRIANGLES, 0, mesh->vlen / sizeof(Sfloat) / 3));
+		_S_GL(glDrawArrays(mode, 0, count));
 	}
+	/* TODO: Unbind necessary? */
 	_S_GL(glBindVertexArray(0));
 }
 

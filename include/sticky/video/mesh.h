@@ -27,6 +27,10 @@ extern "C"
  * @{
  */
 
+#define S_MESH_TRIANGLES GL_TRIANGLES
+#define S_MESH_LINES     GL_LINES
+#define S_MESH_POINTS    GL_POINTS
+
 /**
  * @brief Collection of 3D vertices as visual objects.
  *
@@ -96,7 +100,8 @@ Smesh *S_mesh_new(const Sfloat *, Ssize_t,
  */
 void   S_mesh_delete(Smesh *);
 
-void  _S_mesh_draw(const Smesh *);
+void  _S_mesh_draw(const Smesh *, Senum);
+void  _S_mesh_draw_count(const Smesh *, Senum, Suint64);
 
 /**
  * @}

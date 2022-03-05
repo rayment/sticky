@@ -24,6 +24,7 @@ extern "C"
 #include "sticky/math/vec3.h"
 #include "sticky/math/vec4.h"
 #include "sticky/video/camera.h"
+#include "sticky/video/mesh.h"
 #include "sticky/video/shader.h"
 
 /**
@@ -45,7 +46,7 @@ extern "C"
 typedef struct
 Spencil_s
 {
-	Suint32 vbo, vao;
+	Smesh *line_mesh;
 	Sshader *shader;
 	Stransform *transform;
 	const Scamera *camera;
