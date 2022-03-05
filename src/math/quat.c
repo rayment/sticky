@@ -230,6 +230,47 @@ S_quat_lookpoint(Squat *dest,
 	_S_CALL("S_quat_angleaxis", S_quat_angleaxis(dest, &forward, rotangle));
 }
 
+void
+S_quat_forward(Svec3 *dest,
+               const Squat *quat)
+{
+	if (!dest || !quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_forward");
+		return;
+	}
+	dest->x = -2.0f * (quat->i*quat->k + quat->j*quat->r);
+	dest->y = -2.0f * (quat->j*quat->k - quat->i*quat->r);
+	dest->z = -(1.0f - 2.0f * (quat->i*quat->i + quat->j*quat->j));
+}
+
+void
+S_quat_up(Svec3 *dest,
+          const Squat *quat)
+{
+	if (!dest || !quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_up");
+		return;
+	}
+	dest->x = -2.0f * (quat->i*quat->j - quat->k*quat->r);
+	dest->y = -(1.0f - 2.0f * (quat->i*quat->i + quat->k*quat->k));
+	dest->z = -2.0f * (quat->j*quat->k + quat->i*quat->r);
+}
+
+void
+S_quat_right(Svec3 *dest,
+             const Squat *quat)
+{
+	if (!dest || !quat)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_right");
+		return;
+	}
+	dest->x = -(1.0f - 2.0f * (quat->j*quat->j + quat->k*quat->k));
+	dest->y = -2.0f * (quat->i*quat->j + quat->k*quat->r);
+	dest->z = -2.0f * (quat->i*quat->k - quat->j*quat->r);
+}
 
 void
 S_quat_copy(Squat *dest,

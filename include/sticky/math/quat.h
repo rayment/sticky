@@ -251,6 +251,39 @@ void   S_quat_angleaxis(Squat *, const Svec3 *, Sfloat);
 void   S_quat_lookpoint(Squat *, const Svec3 *, const Svec3 *);
 
 /**
+ * @brief Get the forward component of a quaternion rotation.
+ *
+ * @param[out] dest The vector to store the forward component.
+ * @param[in] quat The quaternion.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid quaternion or 3D
+ * vector is provided to the function.
+ * @since 1.0.0
+ */
+void   S_quat_forward(Svec3 *, const Squat *);
+
+/**
+ * @brief Get the upward component of a quaternion rotation.
+ *
+ * @param[out] dest The vector to store the upward component.
+ * @param[in] quat The quaternion.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid quaternion or 3D
+ * vector is provided to the function.
+ * @since 1.0.0
+ */
+void   S_quat_up(Svec3 *, const Squat *);
+
+/**
+ * @brief Get the right component of a quaternion rotation.
+ *
+ * @param[out] dest The vector to store the rightward component.
+ * @param[in] quat The quaternion.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid quaternion or 3D
+ * vector is provided to the function.
+ * @since 1.0.0
+ */
+void   S_quat_right(Svec3 *, const Squat *);
+
+/**
  * @brief Create a copy of a quaternion.
  *
  * Creates a duplicate copy of a given quaternion to a given destination
