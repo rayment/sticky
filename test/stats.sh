@@ -19,6 +19,14 @@ do
 
 	echo "-----------"
 	echo "There are $numsearch $i tags in the project."
-	echo "$search\n"
+	if [ "$numsearch" != 0 ];
+	then
+		echo "$search\n"
+	fi
 done
+
+lines_hdr=`cd .. && find include/ -name '*.h' | xargs cat | wc -l | xargs`
+lines_src=`cd .. && find src/ -name '*.c' | xargs cat | wc -l | xargs`
+echo "There are $lines_hdr lines of header code."
+echo "There are $lines_src lines of source code."
 
