@@ -34,8 +34,8 @@ extern "C"
  * @{
  */
 
-static Senum   _S_error;
-static Schar  *_S_error_loc;
+Senum   _S_error;
+Schar  *_S_error_loc;
 /**
  * @brief A global enum that stores the current error number.
  * @hideinitializer
