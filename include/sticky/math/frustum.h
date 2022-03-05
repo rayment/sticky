@@ -29,13 +29,61 @@ extern "C"
  * @{
  */
 
+/**
+ * @brief The right plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_RIGHT  0
+
+/**
+ * @brief The left plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_LEFT   1
+
+/**
+ * @brief The bottom plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_BOTTOM 2
+
+/**
+ * @brief The top plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_TOP    3
+
+/**
+ * @brief The far plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_FAR    4
+
+/**
+ * @brief The near plane of the frustum.
+ * @hideinitializer
+ * @since 1.0.0
+ */
 #define S_FRUSTUM_NEAR   5
 
+/**
+ * @brief Camera frustum struct.
+ *
+ * The frustum is the volume of a projected cone that extends from a camera and
+ * exists between the near and the far plane of the view.
+ *
+ * The frustum is used for frustum-culling, that is, render culling any objects
+ * that do not fall within the volume. This is an important optimisation as it
+ * saves GPU cycles by not rendering anything that is not currently visible
+ * within the camera.
+ *
+ * @since 1.0.0
+ */
 typedef struct
 Sfrustum_s
 {
