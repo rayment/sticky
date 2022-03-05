@@ -13,6 +13,7 @@
 
 #include <string.h>
 
+#include "sticky/audio/sound.h"
 #include "sticky/common/error.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
@@ -39,6 +40,7 @@ S_window_new(void)
 			_S_error_sdl("S_window_new");
 		_S_input_keyboard_init();
 		_S_input_mouse_init();
+		_S_sound_init();
 		init = S_TRUE;
 	}
 	if (exists)

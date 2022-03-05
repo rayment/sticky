@@ -370,6 +370,10 @@ _S_assert(const Schar *location,
         _S_log_vararg(_S_ERR_LOC, "STB", _S_LOG_ERROR,    \
                       "%s: %s\n", msg, stbi_failure_reason())
 
+#define _S_error_dr(func,msg)                             \
+        _S_log_vararg(_S_ERR_LOC, "DR", _S_LOG_ERROR,     \
+                      "%s: %s\n", func, msg)
+
 #define _S_error_other(category,...)                      \
         _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
                       "%s: " __VA_ARGS__)
@@ -387,10 +391,59 @@ _S_error_gl(const Schar *location,
 	              gluErrorString(err));
 }
 
+static inline
+void
+_S_error_al(const Schar *location,
+            const Suint32 line)
+{
+	ALenum err;
+	Schar *msg;
+
+	err = alGetError();
+	switch (err)
+	{
+	case AL_NO_ERROR: return;
+	case AL_INVALID_NAME:      msg = "AL_INVALID_NAME";      break;
+	case AL_INVALID_ENUM:      msg = "AL_INVALID_ENUM";      break;
+	case AL_INVALID_VALUE:     msg = "AL_INVALID_VALUE";     break;
+	case AL_INVALID_OPERATION: msg = "AL_INVALID_OPERATION"; break;
+	case AL_OUT_OF_MEMORY:     msg = "AL_OUT_OF_MEMORY";     break;
+	default:                   msg = "Unknown AL error";
+	}
+	_S_log_vararg(location, line, "AL", _S_LOG_ERROR, "%s", msg);
+}
+
+static inline
+void
+_S_error_alc(const Schar *location,
+             const Suint32 line,
+             ALCdevice *dev)
+{
+	ALCenum err;
+	Schar *msg;
+
+	err = alcGetError(dev);
+	switch (err)
+	{
+	case ALC_NO_ERROR: return;
+	case ALC_INVALID_ENUM:    msg = "ALC_INVALID_ENUM";    break;
+	case ALC_INVALID_DEVICE:  msg = "ALC_INVALID_DEVICE";  break;
+	case ALC_INVALID_CONTEXT: msg = "ALC_INVALID_CONTEXT"; break;
+	case ALC_INVALID_VALUE:   msg = "ALC_INVALID_VALUE";   break;
+	case ALC_OUT_OF_MEMORY:   msg = "ALC_OUT_OF_MEMORY";   break;
+	default:                  msg = "Unknown ALC error";
+	}
+	_S_log_vararg(location, line, "ALC", _S_LOG_ERROR, "%s", msg);
+}
+
 #ifdef DEBUG
-#define _S_GL(x) x; _S_error_gl(_S_ERR_LOC)
+#define _S_GL(x)    x; _S_error_gl (_S_ERR_LOC)
+#define _S_AL(x)    x; _S_error_al (_S_ERR_LOC)
+#define _S_ALC(x,y) x; _S_error_alc(_S_ERR_LOC, y)
 #else /* DEBUG */
-#define _S_GL(x) x;
+#define _S_GL(x)    x;
+#define _S_AL(x)    x;
+#define _S_ALC(x,y) x;
 #endif /* DEBUG */
 
 /**

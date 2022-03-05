@@ -30,7 +30,12 @@ S_sticky_init()
 void
 S_sticky_free()
 {
-	SDL_Quit();
+	if (_S_window_is_init())
+	{
+		/* free audio-visual stuff */
+		SDL_Quit();
+		_S_sound_free();
+	}
 #ifdef DEBUG
 	_S_memtrace_free();
 #endif
