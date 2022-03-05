@@ -80,6 +80,45 @@ typedef _Sthread_raw *Sthread;
 Sthread S_thread_new(Sthread_func, void *);
 
 /**
+ * @brief Sleep for a number of seconds in the current thread.
+ *
+ * Pauses the current thread execution by sleeping for a given number of
+ * seconds. This function does not require an actual {@link Sthread} to exist,
+ * as it can also be called on the main program thread as a cross-platform way
+ * of pausing program execution.
+ *
+ * @param[in] sec The number of seconds to sleep for.
+ * @since 1.0.0
+ */
+void    S_thread_sleep(Suint64);
+
+/**
+ * @brief Sleep for a number of milliseconds in the current thread.
+ *
+ * Pauses the current thread execution by sleeping for a given number of
+ * milliseconds. This function does not require an actual {@link Sthread} to
+ * exist, as it can also be called on the main program thread as a
+ * cross-platform way of pausing program execution.
+ *
+ * @param[in] msec The number of milliseconds to sleep for.
+ * @since 1.0.0
+ */
+void    S_thread_msleep(Suint64);
+
+/**
+ * @brief Sleep for a number of nanoseconds in the current thread.
+ *
+ * Pauses the current thread execution by sleeping for a given number of
+ * nanoseconds. This function does not require an actual {@link Sthread} to
+ * exist, as it can also be called on the main program thread as a
+ * cross-platform way of pausing program execution.
+ *
+ * @param[in] nsec The number of nanoseconds to sleep for.
+ * @since 1.0.0
+ */
+void    S_thread_nsleep(Suint64);
+
+/**
  * @brief Wait for a thread to join and finish, and then deallocate it.
  *
  * The calling thread will suspend execution until a given thread terminates. In

@@ -19,6 +19,7 @@
 #endif /* STICKY_POSIX */
 
 #include <pthread.h>
+#include <time.h>
 
 Sthread
 S_thread_new(Sthread_func func,
@@ -37,6 +38,33 @@ S_thread_new(Sthread_func func,
 		return NULL;
 	}
 	return thread;
+}
+
+void
+S_thread_sleep(Suint64 sec)
+{
+	struct timespec ts;
+	ts.tv_sec  = sec;
+	ts.tv_nsec = 0;
+	nanosleep(&ts, NULL);
+}
+
+void
+S_thread_msleep(Suint64 msec)
+{
+	struct timespec ts;
+	ts.tv_sec  =  msec / 1000;
+	ts.tv_nsec = (msec % 1000) * 1000000;
+	nanosleep(&ts, NULL);
+}
+
+void
+S_thread_nsleep(Suint64 nsec)
+{
+	struct timespec ts;
+	ts.tv_sec  = nsec / 1000000000;
+	ts.tv_nsec = nsec % 1000000000;
+	nanosleep(&ts, NULL);
 }
 
 void *
