@@ -337,7 +337,7 @@ Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
  * measured in radians will not return the correct resulting quaternion.
  *
  * @param[out] dest The destination quaternion.
- * @param[in] src The source EUler angles to convert to quaternion-form.
+ * @param[in] src The source Euler angles to convert to quaternion-form.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector or
  * quaternion pointer is provided
  * to the function.
