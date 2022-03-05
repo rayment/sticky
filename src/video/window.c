@@ -579,3 +579,9 @@ S_window_is_tick(const Swindow *window)
 	       window->ticks < window->tick_limit;
 }
 
+Sbool
+_S_window_is_init(void)
+{
+	return init;
+}
+

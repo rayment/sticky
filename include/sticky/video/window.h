@@ -748,6 +748,8 @@ Sbool    S_window_is_running(const Swindow *);
  */
 Sbool    S_window_is_tick(const Swindow *);
 
+Sbool   _S_window_is_init(void);
+
 /**
  * @}
  */
