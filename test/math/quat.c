@@ -278,6 +278,16 @@ main(void)
 	, "S_quat_slerp (1.0)");
 
 	TEST(
+		veca.x = sqrt2on2; veca.y = 0.0f; veca.z = sqrt2on2;
+		b.r = 0.953717f;
+		b.i = 0.0f;
+		b.j = 0.212631f;
+		b.k = 0.953717f;
+		S_quat_angleaxis(&a, &veca, 35.0f);
+	, S_quat_equals(EPSILON, &a, &b)
+	, "S_quat_angleaxis");
+
+	TEST(
 		a.r = sqrt2on2; a.i = 0.0f; a.j = 0.0f; a.k = sqrt2on2;
 		vecb.x = 0.0f; vecb.y = 0.0f; vecb.z = 90.0f;
 		S_quat_to_vec3(&veca, &a);
