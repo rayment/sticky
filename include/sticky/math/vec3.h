@@ -132,13 +132,26 @@ void   S_vec3_subtract(Svec3 *, const Svec3 *);
  *     \end{array}\right]
  * @f]
  *
- * @param[out] dest The first vector to multiply, and the result destination.
+ * @param[in,out] dest The first vector to multiply, and the result destination.
  * @param[in] src The second vector to multiply.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector is provided
  * to the function.
  * @since 1.0.0
  */
 void   S_vec3_multiply(Svec3 *, const Svec3 *);
+
+/**
+ * @brief Multiply a vector by a quaternion.
+ *
+ * Takes a vector and multiplies it by a quaternion.
+ *
+ * @param[in,out] dest The vector to multiply.
+ * @param[in] src The quaternion to multiply by.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 3D vector or
+ * quaternion is provided to the function.
+ * @since 1.0.0
+ */
+void   S_vec3_multiply_quat(Svec3 *, const Squat *);
 
 /**
  * @brief Scale all three vector components by a given value.

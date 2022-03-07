@@ -94,6 +94,15 @@ main(void)
 	, "S_vec3_multiply");
 
 	TEST(
+		a.x = 45.0f; a.y = 35.0f; a.z = 1.0f;
+		S_vec3_to_quat(&quata, &a);
+		a.x = 1.0f; a.y = 0.0f; a.z = 0.0f;
+		S_vec3_multiply_quat(&a, &quata);
+		S_quat_right(&b, &quata);
+	, S_vec3_equals(EPSILON, &a, &b)
+	, "S_vec3_multiply_quat");
+
+	TEST(
 		a.x = 2.0f; a.y = -1.5f;  a.z = -10.0f;
 		b.x = 5.0f; b.y = -3.75f; b.z = -25.0f;
 		S_vec3_scale(&a, 2.5f);

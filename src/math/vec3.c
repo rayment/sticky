@@ -97,6 +97,37 @@ S_vec3_multiply(Svec3 *dest,
 }
 
 void
+S_vec3_multiply_quat(Svec3 *dest,
+                     const Squat *src)
+{
+	Svec3 tmp;
+	float x, y, z, xx, yy, zz, xy, xz, yz, wx, wy, wz;
+	x  = 2.0f * src->i;
+	y  = 2.0f * src->j;
+	z  = 2.0f * src->k;
+	xx = x * src->i;
+	yy = y * src->j;
+	zz = z * src->k;
+	xy = y * src->i;
+	xz = z * src->i;
+	yz = z * src->j;
+	wx = x * src->r;
+	wy = y * src->r;
+	wz = z * src->r;
+	tmp.x = (1.0f - (yy+zz))*dest->x
+	      +         (xy-wz) *dest->y
+	      +         (xz+wy) *dest->z;
+	tmp.y =         (xy+wz) *dest->x
+	      + (1.0f - (xx+zz))*dest->y
+	      +         (yz-wx) *dest->z;
+	tmp.z =         (xz-wy) *dest->x
+	      +         (yz+wx) *dest->y
+	      + (1.0f - (xx+yy))*dest->z;
+	_S_CALL("S_vec3_copy", S_vec3_copy(dest, &tmp));
+}
+
+
+void
 S_vec3_scale(Svec3 *vec,
              Sfloat scalar)
 {
