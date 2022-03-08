@@ -200,7 +200,7 @@ S_quat_lookpoint(Squat *dest,
 	Sfloat dot, rotangle;
 	if (!dest || !from || !to)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_lookat");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_quat_lookpoint");
 		return;
 	}
 	_S_CALL("S_vec3_set", S_vec3_set(&world_forward, 0.0f, 0.0f, -1.0f));
