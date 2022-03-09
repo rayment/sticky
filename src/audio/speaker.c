@@ -52,7 +52,7 @@ S_speaker_new(Senum mode)
 	Sspeaker *speaker;
 	if (mode != S_SPEAKER_STATIC && mode != S_SPEAKER_STREAMER)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_new");
+		_S_SET_ERROR(S_INVALID_ENUM, "S_speaker_new");
 		return NULL;
 	}
 	speaker = (Sspeaker *) S_memory_new(sizeof(Sspeaker));
@@ -203,8 +203,8 @@ _S_speaker_stream_thread(void *pair_void)
 		/* return if the thread parent was destroyed */
 		if (!pair->speaker->alive)
 			break;
-		_S_CALL("S_speaker_get_paused",
-		        b = S_speaker_get_paused(pair->speaker));
+		_S_CALL("S_speaker_is_paused",
+		        b = S_speaker_is_paused(pair->speaker));
 		if (b)
 		{
 			/* if paused, wait a little while */
@@ -276,7 +276,7 @@ S_speaker_pause(Sspeaker *speaker)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_pause");
 		return;
 	}
-	_S_CALL("S_speaker_get_playing", b = S_speaker_get_playing(speaker));
+	_S_CALL("S_speaker_is_playing", b = S_speaker_is_playing(speaker));
 	if (b)
 	{
 		_S_AL(alSourcePause(speaker->source));
@@ -292,7 +292,7 @@ S_speaker_resume(Sspeaker *speaker)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_resume");
 		return;
 	}
-	_S_CALL("S_speaker_get_paused", b = S_speaker_get_paused(speaker));
+	_S_CALL("S_speaker_is_paused", b = S_speaker_is_paused(speaker));
 	if (b)
 	{
 		_S_AL(alSourcePlay(speaker->source));
@@ -426,12 +426,12 @@ _S_speaker_get_state(const Sspeaker *speaker)
 }
 
 Sbool
-S_speaker_get_playing(const Sspeaker *speaker)
+S_speaker_is_playing(const Sspeaker *speaker)
 {
 	ALint b;
 	if (!speaker)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_get_playing");
+		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_is_playing");
 		return S_FALSE;
 	}
 	_S_CALL("_S_speaker_get_state", b = _S_speaker_get_state(speaker));
@@ -439,12 +439,12 @@ S_speaker_get_playing(const Sspeaker *speaker)
 }
 
 Sbool
-S_speaker_get_paused(const Sspeaker *speaker)
+S_speaker_is_paused(const Sspeaker *speaker)
 {
 	ALint b;
 	if (!speaker)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_get_paused");
+		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_is_paused");
 		return S_FALSE;
 	}
 	_S_CALL("_S_speaker_get_state", b = _S_speaker_get_state(speaker));
@@ -452,12 +452,12 @@ S_speaker_get_paused(const Sspeaker *speaker)
 }
 
 Sbool
-S_speaker_get_stopped(const Sspeaker *speaker)
+S_speaker_is_stopped(const Sspeaker *speaker)
 {
 	ALint b;
 	if (!speaker)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_get_stopped");
+		_S_SET_ERROR(S_INVALID_VALUE, "_S_speaker_is_stopped");
 		return S_FALSE;
 	}
 	_S_CALL("_S_speaker_get_state", b = _S_speaker_get_state(speaker));
