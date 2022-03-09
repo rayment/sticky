@@ -1,0 +1,27 @@
+/**
+ * @defgroup audio Audio
+ *
+ * @brief Audio playback and streaming.
+ */
+
+/**
+ * @defgroup audio_listener Listener
+ * @ingroup audio
+ *
+ * @brief Audio listening object.
+ */
+
+/**
+ * @defgroup sound Sound
+ * @ingroup audio
+ *
+ * @brief Audio file or data.
+ */
+
+/**
+ * @defgroup speaker Speaker
+ * @ingroup audio
+ *
+ * @brief Audio playback or stream object.
+ */
+
