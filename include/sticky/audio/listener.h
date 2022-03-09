@@ -99,7 +99,7 @@ void       S_listener_set_rot(Slistener *, const Squat *);
 /**
  * @brief Set the position of an audio listener.
  *
- * @param[in,out] listener The listener whose rotation shall be set.
+ * @param[in,out] listener The listener whose position shall be set.
  * @param[in,out] pos The position that the listener should be set to.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid listener or vector is
  * provided to the function.
@@ -112,7 +112,7 @@ void       S_listener_set_pos(Slistener *, const Svec3 *);
  *
  * This is typically measured in metres per second.
  *
- * @param[in,out] listener The listener whose rotation shall be set.
+ * @param[in,out] listener The listener whose velocity shall be set.
  * @param[in,out] vel The velocity that the listener should be set to.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid listener or vector is
  * provided to the function.
@@ -134,7 +134,7 @@ void       S_listener_add_rot(Slistener *, const Squat *);
 /**
  * @brief Add to the position of an audio listener.
  *
- * @param[in,out] listener The listener whose rotation shall be set.
+ * @param[in,out] listener The listener whose position shall be added to.
  * @param[in,out] pos The position that should be added to the listener's
  * current position.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid listener or vector is
@@ -148,7 +148,7 @@ void       S_listener_add_pos(Slistener *, const Svec3 *);
  *
  * This is typically measured in metres per second.
  *
- * @param[in,out] listener The listener whose rotation shall be set.
+ * @param[in,out] listener The listener whose velocity shall be added to.
  * @param[in,out] vel The velocity that should be added to the listener's
  * current velocity.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid listener or vector is
