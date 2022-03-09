@@ -288,6 +288,30 @@ main(void)
 	, "S_quat_angleaxis");
 
 	TEST(
+		a.r = 0.671768f; a.i = 0.344044f; a.j = -0.195518f; a.k = 0.626197;
+		vecb.x = 0.168189f; vecb.y = -0.707107f; vecb.z = 0.686813f;
+		S_quat_forward(&veca, &a);
+		print_quat_vec(&a, &veca);
+	, S_vec3_equals(EPSILON, &veca, &vecb)
+	, "S_quat_forward");
+
+	TEST(
+		a.r = 0.671768f; a.i = 0.344044f; a.j = -0.195518f; a.k = 0.626197;
+		vecb.x = -0.975863f; vecb.y = -0.020977f; vecb.z = 0.217376f;
+		S_quat_up(&veca, &a);
+		print_quat_vec(&a, &veca);
+	, S_vec3_equals(EPSILON, &veca, &vecb)
+	, "S_quat_up");
+
+	TEST(
+		a.r = 0.671768f; a.i = 0.344044f; a.j = -0.195518f; a.k = 0.626197;
+		vecb.x = 0.139300f; vecb.y = 0.706796f; vecb.z = 0.693567f;
+		S_quat_right(&veca, &a);
+		print_quat_vec(&a, &veca);
+	, S_vec3_equals(EPSILON, &veca, &vecb)
+	, "S_quat_right");
+
+	TEST(
 		a.r = sqrt2on2; a.i = 0.0f; a.j = 0.0f; a.k = sqrt2on2;
 		vecb.x = 0.0f; vecb.y = 0.0f; vecb.z = 90.0f;
 		S_quat_to_vec3(&veca, &a);
