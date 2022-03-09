@@ -220,7 +220,7 @@ void
 S_sound_set_pitch(Ssound *sound,
                   Sfloat pitch)
 {
-	if (!sound)
+	if (!sound || pitch <= 0.0f)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_sound_set_pitch");
 	}
@@ -234,7 +234,7 @@ void
 S_sound_set_gain(Ssound *sound,
                  Sfloat gain)
 {
-	if (!sound)
+	if (!sound || gain < 0.0f || gain > 1.0f)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_sound_set_gain");
 	}
