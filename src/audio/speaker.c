@@ -325,60 +325,60 @@ S_speaker_stop(Sspeaker *speaker)
 
 void
 S_speaker_set_pos(Sspeaker *speaker,
-                  const Svec3 *vec)
+                  const Svec3 *pos)
 {
-	if (!speaker || !vec)
+	if (!speaker || !pos)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_set_pos");
 	}
 	else
 	{
-		_S_CALL("S_vec3_copy", S_vec3_copy(&speaker->pos, vec));
+		_S_CALL("S_vec3_copy", S_vec3_copy(&speaker->pos, pos));
 		_S_CALL("_S_speaker_update_pos", _S_speaker_update_pos(speaker));
 	}
 }
 
 void
 S_speaker_add_pos(Sspeaker *speaker,
-                  const Svec3 *vec)
+                  const Svec3 *pos)
 {
-	if (!speaker || !vec)
+	if (!speaker || !pos)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_add_pos");
 	}
 	else
 	{
-		_S_CALL("S_vec3_add", S_vec3_add(&speaker->pos, vec));
+		_S_CALL("S_vec3_add", S_vec3_add(&speaker->pos, pos));
 		_S_CALL("_S_speaker_update_pos", _S_speaker_update_pos(speaker));
 	}
 }
 
 void
 S_speaker_set_vel(Sspeaker *speaker,
-                  const Svec3 *vec)
+                  const Svec3 *vel)
 {
-	if (!speaker || !vec)
+	if (!speaker || !vel)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_set_vel");
 	}
 	else
 	{
-		_S_CALL("S_vec3_copy", S_vec3_copy(&speaker->vel, vec));
+		_S_CALL("S_vec3_copy", S_vec3_copy(&speaker->vel, vel));
 		_S_CALL("_S_speaker_update_vel", _S_speaker_update_vel(speaker));
 	}
 }
 
 void
 S_speaker_add_vel(Sspeaker *speaker,
-                  const Svec3 *vec)
+                  const Svec3 *vel)
 {
-	if (!speaker || !vec)
+	if (!speaker || !vel)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_speaker_add_vel");
 	}
 	else
 	{
-		_S_CALL("S_vec3_add", S_vec3_add(&speaker->vel, vec));
+		_S_CALL("S_vec3_add", S_vec3_add(&speaker->vel, vel));
 		_S_CALL("_S_speaker_update_vel", _S_speaker_update_vel(speaker));
 	}
 }
