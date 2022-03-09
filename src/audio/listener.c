@@ -91,84 +91,84 @@ S_listener_set_active(Slistener *listener)
 
 void
 S_listener_set_rot(Slistener *listener,
-                   const Squat *quat)
+                   const Squat *rot)
 {
-	if (!listener || !quat)
+	if (!listener || !rot)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_set_rot");
 		return;
 	}
-	_S_CALL("S_quat_copy", S_quat_copy(&listener->rot, quat));
+	_S_CALL("S_quat_copy", S_quat_copy(&listener->rot, rot));
 	if (active == listener)
 		_S_CALL("_S_listener_update_rot", _S_listener_update_rot(listener));
 }
 
 void
 S_listener_add_rot(Slistener *listener,
-                   const Squat *quat)
+                   const Squat *rot)
 {
-	if (!listener || !quat)
+	if (!listener || !rot)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_add_rot");
 		return;
 	}
-	_S_CALL("S_quat_multiply", S_quat_multiply(&listener->rot, quat));
+	_S_CALL("S_quat_multiply", S_quat_multiply(&listener->rot, rot));
 	if (active == listener)
 		_S_CALL("_S_listener_update_rot", _S_listener_update_rot(listener));
 }
 
 void
 S_listener_set_pos(Slistener *listener,
-                   const Svec3 *vec)
+                   const Svec3 *pos)
 {
-	if (!listener || !vec)
+	if (!listener || !pos)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_set_pos");
 		return;
 	}
-	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->pos, vec));
+	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->pos, pos));
 	if (active == listener)
 		_S_CALL("_S_listener_update_pos", _S_listener_update_pos(listener));
 }
 
 void
 S_listener_add_pos(Slistener *listener,
-                   const Svec3 *vec)
+                   const Svec3 *pos)
 {
-	if (!listener || !vec)
+	if (!listener || !pos)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_add_pos");
 		return;
 	}
-	_S_CALL("S_vec3_add", S_vec3_add(&listener->pos, vec));
+	_S_CALL("S_vec3_add", S_vec3_add(&listener->pos, pos));
 	if (active == listener)
 		_S_CALL("_S_listener_update_pos", _S_listener_update_pos(listener));
 }
 
 void
 S_listener_set_vel(Slistener *listener,
-                   const Svec3 *vec)
+                   const Svec3 *vel)
 {
-	if (!listener || !vec)
+	if (!listener || !vel)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_set_vel");
 		return;
 	}
-	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->vel, vec));
+	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->vel, vel));
 	if (active == listener)
 		_S_CALL("_S_listener_update_vel", _S_listener_update_vel(listener));
 }
 
 void
 S_listener_add_vel(Slistener *listener,
-                   const Svec3 *vec)
+                   const Svec3 *vel)
 {
-	if (!listener || !vec)
+	if (!listener || !vel)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_listener_add_vel");
 		return;
 	}
-	_S_CALL("S_vec3_add", S_vec3_add(&listener->vel, vec));
+	_S_CALL("S_vec3_add", S_vec3_add(&listener->vel, vel));
 	if (active == listener)
 		_S_CALL("_S_listener_update_vel", _S_listener_update_vel(listener));
 }
