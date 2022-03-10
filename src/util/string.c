@@ -20,17 +20,6 @@
 #define ALIGNMENT    64 /* number of bytes to align each allocation by */
 #define STR_ALIGN(x) ((x)%ALIGNMENT == 0 ? (x) : ((x)-(x)%ALIGNMENT)+ALIGNMENT)
 
-void
-S_string_reserve(Sstring *str,
-                 Ssize_t len)
-{
-	len = STR_ALIGN(len);
-	if (len <= str->ptrlen)
-		return;
-	str->ptrlen = len;
-	str->ptr = (Schar *) S_memory_resize(str->ptr, sizeof(Schar) * str->ptrlen);
-}
-
 static
 void
 _S_string_grow(Sstring *str,
@@ -100,6 +89,22 @@ S_string_delete(Sstring *str)
 	}
 	S_memory_delete(str->ptr);
 	S_memory_delete(str);
+}
+
+void
+S_string_reserve(Sstring *str,
+                 Ssize_t len)
+{
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_reserve");
+		return;
+	}
+	len = STR_ALIGN(len);
+	if (len <= str->ptrlen)
+		return;
+	str->ptrlen = len;
+	str->ptr = (Schar *) S_memory_resize(str->ptr, sizeof(Schar) * str->ptrlen);
 }
 
 void
