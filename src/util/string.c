@@ -20,9 +20,8 @@
 #define ALIGNMENT    64 /* number of bytes to align each allocation by */
 #define STR_ALIGN(x) ((x)%ALIGNMENT == 0 ? (x) : ((x)-(x)%ALIGNMENT)+ALIGNMENT)
 
-static
 void
-_S_string_resize(Sstring *str,
+S_string_reserve(Sstring *str,
                  Ssize_t len)
 {
 	len = STR_ALIGN(len);
@@ -43,11 +42,11 @@ _S_string_grow(Sstring *str,
 		return;
 	if (len > str->ptrlen*2) /* manually resize */
 	{
-		_S_CALL("_S_string_resize", _S_string_resize(str, len));
+		_S_CALL("S_string_reserve", S_string_reserve(str, len));
 	}
 	else /* double */
 	{
-		_S_CALL("_S_string_resize", _S_string_resize(str, str->ptrlen*2));
+		_S_CALL("S_string_reserve", S_string_reserve(str, str->ptrlen*2));
 	}
 }
 

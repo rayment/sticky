@@ -27,6 +27,8 @@ Sstring     *S_string_new(void);
 Sstring     *S_string_load(const Schar *, Ssize_t);
 void         S_string_delete(Sstring *);
 
+void         S_string_reserve(Sstring *, Ssize_t);
+
 void         S_string_set(Sstring *, const Schar *, Ssize_t);
 void         S_string_set_format(Sstring *, const Schar *, ...);
 void         S_string_set_bool(Sstring *, Sbool);
