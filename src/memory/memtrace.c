@@ -164,7 +164,7 @@ _S_memtrace_resize_frame(const void *ptrold,
 	tmpframe = NULL;
 	while (frame)
 	{
-		if (frame->ptr == ptr)
+		if (frame->ptr == ptrold)
 		{
 			if (tmpframe)
 				tmpframe->next = frame->next;
@@ -184,7 +184,7 @@ _S_memtrace_resize_frame(const void *ptrold,
 	/* no frame found, raise an error */
 	fprintf(stdout,
 	        MEMTRACE "tried resize on unregistered block (%p) at %s:%d\n",
-	        ptr, location, line);
+	        ptrold, location, line);
 	exit(EXIT_FAILURE);
 #else /* DEBUG_TRACE */
 	/* if tracing is not enabled then its not possible to update the allocated
