@@ -15,14 +15,15 @@
 #include "sticky/memory/memtrace.h"
 
 void *
-_S_memory_new(const Ssize_t size,
+_S_memory_new(Ssize_t size,
               const Schar *location,
-              const Suint32 line)
+              Suint32 line)
 {
 	void *ptr;
 	if (size == 0)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_memory_new");
+		return NULL;
 	}
 	ptr = malloc(size);
 	if (!ptr)
@@ -33,10 +34,38 @@ _S_memory_new(const Ssize_t size,
 	return ptr;
 }
 
+void *
+_S_memory_resize(void *ptr,
+                 Ssize_t size,
+                 const Schar *location,
+                 Suint32 line)
+{
+	void *newptr;
+	if (size == 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_memory_resize");
+		return NULL;
+	}
+	if (!ptr)
+	{
+		fprintf(stderr, "%s:%d: %s\n", location, line,
+		        "cannot resize NULL pointer!");
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		newptr = realloc(ptr, size);
+#ifdef DEBUG
+		_S_memtrace_resize_frame(ptr, newptr, size, location, line);
+#endif /* DEBUG */
+		return newptr;
+	}
+}
+
 void
 _S_memory_delete(void *ptr,
                  const Schar *location,
-                 const Suint32 line)
+                 Suint32 line)
 {
 	if (ptr)
 	{
@@ -55,7 +84,7 @@ _S_memory_delete(void *ptr,
 
 void
 _S_out_of_memory(const Schar *location,
-                 const Suint32 line)
+                 Suint32 line)
 {
 	fprintf(stderr, "%s:%d: %s\n", location, line,
 	        "could not allocate enough memory!");

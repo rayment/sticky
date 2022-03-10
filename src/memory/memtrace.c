@@ -27,13 +27,14 @@ struct _S_memtrace_memory_frame_s *mem_frames;
 static Ssize_t stack_depth;
 #endif /* DEBUG_TRACE */
 
-static Ssize_t num_allocated_bytes, num_allocations, num_frees;
+static Ssize_t num_allocated_bytes, num_allocations, num_resizes, num_frees;
 
 void
 _S_memtrace_init(void)
 {
 	num_allocated_bytes = 0;
 	num_allocations = 0;
+	num_resizes = 0;
 	num_frees = 0;
 #ifdef DEBUG_TRACE
 	stack_depth = 0;
@@ -46,7 +47,7 @@ _S_memtrace_init(void)
 void
 _S_memtrace_push_stack(const Schar *callee,
                        const Schar *location,
-                       const Suint32 line)
+                       Suint32 line)
 {
 	struct _S_memtrace_stack_frame_s *frame;
 
@@ -113,9 +114,9 @@ _S_memtrace_stack_trace(void)
 
 void
 _S_memtrace_add_frame(const void *ptr,
-                      const Ssize_t size,
+                      Ssize_t size,
                       const Schar *location,
-                      const Suint32 line)
+                      Suint32 line)
 {
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame;
@@ -150,9 +151,57 @@ _S_memtrace_add_frame(const void *ptr,
 }
 
 void
+_S_memtrace_resize_frame(const void *ptrold,
+                         const void *ptrnew,
+                         Ssize_t size,
+                         const Schar *location,
+                         Suint32 line)
+{
+#ifdef DEBUG_TRACE
+	struct _S_memtrace_memory_frame_s *frame, *tmpframe;
+
+	frame = mem_frames;
+	tmpframe = NULL;
+	while (frame)
+	{
+		if (frame->ptr == ptr)
+		{
+			if (tmpframe)
+				tmpframe->next = frame->next;
+			else
+				mem_frames = frame->next;
+			fprintf(stdout,
+			        MEMTRACE "resized (%p -> %p) %ldb -> %ldb at %s:%d\n",
+			        ptrold, ptrnew, frame->size, size, location, line);
+			frame->ptr = ptrnew;
+			frame->size = size;
+			++num_resizes;
+			return;
+		}
+		tmpframe = frame;
+		frame = frame->next;
+	}
+	/* no frame found, raise an error */
+	fprintf(stdout,
+	        MEMTRACE "tried resize on unregistered block (%p) at %s:%d\n",
+	        ptr, location, line);
+	exit(EXIT_FAILURE);
+#else /* DEBUG_TRACE */
+	/* if tracing is not enabled then its not possible to update the allocated
+       number of bytes because there's no way to trace the original size */
+	++num_resizes;
+	(void) ptrold;
+	(void) ptrnew;
+	(void) size;
+	(void) location;
+	(void) line;
+#endif /* DEBUG_TRACE */
+}
+
+void
 _S_memtrace_remove_frame(const void *ptr,
                          const Schar *location,
-                         const Suint32 line)
+                         Suint32 line)
 {
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame, *tmpframe;
@@ -215,6 +264,8 @@ _S_memtrace_free(void)
 	{
 		fprintf(stdout, "  Num. bytes allocated: %ld\n", num_allocated_bytes);
 		fprintf(stdout, "    in %ld allocations\n", num_allocations);
+		if (num_resizes > 0)
+			fprintf(stdout, "    of which %ld were resized\n", num_resizes);
 		fprintf(stdout, "    of which %ld were free'd.\n", num_frees);
 		if (num_allocations != num_frees)
 			fprintf(stdout, RED "  Memory leak detected!\n" RESET);

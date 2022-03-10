@@ -43,7 +43,7 @@ _S_memtrace_stack_frame_s
 	Suint32 line;
 };
 
-void    _S_memtrace_push_stack(const Schar *, const Schar *, const Suint32);
+void    _S_memtrace_push_stack(const Schar *, const Schar *, Suint32);
 struct  _S_memtrace_stack_frame_s *
         _S_memtrace_pop_stack(void);
 void    _S_memtrace_stack_trace(void);
@@ -60,9 +60,11 @@ void    _S_memtrace_init(void);
 void    _S_memtrace_free(void);
 Sbool   _S_memtrace_all_free(void);
 
-void    _S_memtrace_add_frame(const void *, const Ssize_t,
-                              const Schar *, const Suint32);
-void    _S_memtrace_remove_frame(const void *, const Schar *, const Suint32);
+void    _S_memtrace_add_frame(const void *, Ssize_t,
+                              const Schar *, Suint32);
+void    _S_memtrace_resize_frame(const void *, const void *, Ssize_t,
+                                 const Schar *, Suint32);
+void    _S_memtrace_remove_frame(const void *, const Schar *, Suint32);
 
 #endif /* DEBUG */
 
