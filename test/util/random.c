@@ -5,7 +5,7 @@
 
 /*
  * random.c
- * Random number generator suite.
+ * Random number generator test suite.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 17/02/2022
