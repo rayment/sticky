@@ -87,6 +87,22 @@ S_string_load(const Schar *buf,
 }
 
 void
+S_string_set(Sstring *dest,
+             const Schar *buf,
+             Ssize_t len)
+{
+	if (!dest || !buf || len == 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set");
+		return;
+	}
+	_S_CALL("_S_string_grow", _S_string_grow(dest, len+1));
+	memcpy(dest->ptr, buf, len);
+	dest->len = len;
+	*(dest->ptr+dest->len) = '\0';
+}
+
+void
 S_string_delete(Sstring *str)
 {
 	if (!str)
@@ -180,6 +196,40 @@ S_string_compare(const Sstring *a,
 	return 0;
 }
 
+void
+S_string_trim(Sstring *str)
+{
+	Ssize_t i, start, len, tmplen;
+	Schar c;
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_trim");
+		return;
+	}
+	for (i = start = len = tmplen = 0; i < str->len; ++i)
+	{
+		c = *(str->ptr+i);
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f')
+		{
+			++tmplen;
+			if (len == 0)
+				++start;
+		}
+		else
+		{
+			if (len != 0)
+				len += tmplen;
+			++len;
+			tmplen = 0;
+		}
+	}
+	if (start != 0 && len != str->len)
+	{
+		_S_CALL("S_string_substring",
+		        S_string_substring(str, str, start, len));
+	}
+}
+
 Ssize_t
 S_string_length(const Sstring *str)
 {
@@ -189,6 +239,23 @@ S_string_length(const Sstring *str)
 		return 0;
 	}
 	return str->len;
+}
+
+void
+S_string_copy(Sstring *dest,
+              const Sstring *src)
+{
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_copy");
+		return;
+	}
+	if (dest == src)
+		return;
+	_S_CALL("_S_string_grow", _S_string_grow(dest, src->len+1));
+	memcpy(dest->ptr, src->ptr, src->len);
+	dest->len = src->len;
+	*(dest->ptr+dest->len) = '\0';
 }
 
 const Schar *

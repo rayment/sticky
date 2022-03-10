@@ -84,6 +84,20 @@ main(void)
 	, S_string_equals(a, c)
 	, "S_string_substring");
 
+	TEST(
+		S_string_set(a, "    ", 4);
+		S_string_copy(c, a);
+		S_string_concat(c, b);
+		S_string_concat(c, a);
+		S_string_trim(c);
+	, S_string_equals(c, b)
+	, "S_string_trim");
+
+	TEST(
+		S_string_trim(c);
+	, S_string_equals(c, b)
+	, "S_string_trim");
+
 	S_string_delete(a);
 	S_string_delete(b);
 	S_string_delete(c);
