@@ -494,6 +494,22 @@ Smat4_s
 #define S_clamp(x,y,z)   ((x) < (y) ? y : ((x) > (z) ? z : (x)))
 
 /**
+ * @brief Determine if a floating-point number is negative.
+ * @hideinitializer
+ *
+ * Returns {@link S_TRUE} if the sign of a floating-point number is set to
+ * negative, or otherwise {@link S_FALSE}.
+ *
+ * Note that while @f$-0@f$ and @f$0@f$ are equivalent, they do not have the
+ * same sign.
+ *
+ * @param x The floating-point number.
+ * @return If x is negative, then {@link S_TRUE}. Otherwise {@link S_FALSE}.
+ * @since 1.0.0
+ */
+#define S_sign(x) (signbit(x) ? S_TRUE : S_FALSE)
+
+/**
  * @}
  */
 
