@@ -6,6 +6,10 @@
  * Date created : 10/03/2022
  */
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
 #include "sticky/math/math.h"
@@ -16,7 +20,7 @@
 #define ALIGNMENT    64 /* number of bytes to align each allocation by */
 #define STR_ALIGN(x) ((x)%ALIGNMENT == 0 ? (x) : ((x)-(x)%ALIGNMENT)+ALIGNMENT)
 
-static inline
+static
 void
 _S_string_resize(Sstring *str,
                  Ssize_t len)
@@ -28,7 +32,7 @@ _S_string_resize(Sstring *str,
 	str->ptr = (Schar *) S_memory_resize(str->ptr, sizeof(Schar) * str->ptrlen);
 }
 
-static inline
+static
 void
 _S_string_grow(Sstring *str,
                Ssize_t len)
@@ -116,6 +120,24 @@ S_string_set(Sstring *dest,
 }
 
 void
+S_string_set_format(Sstring *dest,
+                    const Schar *format,
+                    ...)
+{
+	Ssize_t len;
+	va_list va;
+	va_start(va, format);
+	len = vsnprintf(dest->ptr, 0, format, va);
+	_S_CALL("_S_string_grow", _S_string_grow(dest, len+1));
+	dest->len = len;
+	va_end(va);
+	va_start(va, format);
+	vsnprintf(dest->ptr, len+1, format, va);
+	va_end(va);
+	*(dest->ptr+dest->len) = '\0';
+}
+
+void
 S_string_set_bool(Sstring *dest,
                   Sbool val)
 {
@@ -144,7 +166,8 @@ S_string_set_float(Sstring *dest,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_float");
 		return;
 	}
-	_S_CALL("S_string_set_double", S_string_set_double(dest, val, precision));
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%.*f", precision, val));
 }
 
 void
@@ -152,33 +175,117 @@ S_string_set_double(Sstring *dest,
                     Sdouble val,
                     Suint8 precision)
 {
-	Ssize_t dec, i, len;
-	Sdouble tmp;
-	Sbool sign;
 	if (!dest)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_double");
 		return;
 	}
-	sign = S_sign(val);
-	dec = 1;
-	if (sign)
-		tmp = -val;
-	else
-		tmp = val;
-	while (tmp >= 10.0)
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%.*f", precision, val));
+}
+
+void
+S_string_set_uint8(Sstring *dest,
+                   Suint8 val)
+{
+	if (!dest)
 	{
-		tmp /= 10.0;
-		++dec;
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_uint8");
+		return;
 	}
-	/* sign + dec (decimal part) + 1 (dot) + precision (fractional part) */
-	len = sign+dec+precision;
-	if (precision > 0)
-		++len; /* decimal point */
-	_S_CALL("_S_string_grow", _S_string_grow(dest, len));
-	i = sprintf(dest->ptr, "%.*f", precision, val);
-	S_assert(i == len, "S_string_set_float: conversion failed\n");
-	dest->len = i;
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%u", val));
+}
+
+void
+S_string_set_uint16(Sstring *dest,
+                    Suint16 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_uint16");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%u", val));
+}
+
+void
+S_string_set_uint32(Sstring *dest,
+                    Suint32 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_uint32");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%u", val));
+}
+
+void
+S_string_set_uint64(Sstring *dest,
+                    Suint64 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_uint64");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%lu", val));
+}
+
+void
+S_string_set_int8(Sstring *dest,
+                  Sint8 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_int8");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%d", val));
+}
+
+void
+S_string_set_int16(Sstring *dest,
+                   Sint16 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_int16");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%d", val));
+}
+
+void
+S_string_set_int32(Sstring *dest,
+                   Sint32 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_int32");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%d", val));
+}
+
+void
+S_string_set_int64(Sstring *dest,
+                   Sint64 val)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_int64");
+		return;
+	}
+	_S_CALL("S_string_set_format",
+	        S_string_set_format(dest, "%ld", val));
 }
 
 void

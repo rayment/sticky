@@ -38,9 +38,10 @@ main(void)
 	, "S_string_load");
 
 	TEST(
-		c = S_string_load(TEST_STRING, 5);
+		c = S_string_new();
+		S_string_set(c, TEST_STRING, 5);
 	, c
-	, "S_string_load");
+	, "S_string_set");
 
 	TEST(
 	, S_string_length(a) == 0 && S_string_length(b) == strlen(TEST_STRING)
@@ -151,6 +152,12 @@ main(void)
 	, "S_string_indexof");
 
 	TEST(
+		S_string_set_format(a, "%d test\n", 14);
+		S_string_set(b, "14 test\n", 8);
+	, S_string_equals(a, b)
+	, "S_string_set_format");
+
+	TEST(
 		S_string_set_bool(a, S_TRUE);
 		S_string_set(b, "true", 4);
 	, S_string_equals(a, b)
@@ -197,6 +204,54 @@ main(void)
 		S_string_set(b, "-0", 2);
 	, S_string_equals(a, b)
 	, "S_string_set_double (-0)");
+
+	TEST(
+		S_string_set_uint8(a, 141);
+		S_string_set(b, "141", 3);
+	, S_string_equals(a, b)
+	, "S_string_set_uint8");
+
+	TEST(
+		S_string_set_uint16(a, 14111);
+		S_string_set(b, "14111", 5);
+	, S_string_equals(a, b)
+	, "S_string_set_uint16");
+
+	TEST(
+		S_string_set_uint32(a, 1411111);
+		S_string_set(b, "1411111", 7);
+	, S_string_equals(a, b)
+	, "S_string_set_uint32");
+
+	TEST(
+		S_string_set_uint64(a, 18446744073709551615UL);
+		S_string_set(b, "18446744073709551615", 20);
+	, S_string_equals(a, b)
+	, "S_string_set_uint64");
+
+	TEST(
+		S_string_set_int8(a, -127);
+		S_string_set(b, "-127", 4);
+	, S_string_equals(a, b)
+	, "S_string_set_int8");
+
+	TEST(
+		S_string_set_int16(a, -14111);
+		S_string_set(b, "-14111", 6);
+	, S_string_equals(a, b)
+	, "S_string_set_int16");
+
+	TEST(
+		S_string_set_int32(a, -1411111);
+		S_string_set(b, "-1411111", 8);
+	, S_string_equals(a, b)
+	, "S_string_set_int32");
+
+	TEST(
+		S_string_set_int64(a, -1844674407370955161L);
+		S_string_set(b, "-1844674407370955161", 20);
+	, S_string_equals(a, b)
+	, "S_string_set_int64");
 
 	S_string_delete(a);
 	S_string_delete(b);

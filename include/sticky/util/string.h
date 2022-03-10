@@ -28,9 +28,18 @@ Sstring     *S_string_load(const Schar *, Ssize_t);
 void         S_string_delete(Sstring *);
 
 void         S_string_set(Sstring *, const Schar *, Ssize_t);
+void         S_string_set_format(Sstring *, const Schar *, ...);
 void         S_string_set_bool(Sstring *, Sbool);
 void         S_string_set_float(Sstring *, Sfloat, Suint8);
 void         S_string_set_double(Sstring *, Sdouble, Suint8);
+void         S_string_set_uint8 (Sstring *, Suint8);
+void         S_string_set_uint16(Sstring *, Suint16);
+void         S_string_set_uint32(Sstring *, Suint32);
+void         S_string_set_uint64(Sstring *, Suint64);
+void         S_string_set_int8  (Sstring *, Sint8);
+void         S_string_set_int16 (Sstring *, Sint16);
+void         S_string_set_int32 (Sstring *, Sint32);
+void         S_string_set_int64 (Sstring *, Sint64);
 
 void         S_string_concat(Sstring *, const Sstring *);
 void         S_string_substring(Sstring *, const Sstring *, Ssize_t, Ssize_t);
