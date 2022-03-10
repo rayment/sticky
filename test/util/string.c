@@ -150,6 +150,54 @@ main(void)
 	, bool1 && bool2 && !bool3 && idx1 == 0 && idx2 == 4
 	, "S_string_indexof");
 
+	TEST(
+		S_string_set_bool(a, S_TRUE);
+		S_string_set(b, "true", 4);
+	, S_string_equals(a, b)
+	, "S_string_set_bool (true)");
+
+	TEST(
+		S_string_set_bool(a, S_FALSE);
+		S_string_set(b, "false", 5);
+	, S_string_equals(a, b)
+	, "S_string_set_bool (false)");
+
+	TEST(
+		S_string_set_float(a, S_PI, 4);
+		S_string_set(b, "3.1416", 6);
+	, S_string_equals(a, b)
+	, "S_string_set_float");
+
+	TEST(
+		S_string_set_float(a, 0.0f, 0);
+		S_string_set(b, "0", 1);
+	, S_string_equals(a, b)
+	, "S_string_set_float (0)");
+
+	TEST(
+		S_string_set_float(a, -0.0f, 0);
+		S_string_set(b, "-0", 2);
+	, S_string_equals(a, b)
+	, "S_string_set_float (-0)");
+
+	TEST(
+		S_string_set_double(a, S_PI, 7);
+		S_string_set(b, "3.1415927", 9);
+	, S_string_equals(a, b)
+	, "S_string_set_double");
+
+	TEST(
+		S_string_set_double(a, 0.0, 0);
+		S_string_set(b, "0", 1);
+	, S_string_equals(a, b)
+	, "S_string_set_double (0)");
+
+	TEST(
+		S_string_set_double(a, -0.0, 0);
+		S_string_set(b, "-0", 2);
+	, S_string_equals(a, b)
+	, "S_string_set_double (-0)");
+
 	S_string_delete(a);
 	S_string_delete(b);
 	S_string_delete(c);

@@ -25,8 +25,12 @@ Sstring_s
 
 Sstring     *S_string_new(void);
 Sstring     *S_string_load(const Schar *, Ssize_t);
-void         S_string_set(Sstring *, const Schar *, Ssize_t);
 void         S_string_delete(Sstring *);
+
+void         S_string_set(Sstring *, const Schar *, Ssize_t);
+void         S_string_set_bool(Sstring *, Sbool);
+void         S_string_set_float(Sstring *, Sfloat, Suint8);
+void         S_string_set_double(Sstring *, Sdouble, Suint8);
 
 void         S_string_concat(Sstring *, const Sstring *);
 void         S_string_substring(Sstring *, const Sstring *, Ssize_t, Ssize_t);

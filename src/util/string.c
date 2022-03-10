@@ -8,6 +8,7 @@
 
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
+#include "sticky/math/math.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/util/string.h"
 
@@ -87,6 +88,18 @@ S_string_load(const Schar *buf,
 }
 
 void
+S_string_delete(Sstring *str)
+{
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_delete");
+		return;
+	}
+	S_memory_delete(str->ptr);
+	S_memory_delete(str);
+}
+
+void
 S_string_set(Sstring *dest,
              const Schar *buf,
              Ssize_t len)
@@ -103,15 +116,69 @@ S_string_set(Sstring *dest,
 }
 
 void
-S_string_delete(Sstring *str)
+S_string_set_bool(Sstring *dest,
+                  Sbool val)
 {
-	if (!str)
+	if (!dest)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_string_delete");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_bool");
 		return;
 	}
-	S_memory_delete(str->ptr);
-	S_memory_delete(str);
+	if (val)
+	{
+		_S_CALL("S_string_set", S_string_set(dest, "true", 4));
+	}
+	else
+	{
+		_S_CALL("S_string_set", S_string_set(dest, "false", 5));
+	}
+}
+
+void
+S_string_set_float(Sstring *dest,
+                   Sfloat val,
+                   Suint8 precision)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_float");
+		return;
+	}
+	_S_CALL("S_string_set_double", S_string_set_double(dest, val, precision));
+}
+
+void
+S_string_set_double(Sstring *dest,
+                    Sdouble val,
+                    Suint8 precision)
+{
+	Ssize_t dec, i, len;
+	Sdouble tmp;
+	Sbool sign;
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_set_double");
+		return;
+	}
+	sign = S_sign(val);
+	dec = 1;
+	if (sign)
+		tmp = -val;
+	else
+		tmp = val;
+	while (tmp >= 10.0)
+	{
+		tmp /= 10.0;
+		++dec;
+	}
+	/* sign + dec (decimal part) + 1 (dot) + precision (fractional part) */
+	len = sign+dec+precision;
+	if (precision > 0)
+		++len; /* decimal point */
+	_S_CALL("_S_string_grow", _S_string_grow(dest, len));
+	i = sprintf(dest->ptr, "%.*f", precision, val);
+	S_assert(i == len, "S_string_set_float: conversion failed\n");
+	dest->len = i;
 }
 
 void
