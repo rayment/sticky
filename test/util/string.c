@@ -18,7 +18,7 @@
 int
 main(void)
 {
-	Sstring *a, *b;
+	Sstring *a, *b, *c;
 
 	INIT();
 
@@ -30,6 +30,11 @@ main(void)
 	TEST(
 		b = S_string_load(TEST_STRING, strlen(TEST_STRING));
 	, b
+	, "S_string_load");
+
+	TEST(
+		c = S_string_load(TEST_STRING, 5);
+	, c
 	, "S_string_load");
 
 	TEST(
@@ -53,17 +58,35 @@ main(void)
 	, "S_string_equals");
 
 	TEST(
+	, S_string_compare(a, b) == -1
+	, "S_string_compare");
+
+	TEST(
 		S_string_concat(a, b);
 	, S_string_equals(a, b) && S_string_length(a) == S_string_length(b)
 	, "S_string_concat");
+
+	TEST(
+	, S_string_compare(a, b) == 0
+	, "S_string_compare");
 
 	TEST(
 		S_string_concat(a, b);
 	, !S_string_equals(a, b) && S_string_length(a) == 2 * S_string_length(b)
 	, "S_string_concat");
 
+	TEST(
+	, S_string_compare(a, b) == 1
+	, "S_string_compare");
+
+	TEST(
+		S_string_substring(a, a, 0, 5);
+	, S_string_equals(a, c)
+	, "S_string_substring");
+
 	S_string_delete(a);
 	S_string_delete(b);
+	S_string_delete(c);
 
 	FREE();
 

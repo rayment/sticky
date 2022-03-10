@@ -37,9 +37,13 @@ _S_string_grow(Sstring *str,
 	if (len <= str->ptrlen) /* no need to resize */
 		return;
 	if (len > str->ptrlen*2) /* manually resize */
+	{
 		_S_CALL("_S_string_resize", _S_string_resize(str, len));
+	}
 	else /* double */
+	{
 		_S_CALL("_S_string_resize", _S_string_resize(str, str->ptrlen*2));
+	}
 }
 
 static inline
@@ -111,6 +115,30 @@ S_string_concat(Sstring *dest,
 	*(dest->ptr+dest->len) = '\0';
 }
 
+void
+S_string_substring(Sstring *dest,
+                   const Sstring *src,
+                   Ssize_t start,
+                   Ssize_t len)
+{
+	if (!dest || !src || len == 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_substring");
+		return;
+	}
+	else if (start+len >= src->len)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "S_string_substring");
+		return;
+	}
+	if (dest != src)
+		_S_CALL("_S_string_grow", _S_string_grow(dest, len+1));
+	if (dest != src || start != 0) /* no need to move if shrinking src string */
+		memmove(dest->ptr, src->ptr+start, len);
+	dest->len = len;
+	*(dest->ptr+dest->len) = '\0';
+}
+
 Sbool
 S_string_equals(const Sstring *a,
                 const Sstring *b)
@@ -126,6 +154,30 @@ S_string_equals(const Sstring *a,
 			return S_FALSE;
 	}
 	return S_TRUE;
+}
+
+Scomparator
+S_string_compare(const Sstring *a,
+                 const Sstring *b)
+{
+	Ssize_t i;
+	if (!a || !b)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_compare");
+		return -1;
+	}
+	if (a->len < b->len)
+		return -1;
+	else if (b->len < a->len)
+		return 1;
+	for (i = 0; i < a->len; ++i)
+	{
+		if (*(a->ptr+i) < *(b->ptr+i))
+			return -1;
+		else if (*(b->ptr+i) < *(a->ptr+i))
+			return 1;
+	}
+	return 0;
 }
 
 Ssize_t

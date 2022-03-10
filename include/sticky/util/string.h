@@ -28,8 +28,10 @@ Sstring     *S_string_load(const Schar *, Ssize_t);
 void         S_string_delete(Sstring *);
 
 void         S_string_concat(Sstring *, const Sstring *);
+void         S_string_substring(Sstring *, const Sstring *, Ssize_t, Ssize_t);
 
 Sbool        S_string_equals(const Sstring *, const Sstring *);
+Scomparator  S_string_compare(const Sstring *, const Sstring *);
 Ssize_t      S_string_length(const Sstring *);
 const Schar *S_string_ptr(const Sstring *);
 
