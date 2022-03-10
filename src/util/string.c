@@ -222,6 +222,46 @@ S_string_lower(Sstring *str)
 }
 
 Sbool
+S_string_startswith(const Sstring *str,
+                    const Sstring *prefix)
+{
+	Ssize_t i;
+	if (!str || !prefix)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_startswith");
+		return S_FALSE;
+	}
+	if (str->len < prefix->len)
+		return S_FALSE; /* prefix can't be a substring if its larger */
+	for (i = 0; i < prefix->len; ++i)
+	{
+		if (*(str->ptr+i) != *(prefix->ptr+i))
+			return S_FALSE;
+	}
+	return S_TRUE;
+}
+
+Sbool
+S_string_endswith(const Sstring *str,
+                 const Sstring *suffix)
+{
+	Ssize_t i;
+	if (!str || !suffix)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_endswith");
+		return S_FALSE;
+	}
+	if (str->len < suffix->len)
+		return S_FALSE; /* suffix can't be a substring if its larger */
+	for (i = 0; i < suffix->len; ++i)
+	{
+		if (*(str->ptr+str->len-suffix->len+i) != *(suffix->ptr+i))
+			return S_FALSE;
+	}
+	return S_TRUE;
+}
+
+Sbool
 S_string_equals(const Sstring *a,
                 const Sstring *b)
 {
@@ -288,6 +328,45 @@ S_string_copy(Sstring *dest,
 	memcpy(dest->ptr, src->ptr, src->len);
 	dest->len = src->len;
 	*(dest->ptr+dest->len) = '\0';
+}
+
+Schar
+S_string_charat(const Sstring *str,
+                Ssize_t idx)
+{
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_charat");
+		return '\0';
+	}
+	else if (idx >= str->len)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "S_string_charat");
+		return '\0';
+	}
+	return *(str->ptr+idx);
+}
+
+Sbool
+S_string_indexof(const Sstring *str,
+                 Schar c,
+                 Ssize_t *idx)
+{
+	Ssize_t i;
+	if (!str || !idx)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_indexof");
+		return S_FALSE;
+	}
+	for (i = 0; i < str->len; ++i)
+	{
+		if (*(str->ptr+i) == c)
+		{
+			*idx = i;
+			return S_TRUE;
+		}
+	}
+	return S_FALSE;
 }
 
 const Schar *

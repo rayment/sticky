@@ -21,6 +21,9 @@ int
 main(void)
 {
 	Sstring *a, *b, *c;
+	Schar *ptr;
+	Sbool bool1, bool2, bool3;
+	Ssize_t idx1, idx2, idx3;
 
 	INIT();
 
@@ -111,6 +114,41 @@ main(void)
 		S_string_lower(c);
 	, S_string_equals(c, b)
 	, "S_string_lower");
+
+	TEST(
+	, S_string_startswith(c, b)
+	, "S_string_startswith (same)");
+
+	TEST(
+	, S_string_endswith(c, b)
+	, "S_string_endswith (same)");
+
+	TEST(
+		S_string_set(b, TEST_STRING, 5);
+		S_string_set(c, TEST_STRING, strlen(TEST_STRING));
+	, S_string_startswith(c, b)
+	, "S_string_startswith");
+
+	TEST(
+		ptr = TEST_STRING;
+		S_string_set(b, ptr+strlen(TEST_STRING)-5, 5);
+		S_string_set(c, TEST_STRING, strlen(TEST_STRING));
+	, S_string_endswith(c, b)
+	, "S_string_endswith");
+
+	TEST(
+		bool1 = S_string_charat(c, strlen(TEST_STRING)-1) == '!';
+		bool2 = S_string_charat(c, 0) == 'H';
+		bool3 = S_string_charat(c, 1) == 'e';
+	, bool1 && bool2 && bool3
+	, "S_string_charat");
+
+	TEST(
+		bool1 = S_string_indexof(c, 'H', &idx1);
+		bool2 = S_string_indexof(c, 'o', &idx2);
+		bool3 = S_string_indexof(c, '@', &idx3);
+	, bool1 && bool2 && !bool3 && idx1 == 0 && idx2 == 4
+	, "S_string_indexof");
 
 	S_string_delete(a);
 	S_string_delete(b);
