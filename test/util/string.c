@@ -253,6 +253,17 @@ main(void)
 	, S_string_equals(a, b)
 	, "S_string_set_int64");
 
+	TEST(
+		S_string_set(a, "abacaba", strlen("abacaba"));
+		S_string_set(b, "aba", 3);
+		bool1 = S_string_find(a, b, &idx1);
+		S_string_set(a, "ccccbaabacaba", strlen("ccccbaabacaba"));
+		bool2 = S_string_find(a, b, &idx2);
+		S_string_set(a, "ccccbaacaa", strlen("ccccbaacaa"));
+		bool3 = S_string_find(a, b, &idx3);
+	, bool1 && idx1 == 0 && bool2 && idx2 == 6 && !bool3
+	, "S_string_find");
+
 	S_string_delete(a);
 	S_string_delete(b);
 	S_string_delete(c);

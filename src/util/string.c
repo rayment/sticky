@@ -421,7 +421,7 @@ S_string_startswith(const Sstring *str,
 
 Sbool
 S_string_endswith(const Sstring *str,
-                 const Sstring *suffix)
+                  const Sstring *suffix)
 {
 	Ssize_t i;
 	if (!str || !suffix)
@@ -436,6 +436,70 @@ S_string_endswith(const Sstring *str,
 		if (*(str->ptr+str->len-suffix->len+i) != *(suffix->ptr+i))
 			return S_FALSE;
 	}
+	return S_TRUE;
+}
+
+/*
+ * See:
+ *
+ * Fast Pattern Matching in Strings,
+ * Donald E. Knuth, James H. Morris Jr., Vaughan R. Pratt
+ * Siam J. Comput. Vol. 6, No. 2, June 1977
+ */
+Sbool
+S_string_find(const Sstring *haystack,
+              const Sstring *needle,
+              Ssize_t *idx)
+{
+	Sbool b;
+	Ssize_t i, s, t, *fail;
+	if (!haystack || !needle || !idx)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_find");
+		return S_FALSE;
+	}
+	if (haystack->len < needle->len)
+	{
+		return S_FALSE;
+	}
+	else if (haystack->len == needle->len)
+	{
+		_S_CALL("S_string_equals", b = S_string_equals(haystack, needle));
+		return b;
+	}
+	/* generate the failure function */
+	fail = S_memory_new(sizeof(Ssize_t) * needle->len);
+	*(fail) = 0;
+	for (s = 1, t = 0; s < needle->len; ++s)
+	{
+		while (t > 0 && *(needle->ptr+s) != *(needle->ptr+t))
+			t = *(fail+t-1);
+		if (*(needle->ptr+s) == *(needle->ptr+t))
+			++t;
+		*(fail+s) = t;
+	}
+	/* find the substring */
+	s = i = 0;
+	while (i < haystack->len && s < needle->len)
+	{
+		if (*(haystack->ptr+i) == *(needle->ptr+s))
+		{
+			++s;
+			++i;
+		}
+		else if (s == 0)
+		{
+			++i;
+		}
+		else
+		{
+			s = *(fail+s-1);
+		}
+	}
+	S_memory_delete(fail);
+	if (s < needle->len)
+		return S_FALSE;
+	*idx = i - needle->len;
 	return S_TRUE;
 }
 
