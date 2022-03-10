@@ -510,6 +510,21 @@ Smat4_s
 #define S_sign(x) (signbit(x) ? S_TRUE : S_FALSE)
 
 /**
+ * @brief Copy the sign of a single-precision floating-point number to another.
+ * @hideinitializer
+ *
+ * Takes the sign from a single-precision floating-point number @p y and applies
+ * it to another number @p x which acts as the magnitude.
+ *
+ * @param x The single-precision floating-point number to act as the magnitude.
+ * @param y The single-precision floating-point number from which to extract the
+ * sign.
+ * @return @p x with the sign of @p y.
+ * @since 1.0.0
+ */
+#define S_copysign(x,y) copysignf(x, y)
+
+/**
  * @}
  */
 
