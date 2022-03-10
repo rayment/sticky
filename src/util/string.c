@@ -155,6 +155,72 @@ S_string_substring(Sstring *dest,
 	*(dest->ptr+dest->len) = '\0';
 }
 
+void
+S_string_trim(Sstring *str)
+{
+	Ssize_t i, start, len, tmplen;
+	Schar c;
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_trim");
+		return;
+	}
+	for (i = start = len = tmplen = 0; i < str->len; ++i)
+	{
+		c = *(str->ptr+i);
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f')
+		{
+			++tmplen;
+			if (len == 0)
+				++start;
+		}
+		else
+		{
+			if (len != 0)
+				len += tmplen;
+			++len;
+			tmplen = 0;
+		}
+	}
+	if (start != 0 && len != str->len)
+	{
+		_S_CALL("S_string_substring",
+		        S_string_substring(str, str, start, len));
+	}
+}
+
+void
+S_string_upper(Sstring *str)
+{
+	Ssize_t i;
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_upper");
+		return;
+	}
+	for (i = 0; i < str->len; ++i)
+	{
+		if (*(str->ptr+i) >= 97 && *(str->ptr+i) <= 122)
+			*(str->ptr+i) -= 32; /* ascii lower to upper offset */
+	}
+}
+
+void
+S_string_lower(Sstring *str)
+{
+	Ssize_t i;
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_lower");
+		return;
+	}
+	for (i = 0; i < str->len; ++i)
+	{
+		if (*(str->ptr+i) >= 65 && *(str->ptr+i) <= 90)
+			*(str->ptr+i) += 32; /* ascii upper to lower offset */
+	}
+}
+
 Sbool
 S_string_equals(const Sstring *a,
                 const Sstring *b)
@@ -194,40 +260,6 @@ S_string_compare(const Sstring *a,
 			return 1;
 	}
 	return 0;
-}
-
-void
-S_string_trim(Sstring *str)
-{
-	Ssize_t i, start, len, tmplen;
-	Schar c;
-	if (!str)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_string_trim");
-		return;
-	}
-	for (i = start = len = tmplen = 0; i < str->len; ++i)
-	{
-		c = *(str->ptr+i);
-		if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f')
-		{
-			++tmplen;
-			if (len == 0)
-				++start;
-		}
-		else
-		{
-			if (len != 0)
-				len += tmplen;
-			++len;
-			tmplen = 0;
-		}
-	}
-	if (start != 0 && len != str->len)
-	{
-		_S_CALL("S_string_substring",
-		        S_string_substring(str, str, start, len));
-	}
 }
 
 Ssize_t

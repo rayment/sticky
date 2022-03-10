@@ -13,7 +13,9 @@
 
 #include "test_common.h"
 
-#define TEST_STRING "Hello, world!"
+#define TEST_STRING       "Hello, world!"
+#define TEST_STRING_LOWER "hello, world!"
+#define TEST_STRING_UPPER "HELLO, WORLD!"
 
 int
 main(void)
@@ -97,6 +99,18 @@ main(void)
 		S_string_trim(c);
 	, S_string_equals(c, b)
 	, "S_string_trim");
+
+	TEST(
+		S_string_set(b, TEST_STRING_UPPER, strlen(TEST_STRING_UPPER));
+		S_string_upper(c);
+	, S_string_equals(c, b)
+	, "S_string_upper");
+
+	TEST(
+		S_string_set(b, TEST_STRING_LOWER, strlen(TEST_STRING_LOWER));
+		S_string_lower(c);
+	, S_string_equals(c, b)
+	, "S_string_lower");
 
 	S_string_delete(a);
 	S_string_delete(b);
