@@ -44,6 +44,7 @@ void         S_string_set_int32 (Sstring *, Sint32);
 void         S_string_set_int64 (Sstring *, Sint64);
 
 void         S_string_concat(Sstring *, const Sstring *);
+void         S_string_insert(Sstring *, const Sstring *, Ssize_t);
 void         S_string_substring(Sstring *, const Sstring *, Ssize_t, Ssize_t);
 void         S_string_trim(Sstring *);
 void         S_string_upper(Sstring *);

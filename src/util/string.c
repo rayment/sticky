@@ -310,6 +310,40 @@ S_string_concat(Sstring *dest,
 }
 
 void
+S_string_insert(Sstring *dest,
+                const Sstring *src,
+                Ssize_t idx)
+{
+	Sstring *tmp;
+	if (!dest || !src)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_insert");
+		return;
+	}
+	if (idx > dest->len)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "S_string_insert");
+		return;
+	}
+	else if (idx == dest->len)
+	{
+		_S_CALL("S_string_concat", S_string_concat(dest, src));
+		return;
+	}
+	_S_CALL("S_string_new", tmp = S_string_new());
+	/* save the second half of the original string */
+	_S_CALL("S_string_substring",
+	        S_string_substring(tmp, dest, idx, dest->len - idx));
+	/* remove the second half of the original string */
+	dest->len = idx;
+	/* add the new string */
+	_S_CALL("S_string_concat", S_string_concat(dest, src));
+	/* add back the rest of the original string */
+	_S_CALL("S_string_concat", S_string_concat(dest, tmp));
+	_S_CALL("S_string_delete", S_string_delete(tmp));
+}
+
+void
 S_string_substring(Sstring *dest,
                    const Sstring *src,
                    Ssize_t start,

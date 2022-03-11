@@ -296,6 +296,22 @@ main(void)
 	, S_string_equals(a, b)
 	, "S_string_reverse");
 
+	TEST(
+		S_string_set(c, "abc", 3);
+		S_string_set(a, "ac", 2);
+		S_string_set(b, "b", 1);
+		S_string_insert(a, b, 1);
+	, S_string_equals(a, c)
+	, "S_string_insert");
+
+	TEST(
+		S_string_set(c, "bac", 3);
+		S_string_set(a, "ac", 2);
+		S_string_set(b, "b", 1);
+		S_string_insert(a, b, 0);
+	, S_string_equals(a, c)
+	, "S_string_insert");
+
 	S_string_delete(a);
 	S_string_delete(b);
 	S_string_delete(c);
