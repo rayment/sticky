@@ -512,7 +512,8 @@ _S_string_find(const Sstring *haystack,
 	S_memory_delete(fail);
 	if (s < needle->len)
 		return S_FALSE;
-	*idx = i - needle->len;
+	if (idx)
+		*idx = i - needle->len;
 	return S_TRUE;
 }
 
@@ -522,7 +523,7 @@ S_string_find(const Sstring *haystack,
               Ssize_t *idx)
 {
 	Sbool b;
-	if (!haystack || !needle || !idx)
+	if (!haystack || !needle)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_find");
 		return S_FALSE;
@@ -550,7 +551,7 @@ S_string_findlast(const Sstring *haystack,
                   Ssize_t *idx)
 {
 	Sbool b;
-	if (!haystack || !needle || !idx)
+	if (!haystack || !needle)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_findlast");
 		return S_FALSE;
