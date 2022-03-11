@@ -446,27 +446,14 @@ S_string_endswith(const Sstring *str,
  * Donald E. Knuth, James H. Morris Jr., Vaughan R. Pratt
  * Siam J. Comput. Vol. 6, No. 2, June 1977
  */
+static
 Sbool
-S_string_find(const Sstring *haystack,
-              const Sstring *needle,
-              Ssize_t *idx)
+_S_string_find(const Sstring *haystack,
+               const Sstring *needle,
+               Ssize_t *idx,
+               Sbool last)
 {
-	Sbool b;
 	Ssize_t i, s, t, *fail;
-	if (!haystack || !needle || !idx)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_string_find");
-		return S_FALSE;
-	}
-	if (haystack->len < needle->len)
-	{
-		return S_FALSE;
-	}
-	else if (haystack->len == needle->len)
-	{
-		_S_CALL("S_string_equals", b = S_string_equals(haystack, needle));
-		return b;
-	}
 	/* generate the failure function */
 	fail = S_memory_new(sizeof(Ssize_t) * needle->len);
 	*(fail) = 0;
@@ -480,7 +467,7 @@ S_string_find(const Sstring *haystack,
 	}
 	/* find the substring */
 	s = i = 0;
-	while (i < haystack->len && s < needle->len)
+	while (i < haystack->len)
 	{
 		if (*(haystack->ptr+i) == *(needle->ptr+s))
 		{
@@ -495,12 +482,64 @@ S_string_find(const Sstring *haystack,
 		{
 			s = *(fail+s-1);
 		}
+		if (s == needle->len && (!last || i >= haystack->len - needle->len))
+			break;
 	}
 	S_memory_delete(fail);
 	if (s < needle->len)
 		return S_FALSE;
 	*idx = i - needle->len;
 	return S_TRUE;
+}
+
+Sbool
+S_string_find(const Sstring *haystack,
+              const Sstring *needle,
+              Ssize_t *idx)
+{
+	Sbool b;
+	if (!haystack || !needle || !idx)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_find");
+		return S_FALSE;
+	}
+	if (haystack->len < needle->len)
+	{
+		return S_FALSE;
+	}
+	else if (haystack->len == needle->len)
+	{
+		_S_CALL("S_string_equals", b = S_string_equals(haystack, needle));
+		return b;
+	}
+	_S_CALL("_S_string_find",
+	        b = _S_string_find(haystack, needle, idx, S_FALSE));
+	return b;
+}
+
+Sbool
+S_string_findlast(const Sstring *haystack,
+                  const Sstring *needle,
+                  Ssize_t *idx)
+{
+	Sbool b;
+	if (!haystack || !needle || !idx)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_findlast");
+		return S_FALSE;
+	}
+	if (haystack->len < needle->len)
+	{
+		return S_FALSE;
+	}
+	else if (haystack->len == needle->len)
+	{
+		_S_CALL("S_string_equals", b = S_string_equals(haystack, needle));
+		return b;
+	}
+	_S_CALL("_S_string_find",
+	        b = _S_string_find(haystack, needle, idx, S_TRUE));
+	return b;
 }
 
 Sbool

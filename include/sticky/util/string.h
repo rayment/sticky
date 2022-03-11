@@ -51,6 +51,7 @@ void         S_string_lower(Sstring *);
 Sbool        S_string_startswith(const Sstring *, const Sstring *);
 Sbool        S_string_endswith(const Sstring *, const Sstring *);
 Sbool        S_string_find(const Sstring *, const Sstring *, Ssize_t *);
+Sbool        S_string_findlast(const Sstring *, const Sstring *, Ssize_t *);
 
 Sbool        S_string_equals(const Sstring *, const Sstring *);
 Scomparator  S_string_compare(const Sstring *, const Sstring *);
