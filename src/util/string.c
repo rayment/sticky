@@ -320,7 +320,7 @@ S_string_substring(Sstring *dest,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_substring");
 		return;
 	}
-	else if (start+len >= src->len)
+	else if (start+len > src->len)
 	{
 		_S_SET_ERROR(S_INVALID_INDEX, "S_string_substring");
 		return;
