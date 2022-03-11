@@ -399,6 +399,30 @@ S_string_lower(Sstring *str)
 	}
 }
 
+/*
+ * See: https://stackoverflow.com/a/784442
+ */
+void
+S_string_reverse(Sstring *str)
+{
+	Schar tmp;
+	Ssize_t i, j, limit;
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_reverse");
+		return;
+	}
+	if (str->len <= 1)
+		return; /* nothing to reverse */
+	limit = str->len / 2;
+	for (i = 0, j = str->len - 1; i < limit; ++i, --j)
+	{
+		tmp = *(str->ptr+j);
+		*(str->ptr+j) = *(str->ptr+i);
+		*(str->ptr+i) = tmp;
+	}
+}
+
 Sbool
 S_string_startswith(const Sstring *str,
                     const Sstring *prefix)
@@ -517,6 +541,9 @@ S_string_find(const Sstring *haystack,
 	return b;
 }
 
+/*
+ * TODO: Use a reverse function and traverse the string backwards.
+ */
 Sbool
 S_string_findlast(const Sstring *haystack,
                   const Sstring *needle,

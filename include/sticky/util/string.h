@@ -48,6 +48,7 @@ void         S_string_substring(Sstring *, const Sstring *, Ssize_t, Ssize_t);
 void         S_string_trim(Sstring *);
 void         S_string_upper(Sstring *);
 void         S_string_lower(Sstring *);
+void         S_string_reverse(Sstring *);
 Sbool        S_string_startswith(const Sstring *, const Sstring *);
 Sbool        S_string_endswith(const Sstring *, const Sstring *);
 Sbool        S_string_find(const Sstring *, const Sstring *, Ssize_t *);

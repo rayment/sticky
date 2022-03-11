@@ -275,6 +275,27 @@ main(void)
 	, bool1 && idx1 == 4 && bool2 && idx2 == 10 && !bool3
 	, "S_string_findlast");
 
+	TEST(
+		S_string_set(a, "abcdefg", 7);
+		S_string_set(b, "gfedcba", 7);
+		S_string_reverse(a);
+	, S_string_equals(a, b)
+	, "S_string_reverse");
+
+	TEST(
+		S_string_set(a, "abcdef", 6);
+		S_string_set(b, "fedcba", 6);
+		S_string_reverse(a);
+	, S_string_equals(a, b)
+	, "S_string_reverse");
+
+	TEST(
+		S_string_set(a, "a", 1);
+		S_string_set(b, "a", 1);
+		S_string_reverse(a);
+	, S_string_equals(a, b)
+	, "S_string_reverse");
+
 	S_string_delete(a);
 	S_string_delete(b);
 	S_string_delete(c);
