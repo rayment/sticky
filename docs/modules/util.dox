@@ -11,3 +11,10 @@
  * @brief Random number generation.
  */
 
+/**
+ * @defgroup string Strings
+ * @ingroup util
+ *
+ * @brief String manipulation.
+ */
+

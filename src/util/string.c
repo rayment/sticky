@@ -124,6 +124,24 @@ S_string_set(Sstring *dest,
 }
 
 void
+S_string_setat(Sstring *str,
+               Schar c,
+               Ssize_t idx)
+{
+	if (!str)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_setat");
+		return;
+	}
+	else if (idx >= str->len)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "S_string_setat");
+		return;
+	}
+	*(str->ptr+idx) = c;
+}
+
+void
 S_string_set_format(Sstring *dest,
                     const Schar *format,
                     ...)
@@ -320,7 +338,7 @@ S_string_insert(Sstring *dest,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_string_insert");
 		return;
 	}
-	if (idx > dest->len)
+	else if (idx > dest->len)
 	{
 		_S_SET_ERROR(S_INVALID_INDEX, "S_string_insert");
 		return;
@@ -341,6 +359,33 @@ S_string_insert(Sstring *dest,
 	/* add back the rest of the original string */
 	_S_CALL("S_string_concat", S_string_concat(dest, tmp));
 	_S_CALL("S_string_delete", S_string_delete(tmp));
+}
+
+void
+S_string_remove(Sstring *str,
+                Ssize_t start,
+                Ssize_t len)
+{
+	if (!str || len == 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_string_remove");
+		return;
+	}
+	else if (start+len > str->len)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "S_string_remove");
+		return;
+	}
+	else if (start+len == str->len)
+	{
+		str->len -= len;
+		*(str->ptr+str->len) = '\0';
+	}
+	else
+	{
+		memcpy(str->ptr+start, str->ptr+start+len, str->len-len);
+		str->len -= len;
+	}
 }
 
 void
