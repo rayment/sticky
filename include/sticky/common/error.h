@@ -374,6 +374,10 @@ _S_assert(const Schar *location,
         _S_log_vararg(_S_ERR_LOC, "DR", _S_LOG_ERROR,     \
                       "%s: %s\n", func, msg)
 
+#define _S_error_freetype(msg)                            \
+        _S_log_vararg(_S_ERR_LOC, "FT", _S_LOG_ERROR,     \
+                      "%s\n", msg)
+
 #define _S_error_other(category,...)                      \
         _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
                       "%s: " __VA_ARGS__)

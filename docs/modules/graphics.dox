@@ -47,6 +47,13 @@
  */
 
 /**
+ * @defgroup font Fonts
+ * @ingroup graphics
+ *
+ * @brief Font and text drawing.
+ */
+
+/**
  * @defgroup pencil Drawing primitives
  * @ingroup graphics
  *
