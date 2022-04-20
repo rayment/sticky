@@ -88,6 +88,7 @@ _S_sound_stream_buffer_wav(Ssound *sound,
                            Ssize_t data_size,
                            int buf)
 {
+	Ssize_t tmp;
 	Suint64 num_frames, rd;
 
 	if (!sound || !data || data_size == 0 || buf == 0)
@@ -102,7 +103,9 @@ _S_sound_stream_buffer_wav(Ssound *sound,
 	rd = drwav_read_pcm_frames_s16(&sound->wav, num_frames, data);
 	if (rd > 0)
 	{
-		data_size = S_min(data_size, rd * sizeof(Sint16) * sound->channels);
+		tmp = rd * sizeof(Sint16) * sound->channels;
+		if (tmp < data_size)
+			data_size = tmp;
 		_S_AL(alBufferData(buf, sound->format, data,
 		                   data_size, (ALsizei) sound->sample_rate));
 	}
