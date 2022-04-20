@@ -76,6 +76,10 @@ typedef struct Sfont_s
  * the quality of the resulting image, however it comes at the cost of a larger
  * texture and possible artifacts if rendering at small sizes.
  *
+ * Note that {@link S_font_set_camera(Sfont *, const Scamera *)} must be called
+ * to provide a camera to the font so it knows the projection matrix for
+ * rendering.
+ *
  * @param[in] filename The file path to the font to be loaded.
  * @param[in] pixel_size The size of the font for generation.
  * @return A pointer to a newly allocated and loaded font.
