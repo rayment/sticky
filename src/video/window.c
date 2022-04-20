@@ -182,7 +182,8 @@ S_window_apply(Swindow *window)
 			_S_error_glew("S_sticky_init", glew);
 		/* other init that requires GL */
 		_S_CALL("_S_texture_init", _S_texture_init());
-		_S_CALL("_S_font_init", _S_font_init());
+		_S_CALL("_S_font_init",
+		        _S_font_init(window->gl_major, window->gl_minor));
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */

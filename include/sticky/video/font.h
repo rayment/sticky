@@ -157,7 +157,7 @@ void  S_font_set_camera(Sfont *, const Scamera *);
  */
 void  S_font_set_color(Sfont *, float, float, float);
 
-void _S_font_init(void);
+void _S_font_init(Suint8, Suint8);
 void _S_font_free(void);
 
 /**

@@ -64,9 +64,16 @@ static Sfloat font_buffer[S_GLYPH_BUFFER_SIZE*6*4];
 static Sshader *font_shader;
 
 void
-_S_font_init(void)
+_S_font_init(Suint8 gl_maj,
+             Suint8 gl_min)
 {
 	Svec3 default_color;
+	if (gl_maj < 3 || (gl_maj == 3 && gl_min < 3))
+	{
+		/* cannot generate the font shader on old GL versions */
+		font_shader = NULL;
+		return;
+	}
 	if (FT_Init_FreeType(&font_library) != 0)
 		_S_error_freetype("Failed to init FreeType.");
 	/* generate shader */
@@ -83,8 +90,11 @@ _S_font_init(void)
 void
 _S_font_free(void)
 {
-	FT_Done_FreeType(font_library);
-	_S_CALL("S_shader_delete", S_shader_delete(font_shader));
+	if (font_shader)
+	{
+		FT_Done_FreeType(font_library);
+		_S_CALL("S_shader_delete", S_shader_delete(font_shader));
+	}
 }
 
 static
