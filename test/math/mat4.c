@@ -76,7 +76,7 @@ main(void)
 	Svec3 vec;
 	Squat quat;
 	Sbool bb;
-	Sfloat near, far, aspect, fovy, f;
+	Sfloat near, far, aspect, fovy, width, height, f;
 
 	INIT();
 
@@ -215,6 +215,21 @@ main(void)
 		S_mat4_perspective(&b, fovy, aspect, near, far);
 	, S_mat4_equals(EPSILON, &a, &b)
 	, "S_mat4_perspective");
+
+	TEST(
+		near = 0.01f;
+		far = 100.0f;
+		width = 800.0f;
+		height = 600.0f;
+		S_mat4_identity(&a);
+		a.m00 = 2.0f / width;
+		a.m03 = -1.0f;
+		a.m11 = 2.0f / height;
+		a.m13 = -1.0f;
+		a.m22 = -1.0f;
+		S_mat4_orthographic(&b, width, height);
+	, S_mat4_equals(EPSILON, &a, &b)
+	, "S_mat4_orthographic");
 
 	a.m00 = 5.0f;   a.m10 = 2.0f;   a.m20 = 8.0f;   a.m30 = 3.0f;
 	a.m01 = 7.0f;   a.m11 = 3.0f;   a.m21 = 10.0f;  a.m31 = 3.0f;

@@ -238,6 +238,24 @@ S_mat4_perspective(Smat4 *dest,
 }
 
 void
+S_mat4_orthographic(Smat4 *dest,
+                    Sfloat width,
+                    Sfloat height)
+{
+	if (!dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_mat4_orthographic");
+		return;
+	}
+	_S_CALL("S_mat4_identity", S_mat4_identity(dest));
+	dest->m00 = 2.0f / width;
+	dest->m03 = -1.0f;
+	dest->m11 = 2.0f / height;
+	dest->m13 = -1.0f;
+	dest->m22 = -1.0f;
+}
+
+void
 S_mat4_copy(Smat4 *dest,
             const Smat4 *src)
 {

@@ -242,6 +242,35 @@ void  S_mat4_scale(Smat4 *, const Svec3 *);
 void  S_mat4_perspective(Smat4 *, Sfloat, Sfloat, Sfloat, Sfloat);
 
 /**
+ * @brief Generate an orthographic projection matrix.
+ *
+ * This function generates an orthographic view matrix that takes the pixel size
+ * of the window that houses the camera.
+ *
+ * This function does not take into account near or far planes, as it is only
+ * used for UI drawing.
+ *
+ * The orthographic projection is defined by the following:
+ *
+ * @f[
+ *     \left[{\begin{array}{cccc}
+ *         \frac{2}{width} & 0 & 0 & -1 \\
+ *         0 & \frac{2}{height} & 0 & -1 \\
+ *         0 & 0 & -1 & 0 \\
+ *         0 & 0 & 0 & 1
+ *     \end{array}}\right]
+ * @f]
+ *
+ * @param[out] dest The destination matrix to put the perspective into.
+ * @param[in] width The width of the projection matrix in pixels.
+ * @param[in] height The height of the projection matrix in pixels.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid 4x4 matrix is provided
+ * to the function.
+ * @since 1.0.0
+ */
+void  S_mat4_orthographic(Smat4 *, Sfloat, Sfloat);
+
+/**
  * @brief Create a copy of a 4x4 matrix.
  *
  * Creates a duplicate copy of a given matrix to a given destination pointer.
