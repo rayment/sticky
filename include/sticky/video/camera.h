@@ -40,7 +40,8 @@ Scamera_s
 {
 	Stransform *transform;
 	Sfloat near, far, fov, aspect;
-	Smat4 perspective;
+	Suint32 width, height;
+	Smat4 perspective, orthographic;
 } Scamera;
 
 /**
@@ -116,17 +117,19 @@ void        S_camera_set_far_plane(Scamera *, Sfloat);
 void        S_camera_set_field_of_view(Scamera *, Sfloat);
 
 /**
- * @brief Set the aspect-ratio of a camera.
+ * @brief Set the pixel size and aspect-ratio of a camera.
  *
- * Sets the width to height aspect-ratio of a given camera.
+ * Sets the width and height of the camera, and by extension the aspect-ratio of
+ * a given camera.
  *
  * @param[in,out] camera The camera.
- * @param[in] aspect The aspect-ratio for the camera.
+ * @param[in] width The width of the camera in pixels.
+ * @param[in] height The height of the camera in pixels.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
  * the function.
  * @since 1.0.0
  */
-void        S_camera_set_aspect_ratio(Scamera *, Sfloat);
+void        S_camera_set_size(Scamera *, Suint32, Suint32);
 
 /**
  * @brief Get the near-plane of a camera.
@@ -164,6 +167,21 @@ Sfloat      S_camera_get_far_plane(const Scamera *);
  */
 Sfloat      S_camera_get_field_of_view(const Scamera *);
 
+/*
+ * @brief Get the pixel size of a camera.
+ *
+ * Sets either of the two given pointers to the width and height respectively of
+ * the camera so long as they are not equal to <c>NULL</c>.
+ *
+ * @param[in] camera The camera.
+ * @param[out] width The width output of the camera in pixels.
+ * @param[out] height The height output of the camera in pixels.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
+ * the function.
+ * @since 1.0.0
+ */
+Sfloat      S_camera_get_aspect_ratio(const Scamera *);
+
 /**
  * @brief Get the aspect-ratio of a camera.
  *
@@ -191,17 +209,30 @@ Sfloat      S_camera_get_aspect_ratio(const Scamera *);
 Stransform *S_camera_get_transform(const Scamera *);
 
 /**
- * @brief Get the projection matrix of a camera.
+ * @brief Get the perspective matrix of a camera.
  *
- * Returns the projection matrix of a given camera.
+ * Returns the perspective matrix of a given camera used for 3D drawing.
  *
  * @param[in] camera The camera.
- * @param[out] dest The matrix to store the projection in.
+ * @param[out] dest The matrix to store the perspective projection in.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera or 4x4 matrix
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_camera_get_projection_matrix(const Scamera *, Smat4 *);
+void        S_camera_get_perspective_matrix(const Scamera *, Smat4 *);
+
+/**
+ * @brief Get the orthographic matrix of a camera.
+ *
+ * Returns the orthographic matrix of a given camera used for 2D drawing.
+ *
+ * @param[in] camera The camera.
+ * @param[out] dest The matrix to store the orthographic projection in.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera or 4x4 matrix
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void        S_camera_get_orthographic_matrix(const Scamera *, Smat4 *);
 
 /**
  * @brief Get the view matrix of a camera.

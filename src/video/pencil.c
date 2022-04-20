@@ -66,9 +66,9 @@ S_pencil_new(void)
 	_S_GL(glEnable(GL_PROGRAM_POINT_SIZE));
 	_S_CALL("S_shader_new",
 	        pencil->shader = S_shader_new(DRAW_VERTEX_SOURCE,
-	                                    strlen(DRAW_VERTEX_SOURCE),
-	                                    DRAW_FRAGMENT_SOURCE,
-	                                    strlen(DRAW_FRAGMENT_SOURCE)));
+	                                      strlen(DRAW_VERTEX_SOURCE),
+	                                      DRAW_FRAGMENT_SOURCE,
+	                                      strlen(DRAW_FRAGMENT_SOURCE)));
 
 	_S_CALL("S_mesh_new",
 	        pencil->line_mesh = S_mesh_new(line_vertices, 6,
@@ -128,8 +128,9 @@ S_pencil_draw_line(const Spencil *pencil,
 	_S_CALL("S_transform_set_rot",
 	        S_transform_set_rot(pencil->transform, &quat));
 	/* get matrices */
-	_S_CALL("S_camera_get_projection_matrix",
-	        S_camera_get_projection_matrix(pencil->camera, &projection));
+	/* TODO: Dirty check the camera. */
+	_S_CALL("S_camera_get_perspective_matrix",
+	        S_camera_get_perspective_matrix(pencil->camera, &projection));
 	_S_CALL("S_camera_get_view_matrix",
 	        S_camera_get_view_matrix(pencil->camera, &view));
 	_S_CALL("S_transform_get_transformation_matrix",
@@ -163,8 +164,9 @@ S_pencil_draw_point(const Spencil *pencil,
 	_S_CALL("S_transform_set_pos",
 	        S_transform_set_pos(pencil->transform, point));
 	/* get matrices */
-	_S_CALL("S_camera_get_projection_matrix",
-	        S_camera_get_projection_matrix(pencil->camera, &projection));
+	/* TODO: Dirty check the camera. */
+	_S_CALL("S_camera_get_perspective_matrix",
+	        S_camera_get_perspective_matrix(pencil->camera, &projection));
 	_S_CALL("S_camera_get_view_matrix",
 	        S_camera_get_view_matrix(pencil->camera, &view));
 	_S_CALL("S_transform_get_transformation_matrix",

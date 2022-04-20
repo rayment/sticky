@@ -51,8 +51,8 @@ S_frustum_load(Sfrustum *frustum,
 		return;
 	}
 
-	_S_CALL("S_camera_get_projection_matrix",
-	         S_camera_get_projection_matrix(camera, &persp));
+	_S_CALL("S_camera_get_perspective_matrix",
+	         S_camera_get_perspective_matrix(camera, &persp));
 	_S_CALL("S_camera_get_view_matrix",
 	         S_camera_get_view_matrix(camera, &view));
 	_S_CALL("S_mat4_multiply", S_mat4_multiply(&persp, &view));

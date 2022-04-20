@@ -19,13 +19,16 @@
 
 static inline
 void
-_S_camera_set_perspective(Scamera *camera)
+_S_camera_set_projection(Scamera *camera)
 {
 	_S_CALL("S_mat4_perspective", S_mat4_perspective(&camera->perspective,
 	                                                 camera->fov,
 	                                                 camera->aspect,
 	                                                 camera->near,
 	                                                 camera->far));
+	_S_CALL("S_mat4_orthographic", S_mat4_orthographic(&camera->orthographic,
+	                                                   camera->width,
+	                                                   camera->height));
 }
 
 Scamera *
@@ -39,7 +42,9 @@ S_camera_new(Suint32 width,
 	camera->far = 100.0f;
 	camera->fov = 60.0f;
 	camera->aspect = ((Sfloat) width) / ((Sfloat) height);
-	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
+	camera->width = width;
+	camera->height = height;
+	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 	return camera;
 }
 
@@ -65,7 +70,7 @@ S_camera_set_near_plane(Scamera *camera,
 		return;
 	}
 	camera->near = near;
-	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
+	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
 void
@@ -78,7 +83,7 @@ S_camera_set_far_plane(Scamera *camera,
 		return;
 	}
 	camera->far = far;
-	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
+	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
 void
@@ -91,20 +96,23 @@ S_camera_set_field_of_view(Scamera *camera,
 		return;
 	}
 	camera->fov = fov;
-	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
+	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
 void
-S_camera_set_aspect_ratio(Scamera *camera,
-                          Sfloat aspect)
+S_camera_set_size(Scamera *camera,
+                  Suint32 width,
+                  Suint32 height)
 {
 	if (!camera)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_aspect_ratio");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_size");
 		return;
 	}
-	camera->aspect = aspect;
-	_S_CALL("_S_camera_set_perspective", _S_camera_set_perspective(camera));
+	camera->width = width;
+	camera->height = height;
+	camera->aspect = (Sfloat) width / (Sfloat) height;
+	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
 Sfloat
@@ -140,6 +148,22 @@ S_camera_get_field_of_view(const Scamera *camera)
 	return camera->fov;
 }
 
+void
+S_camera_get_size(const Scamera *camera,
+                          Suint32 *width,
+                          Suint32 *height)
+{
+	if (!camera)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_size");
+		return;
+	}
+	if (width)
+		*width = camera->width;
+	if (height)
+		*height = camera->height;
+}
+
 Sfloat
 S_camera_get_aspect_ratio(const Scamera *camera)
 {
@@ -163,15 +187,27 @@ S_camera_get_transform(const Scamera *camera)
 }
 
 void
-S_camera_get_projection_matrix(const Scamera *camera,
-                               Smat4 *dest)
+S_camera_get_perspective_matrix(const Scamera *camera,
+                                Smat4 *dest)
 {
 	if (!camera || !dest)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_projection_matrix");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_perspective_matrix");
 		return;
 	}
 	_S_CALL("S_mat4_copy", S_mat4_copy(dest, &camera->perspective));
+}
+
+void
+S_camera_get_orthographic_matrix(const Scamera *camera,
+                                 Smat4 *dest)
+{
+	if (!camera || !dest)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_orthographic_matrix");
+		return;
+	}
+	_S_CALL("S_mat4_copy", S_mat4_copy(dest, &camera->orthographic));
 }
 
 void
