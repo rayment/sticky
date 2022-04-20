@@ -52,6 +52,12 @@ extern "C"
  */
 #define S_HALFPI     1.5707963268f
 /**
+ * @brief The value of @f$\frac{\pi}{4}@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_QUARTERPI  0.7853981634f
+/**
  * @brief The value of @f$\sqrt{\pi}@f$.
  *
  * @since 1.0.0
@@ -64,11 +70,29 @@ extern "C"
  */
 #define S_HALFSQRTPI 0.8862269255f
 /**
+ * @brief The value of @f$\sqrt{2}@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_SQRT2      1.4142135624f
+/**
+ * @brief The value of @f$\frac{\sqrt{2}}{2}@f$.
+ *
+ * @since 1.0.0
+ */
+#define S_HALFSQRT2  0.7071067812f
+/**
  * @brief The infinity value for single-precision floating-point numbers.
  *
  * @since 1.0.0
  */
 #define S_INFINITY   INFINITY
+/**
+ * @brief The not-a-number value for single-precision floating-point numbers.
+ *
+ * @since 1.0.0
+ */
+#define S_NAN        NAN
 
 /**
  * @}
@@ -335,7 +359,18 @@ Smat4_s
  * @return @f$\mathrm{min}(x,y)@f$
  * @since 1.0.0
  */
-#define S_min(x,y)        ((x)<(y) ? (x) : (y))
+#define S_min(x,y) ((S_abs(x)>S_abs(y)&&S_sign(x))||S_abs(x)<S_abs(y))?(x):(y)
+
+/**
+ * @brief Return the smallest of two integer numbers.
+ * @hideinitializer
+ *
+ * @param x An integer number.
+ * @param y An integer number.
+ * @return @f$\mathrm{min}(x,y)@f$
+ * @since 1.0.0
+ */
+#define S_imin(x,y) ((x)<(y) ? (x) : (y))
 
 /**
  * @brief Return the largest of two single-precision floating-point numbers.
@@ -346,7 +381,18 @@ Smat4_s
  * @return @f$\mathrm{max}(x,y)@f$
  * @since 1.0.0
  */
-#define S_max(x,y)        ((x)>(y) ? (x) : (y))
+#define S_max(x,y) ((S_abs(x)>S_abs(y)&&S_sign(x))||S_abs(x)<S_abs(y))?(y):(x)
+
+/**
+ * @brief Return the largest of two integer numbers.
+ * @hideinitializer
+ *
+ * @param x An integer number.
+ * @param y An integer number.
+ * @return @f$\mathrm{max}(x,y)@f$
+ * @since 1.0.0
+ */
+#define S_imax(x,y) ((x)>(y) ? (x) : (y))
 
 /**
  * @brief Calculate the square root of a single-precision floating-point number.
@@ -523,6 +569,18 @@ Smat4_s
  * @since 1.0.0
  */
 #define S_copysign(x,y) copysignf(x, y)
+
+/**
+ * @brief Check if a single-precision floating-point number is equal to
+ * <c>NaN</c>.
+ * @hideinitializer
+ *
+ * @param x The single-precision floating-point number.
+ * @return {@link S_TRUE} if @p x is equal to <c>NaN</c>. Otherwise
+ * {@link S_FALSE}.
+ * @since 1.0.0
+ */
+#define S_isnan(x)      isnan(x)
 
 /**
  * @}
