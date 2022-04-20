@@ -323,7 +323,9 @@ S_window_set_title(Swindow *window,
 	}
 	if (title)
 	{
-		len = S_min(strlen(title), 63);
+		len = strlen(title);
+		if (len > 63)
+			len = 63;
 		if (len > 0)
 		{
 			memcpy(window->title, title, len * sizeof(Schar));
