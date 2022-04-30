@@ -80,11 +80,20 @@ typedef double        Sdouble;
  * @brief Wrapper for system-dependant <b><c>size_t</c></b> data-type.
  *
  * An undefined integer guaranteed to be able to represent the largest size an
- * object can be in bytes for a given system.
+ * object can be (unsigned) in bytes for a given system.
  *
  * @since 1.0.0
  */
 typedef size_t        Ssize_t;
+/**
+ * @brief Wrapper for system-dependant <b><c>intmax_t</c></b> data-type.
+ *
+ * An undefined integer guaranteed to be able to represent the largest size an
+ * object can be (signed) in bytes for a given system.
+ *
+ * @since 1.0.0
+ */
+typedef intmax_t      Sssize_t;
 /**
  * @brief Comparison operation data-type.
  *
