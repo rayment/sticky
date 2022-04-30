@@ -158,18 +158,13 @@ _S_memtrace_resize_frame(const void *ptrold,
                          Suint32 line)
 {
 #ifdef DEBUG_TRACE
-	struct _S_memtrace_memory_frame_s *frame, *tmpframe;
+	struct _S_memtrace_memory_frame_s *frame;
 
 	frame = mem_frames;
-	tmpframe = NULL;
 	while (frame)
 	{
 		if (frame->ptr == ptrold)
 		{
-			if (tmpframe)
-				tmpframe->next = frame->next;
-			else
-				mem_frames = frame->next;
 			fprintf(stdout,
 			        MEMTRACE "resized (%p -> %p) %ldb -> %ldb at %s:%d\n",
 			        ptrold, ptrnew, frame->size, size, location, line);
@@ -178,7 +173,6 @@ _S_memtrace_resize_frame(const void *ptrold,
 			++num_resizes;
 			return;
 		}
-		tmpframe = frame;
 		frame = frame->next;
 	}
 	/* no frame found, raise an error */
