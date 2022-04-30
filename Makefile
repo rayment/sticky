@@ -61,7 +61,7 @@ HEADERS:=$(shell find include/ -name '*.h') \
 # OS-dependent variables
 ifeq ($(OS),Windows_NT)
 	SOURCES:=$(filter-out $(wildcard src/*/**_posix.c),$(SOURCES))
-	HEADERS:=$(filter-out $(wildcard src/*/**_posix.h),$(HEADERS))
+	HEADERS:=$(filter-out $(wildcard include/sticky/*/**_posix.h),$(HEADERS))
 	STATIC_LIB:=$(LIBNAME)-$(VERSION).lib
 	LINK_LIB=$(LIBNAME).dll
 	DYNAMIC_LIB:=$(LIBNAME)-$(VERSION).dll
@@ -75,7 +75,8 @@ else
 			CXXFLAGS+=-fopenmp -DENABLE_OPENMP=1
 		endif
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
-		HEADERS:=$(filter-out $(wildcard src/*/**_win32.h),$(HEADERS))
+		HEADERS:=$(filter-out \
+		         $(wildcard include/sticky/*/**_win32.h),$(HEADERS))
 		STATIC_LIB:=lib$(LIBNAME).a.$(VERSION)
 		LINK_LIB=lib$(LIBNAME).so
 		DYNAMIC_LIB:=$(LINK_LIB).$(VERSION)
