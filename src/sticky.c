@@ -33,7 +33,6 @@ S_sticky_free()
 	if (_S_window_is_init())
 	{
 		/* free audio-visual stuff */
-		_S_font_free();
 		SDL_Quit();
 		_S_sound_free();
 	}

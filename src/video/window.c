@@ -94,6 +94,7 @@ S_window_delete(Swindow *window)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_delete");
 		return;
 	}
+	_S_font_free();
 	SDL_GL_DeleteContext(window->context);
 	SDL_DestroyWindow(window->window);
 	S_memory_delete(window);
