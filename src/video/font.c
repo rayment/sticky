@@ -438,7 +438,7 @@ S_font_load(const Schar *filename,
 	                   NULL, GL_DYNAMIC_DRAW));
 	_S_GL(glEnableVertexAttribArray(0));
 	_S_GL(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
-	                            4 * sizeof(Sfloat), 0));
+	                            4 * sizeof(Sfloat), (void *) 0));
 	_S_GL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	_S_GL(glBindVertexArray(0));
 	_S_GL(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
