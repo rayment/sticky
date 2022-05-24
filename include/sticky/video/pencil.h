@@ -187,7 +187,7 @@ void   S_pencil_set_color(Spencil *, float, float, float);
  * Note that textures are only used for drawing shapes, not lines or points.
  *
  * @param[in,out] pencil The pencil.
- * @param[in] texture The texture to draw with.
+ * @param[in] tex The texture to draw with.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil is provided to
  * the function.
  * @since 1.0.0
