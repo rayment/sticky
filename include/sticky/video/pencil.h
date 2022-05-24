@@ -26,6 +26,7 @@ extern "C"
 #include "sticky/video/camera.h"
 #include "sticky/video/mesh.h"
 #include "sticky/video/shader.h"
+#include "sticky/video/texture.h"
 
 /**
  * @addtogroup pencil
@@ -36,7 +37,7 @@ extern "C"
  * @brief Primitive pencil struct.
  *
  * Primitive pencils allow for drawing lines and other primitive shapes on the
- * screen for debugging purposes.
+ * screen for UI or debugging purposes.
  *
  * @warning This module uses a built-in shader compiled for OpenGL 3.3 Core.
  * Ensure a compatible profile is used before attempting to call
@@ -46,9 +47,10 @@ extern "C"
 typedef struct
 Spencil_s
 {
-	Smesh *line_mesh;
 	Sshader *shader;
 	Stransform *transform;
+	Svec3 color;
+	const Stexture *texture;
 	const Scamera *camera;
 } Spencil;
 
@@ -98,7 +100,7 @@ void   S_pencil_delete(Spencil *);
  * is provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_draw_line(const Spencil *, const Svec3 *, const Svec3 *);
+void   S_pencil_draw_line_3d(const Spencil *, const Svec3 *, const Svec3 *);
 
 /**
  * @brief Draw a point in 3D space.
@@ -114,7 +116,24 @@ void   S_pencil_draw_line(const Spencil *, const Svec3 *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_draw_point(const Spencil *, const Svec3 *);
+void   S_pencil_draw_point_3d(const Spencil *, const Svec3 *);
+
+/**
+ * @brief Draw a quad in 2D space.
+ *
+ * Draws a quad of two triangles for a given camera in 2D space.
+ *
+ * The draw colour can be modified by calling the
+ * {@link S_pencil_set_camera(Spencil *, const Scamera *)} function.
+ *
+ * @param[in] pencil The pencil to draw with.
+ * @param[in] from The location of one point of the quad on the screen.
+ * @param[in] to The location diagonal to @p from of the quad on the screen.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil or 2D vector
+ * is provided to the function.
+ * @since 1.0.0
+ */
+void   S_pencil_draw_quad_2d(const Spencil *, const Svec2 *, const Svec2 *);
 
 /**
  * @brief Set the camera of a pencil.
@@ -142,13 +161,41 @@ void   S_pencil_set_camera(Spencil *, const Scamera *);
  * following draw calls. Because of this, this function may be called many times
  * during one frame for various colour outputs.
  *
+ * Colour values are between @f$0@f$ and @f$1@f$.
+ *
  * @param[in,out] pencil The pencil.
- * @param[in] color The colour to draw with.
- * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil or 3D vector is
- * provided to the function.
+ * @param[in] r The red colour component.
+ * @param[in] g The green colour component.
+ * @param[in] b The blue colour component.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil is provided to
+ * the function.
  * @since 1.0.0
  */
-void   S_pencil_set_color(Spencil *, const Svec3 *);
+void   S_pencil_set_color(Spencil *, float, float, float);
+
+/**
+ * @brief Set the texture of a pencil.
+ *
+ * Sets the texture that a pencil should draw its shapes with. This function will
+ * not replace the texture of previously drawn shapes, as it only affects the
+ * following draw calls. Because of this, this function may be called many times
+ * during one frame for various texture outputs.
+ *
+ * If a <c>NULL</c> texture is provided, then no texture will be used when
+ * drawing.
+ *
+ * Note that textures are only used for drawing shapes, not lines or points.
+ *
+ * @param[in,out] pencil The pencil.
+ * @param[in] texture The texture to draw with.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void   S_pencil_set_texture(Spencil *, const Stexture *);
+
+void  _S_pencil_init(Suint8, Suint8);
+void  _S_pencil_free(void);
 
 /**
  * @}

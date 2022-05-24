@@ -25,6 +25,7 @@
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
 #include "sticky/video/font.h"
+#include "sticky/video/pencil.h"
 #include "sticky/video/texture.h"
 #include "sticky/video/window.h"
 
@@ -94,6 +95,7 @@ S_window_delete(Swindow *window)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_delete");
 		return;
 	}
+	_S_pencil_free();
 	_S_font_free();
 	SDL_GL_DeleteContext(window->context);
 	SDL_DestroyWindow(window->window);
@@ -185,6 +187,8 @@ S_window_apply(Swindow *window)
 		_S_CALL("_S_texture_init", _S_texture_init());
 		_S_CALL("_S_font_init",
 		        _S_font_init(window->gl_major, window->gl_minor));
+		_S_CALL("_S_pencil_init",
+		        _S_pencil_init(window->gl_major, window->gl_minor));
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */
