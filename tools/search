@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Find a C symbol declaration or reference in the code base.
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 24/05/2022
+
+command -v cscope &>/dev/null
+CSCOPE="$?"
+
+TERM="$1"
+
+if [ -z "$TERM" ];
+then
+	echo "This script requires a search term to run!"
+	echo "Usage: $0 <symbol>"
+	exit 1
+fi
+
+if [ "$CSCOPE" == 0 ];
+then
+	PWD=$(pwd)
+	ROOT=$(git rev-parse --show-toplevel)
+	cd "$ROOT"
+	RESULT=$(cscope -kLqRX -p1 -0"$TERM")
+	if [ -z "$RESULT" ];
+	then
+		echo "No results found!"
+		exit 1
+	fi
+	LAST_FILE=""
+	LAST_SYMBOL=""
+	echo "$RESULT" | while read -r a;
+	do
+		DIRTY=0
+		FILE=$(echo "$a" | awk '{print $1}')
+		SYMBOL=$(echo "$a" | awk '{print $2}')
+		if [ "$LAST_FILE" != "$FILE" ];
+		then
+			LAST_FILE="$FILE"
+			DIRTY=1
+			echo "\033[1;31m$FILE\033[m"
+		fi
+		if [ "$LAST_SYMBOL" != "$SYMBOL" -o "$DIRTY" -eq 1 ];
+		then
+			LAST_SYMBOL="$SYMBOL"
+			echo "\t\033[1;33m$SYMBOL\033[m"
+		fi
+		LINE=$(echo "$a" | awk '
+			{
+				printf "Line \033[1m%4s\033[m:", $3
+			}
+		')
+		MATCH=$(echo "$a" | cut -d' ' -f4- |
+		        sed ''/$TERM/s//$(printf "\033[32m$TERM\033[1;34m")/'')
+		echo "\t\t$LINE \033[1;34m$MATCH\033[m"
+	done
+	cd "$PWD"
+
+	exit 0
+else
+	echo "This script requires the command 'cscope' to run!"
+	exit 1
+fi
+
