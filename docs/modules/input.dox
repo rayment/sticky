@@ -25,3 +25,10 @@
  * @brief Mouse input handling.
  */
 
+/**
+ * @defgroup gamepad Gamepad
+ * @ingroup input
+ *
+ * @brief Gamepad input handling.
+ */
+

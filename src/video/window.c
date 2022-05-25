@@ -19,6 +19,7 @@
 #include "sticky/common/types.h"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
+#include "sticky/input/gamepad.h"
 #include "sticky/input/keyboard.h"
 #include "sticky/input/mouse.h"
 #include "sticky/math/math.h"
@@ -38,8 +39,9 @@ S_window_new(void)
 	Swindow *window;
 	if (!init)
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) != 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
 			_S_error_sdl("S_window_new");
+		_S_input_gamepad_init();
 		_S_input_keyboard_init();
 		_S_input_mouse_init();
 		_S_sound_init();
@@ -247,6 +249,8 @@ S_window_poll(Swindow *window)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_poll");
 		return;
 	}
+	if ((window->input_mode & S_GAMEPAD) == S_GAMEPAD)
+		_S_input_gamepad_reset();
 	if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
 		_S_input_keyboard_reset();
 	if ((window->input_mode & S_MOUSE) == S_MOUSE)
@@ -281,6 +285,15 @@ S_window_poll(Swindow *window)
 					window->on_resize(window);
 				break;
 			}
+			break;
+		case SDL_CONTROLLERAXISMOTION:
+		case SDL_CONTROLLERBUTTONDOWN:
+		case SDL_CONTROLLERBUTTONUP:
+		case SDL_CONTROLLERDEVICEADDED:
+		case SDL_CONTROLLERDEVICEREMOVED:
+		case SDL_CONTROLLERDEVICEREMAPPED:
+			if ((window->input_mode & S_GAMEPAD) == S_GAMEPAD)
+				_S_input_gamepad_event(e);
 			break;
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:

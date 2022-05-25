@@ -25,9 +25,7 @@ extern "C"
 
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
-#ifdef DEBUG
 #include "sticky/memory/memtrace.h"
-#endif /* DEBUG */
 
 /**
  * @addtogroup error

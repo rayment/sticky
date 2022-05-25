@@ -66,6 +66,10 @@ void    _S_memtrace_resize_frame(const void *, const void *, Ssize_t,
                                  const Schar *, Suint32);
 void    _S_memtrace_remove_frame(const void *, const Schar *, Suint32);
 
+#else /* DEBUG */
+
+#define _S_CALL(name, call) call
+
 #endif /* DEBUG */
 
 #ifdef __cplusplus

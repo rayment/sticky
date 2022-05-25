@@ -34,6 +34,7 @@
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
 
+#include "sticky/input/gamepad.h"
 #include "sticky/input/keyboard.h"
 #include "sticky/input/mouse.h"
 
