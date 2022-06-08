@@ -66,5 +66,5 @@ jobs:
           nmake /f Makefile.win
           cd ..
       - name: Compile source
-        run: msbuild /p:Platform=Win32;Configuration=Release sticky.vcxproj
+        run: msbuild /p:"Platform=Win32;Configuration=Release" sticky.vcxproj
 
