@@ -5,6 +5,8 @@
 # Date created : 30/04/2021
 #
 
+include vars.mk
+
 HERE:=$(shell pwd)
 
 all: fetch patch build install

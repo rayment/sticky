@@ -1,0 +1,98 @@
+#
+# Makefile.win
+#
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 08/06/2022
+#
+
+include vars.mk
+
+all: .phony fetch patch compile install
+
+fetch: .phony
+!IF !EXISTS(build)
+	mkdir build
+!ENDIF
+	cd build
+	curl -L https://github.com/nothings/stb/archive/refs/heads/master.zip -o stb.zip
+	powershell -command "Expand-Archive -Force '.\stb.zip' -DestinationPath '.'"
+	curl -L https://github.com/mackron/dr_libs/archive/refs/heads/master.zip -o dr_libs.zip
+	powershell -command "Expand-Archive -Force '.\dr_libs.zip' -DestinationPath '.'"
+	curl -L https://www.libsdl.org/release/SDL2-devel-$(SDL2_VER)-VC.zip -o SDL2.zip
+	powershell -command "Expand-Archive -Force '.\SDL2.zip' -DestinationPath '.'"
+	curl -L https://openal-soft.org/openal-binaries/openal-soft-$(OPENAL_VER)-bin.zip -o openal-soft.zip
+	powershell -command "Expand-Archive -Force '.\openal-soft.zip' -DestinationPath '.'"
+	curl -L https://github.com/nigels-com/glew/releases/download/glew-$(GLEW_VER)/glew-$(GLEW_VER)-win32.zip -o glew.zip
+	powershell -command "Expand-Archive -Force '.\glew.zip' -DestinationPath '.'"
+	curl -L https://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE2_VER).tar.gz -o freetype2.tar.gz
+	tar xf freetype2.tar.gz
+	cd ..
+
+patch: .phony
+
+compile: .phony
+	cd build
+	cd freetype-$(FREETYPE2_VER)
+	msbuild /p:Platform=Win32;Configuration=Release builds\windows\vc2010\freetype.vcxproj
+	msbuild /p:Platform=x64;Configuration=Release builds\windows\vc2010\freetype.vcxproj
+	cd ..
+	cd ..
+
+install: .phony
+!IF !EXISTS(include)
+	mkdir include
+!ENDIF
+!IF !EXISTS(include\stb)
+	mkdir include\stb
+!ENDIF
+!IF !EXISTS(include\dr_libs)
+	mkdir include\dr_libs
+!ENDIF
+!IF !EXISTS(include\SDL2)
+	mkdir include\SDL2
+!ENDIF
+!IF !EXISTS(include\GL)
+	mkdir include\GL
+!ENDIF
+!IF !EXISTS(include\AL)
+	mkdir include\AL
+!ENDIF
+	xcopy /E /Y build\stb-master\*.h include\stb
+	xcopy /E /Y build\dr_libs-master\*.h include\dr_libs
+	xcopy /E /Y build\SDL2-$(SDL2_VER)\include\*.h include\SDL2
+	xcopy /E /Y build\glew-$(GLEW_VER)\include\GL\*.h include\GL
+	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\include\AL\*.h include\AL
+	xcopy /E /Y build\freetype-$(FREETYPE2_VER)\include\* include
+!IF !EXISTS(lib32)
+	mkdir lib32
+!ENDIF
+!IF !EXISTS(lib64)
+	mkdir lib64
+!ENDIF
+	xcopy /E /Y build\glew-$(GLEW_VER)\lib\Release\Win32\glew32.lib lib32
+	xcopy /E /Y build\glew-$(GLEW_VER)\lib\Release\x64\glew32.lib lib64
+	xcopy /E /Y build\glew-$(GLEW_VER)\bin\Release\Win32\glew32.dll lib32
+	xcopy /E /Y build\glew-$(GLEW_VER)\bin\Release\x64\glew32.dll lib64
+	xcopy /E /Y build\SDL2-$(SDL2_VER)\lib\x86\SDL2.lib lib32
+	xcopy /E /Y build\SDL2-$(SDL2_VER)\lib\x64\SDL2.lib lib64
+	xcopy /E /Y build\SDL2-$(SDL2_VER)\lib\x86\SDL2.dll lib32
+	xcopy /E /Y build\SDL2-$(SDL2_VER)\lib\x64\SDL2.dll lib64
+	xcopy /E /Y build\freetype-$(FREETYPE2_VER)\objs\Win32\Release\freetype.lib lib32
+	xcopy /E /Y build\freetype-$(FREETYPE2_VER)\objs\x64\Release\freetype.lib lib64
+	xcopy /E /Y build\freetype-$(FREETYPE2_VER)\objs\Win32\Release\freetype.dll lib32
+	xcopy /E /Y build\freetype-$(FREETYPE2_VER)\objs\x64\Release\freetype.dll lib64
+	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\libs\Win32\OpenAL32.lib lib32
+	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\libs\Win64\OpenAL32.lib lib64
+	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\bin\Win32\soft_oal.dll lib32
+	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\bin\Win64\soft_oal.dll lib64
+	move lib32\soft_oal.dll lib32\OpenAL32.dll
+	move lib64\soft_oal.dll lib64\OpenAL32.dll
+
+clean: .phony
+	rmdir /Q /S include
+
+purge: .phony
+	rmdir /Q /S build
+
+.phony:
+
