@@ -50,18 +50,19 @@ jobs:
       - name: Execute test suite
         run: |
           cd test && sh stats.sh && sh test.sh
-  #build-windows:
-  #  name: Windows build
-  #  runs-on: windows-latest
-  #  steps:
-  #    - name: Checkout code
-  #      uses: actions/checkout@v2
-  #    - name: Compile contrib dependencies
-  #      run: ...
-  #    - name: Compile source
-  #      run: ...
-  #    - name: Compile tests
-  #      run: ...
-  #    - name: Execute test suite
-  #      run: ...
+  build-windows-x86:
+    name: Windows build (x86)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Compile contrib dependencies
+        run: |
+          cd contrib
+          nmake /f Makefile.win
+          cd ..
+      - name: Compile source
+        run: msbuild /p:Platform=Win32;Configuration=Release sticky.vcxproj
 
