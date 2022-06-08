@@ -213,7 +213,7 @@ _S_input_gamepad_scan(Suint8 raw_id)
 		return S_FALSE; /* can't add more gamepads */
 	if (SDL_IsGameController(raw_id))
 	{
-		S_debug("Gamepad at index #%d connected.\n", i);
+		S_debug("Gamepad at index #%d connected.\n", raw_id);
 		status[numpads] = DEFAULT;
 		pads[numpads] = SDL_GameControllerOpen(raw_id);
 		if (!pads[numpads])
