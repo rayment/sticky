@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is licensed under BSD 3-Clause.
  * All license information is available in the included COPYING file.
  */
@@ -24,6 +24,7 @@ extern "C"
 
 #if defined(STICKY_WINDOWS)
 #include <windows.h>
+typedef HANDLE _Smutex_raw;
 #elif defined(STICKY_POSIX)
 #include <pthread.h>
 typedef pthread_mutex_t _Smutex_raw;

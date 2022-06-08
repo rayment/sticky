@@ -39,7 +39,7 @@ typedef struct
 Scamera_s
 {
 	Stransform *transform;
-	Sfloat near, far, fov, aspect;
+	Sfloat near_plane, far_plane, fov, aspect;
 	Suint32 width, height;
 	Smat4 perspective, orthographic;
 } Scamera;

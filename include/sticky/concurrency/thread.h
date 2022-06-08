@@ -5,6 +5,7 @@
 
 /*
  * thread.h
+ * Thread header.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 12/02/2022
@@ -23,12 +24,19 @@ extern "C"
 
 #if defined(STICKY_WINDOWS)
 #include <windows.h>
+typedef void *(*Sthread_func)(void *);
+typedef struct
+_Sthread_raw_s
+{
+	HANDLE handle;
+	Sthread_func func;
+	void *arg, *ret;
+} _Sthread_raw;
 #elif defined(STICKY_POSIX)
 #include <pthread.h>
-typedef pthread_t _Sthread_raw;
 typedef void *(*Sthread_func)(void *);
+typedef pthread_t _Sthread_raw;
 #elif defined(DOXYGEN)
-
 /**
  * @addtogroup thread
  * @{
@@ -104,19 +112,6 @@ void    S_thread_sleep(Suint64);
  * @since 1.0.0
  */
 void    S_thread_msleep(Suint64);
-
-/**
- * @brief Sleep for a number of nanoseconds in the current thread.
- *
- * Pauses the current thread execution by sleeping for a given number of
- * nanoseconds. This function does not require an actual {@link Sthread} to
- * exist, as it can also be called on the main program thread as a
- * cross-platform way of pausing program execution.
- *
- * @param[in] nsec The number of nanoseconds to sleep for.
- * @since 1.0.0
- */
-void    S_thread_nsleep(Suint64);
 
 /**
  * @brief Wait for a thread to join and finish, and then deallocate it.

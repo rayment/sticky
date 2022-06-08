@@ -43,6 +43,11 @@ extern "C"
  *
  * @since 1.0.0
  */
+#ifdef STICKY_WINDOWS
+/* free windows define for us */
+#include <winerror.h>
+#undef S_FALSE
+#endif /* STICKY_WINDOWS */
 #define S_FALSE       0
 
 /**

@@ -24,8 +24,8 @@ _S_camera_set_projection(Scamera *camera)
 	_S_CALL("S_mat4_perspective", S_mat4_perspective(&camera->perspective,
 	                                                 camera->fov,
 	                                                 camera->aspect,
-	                                                 camera->near,
-	                                                 camera->far));
+	                                                 camera->near_plane,
+	                                                 camera->far_plane));
 	_S_CALL("S_mat4_orthographic", S_mat4_orthographic(&camera->orthographic,
 	                                                   camera->width,
 	                                                   camera->height));
@@ -38,8 +38,8 @@ S_camera_new(Suint32 width,
 	Scamera *camera;
 	camera = S_memory_new(sizeof(Scamera));
 	_S_CALL("S_transform_new", camera->transform = S_transform_new());
-	camera->near = 1.0f;
-	camera->far = 100.0f;
+	camera->near_plane = 1.0f;
+	camera->far_plane = 100.0f;
 	camera->fov = 60.0f;
 	camera->aspect = ((Sfloat) width) / ((Sfloat) height);
 	camera->width = width;
@@ -69,7 +69,7 @@ S_camera_set_near_plane(Scamera *camera,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_near_plane");
 		return;
 	}
-	camera->near = near;
+	camera->near_plane = near;
 	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
@@ -82,7 +82,7 @@ S_camera_set_far_plane(Scamera *camera,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_far_plane");
 		return;
 	}
-	camera->far = far;
+	camera->far_plane = far;
 	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
@@ -123,7 +123,7 @@ S_camera_get_near_plane(const Scamera *camera)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_near_plane");
 		return 0.0f;
 	}
-	return camera->near;
+	return camera->near_plane;
 }
 
 Sfloat
@@ -134,7 +134,7 @@ S_camera_get_far_plane(const Scamera *camera)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_get_far_plane");
 		return 0.0f;
 	}
-	return camera->far;
+	return camera->far_plane;
 }
 
 Sfloat
