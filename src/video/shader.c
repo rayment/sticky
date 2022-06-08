@@ -288,7 +288,6 @@ S_shader_set_uniform_mat4(Sshader *shader,
 	_S_GL(glUniformMatrix4fv(uniform, 1, GL_FALSE, (Sfloat *) val));
 }
 
-inline
 void
 _S_shader_attach(const Sshader *shader)
 {
