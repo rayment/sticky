@@ -91,12 +91,30 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>build/Debug/Win32/</OutDir>
+    <IntDir>build/Debug/Win32/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Trace)|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>build/Debug (Trace)/Win32/</OutDir>
+    <IntDir>build/Debug (Trace)/Win32/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>build/Release/Win32/</OutDir>
+    <IntDir>build/Release/Win32/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>build/Debug/x64/</OutDir>
+    <IntDir>build/Debug/x64/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Trace)|x64'">
+    <OutDir>build/Debug (Trace)/x64/</OutDir>
+    <IntDir>build/Debug (Trace)/x64/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>build/Release/x64/</OutDir>
+    <IntDir>build/Release/x64/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,6 +131,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>contrib\lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;Glu32.lib;glew32.lib;SDL2.lib;OpenAL32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Trace)|Win32'">
@@ -149,6 +168,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>contrib\lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;Glu32.lib;glew32.lib;SDL2.lib;OpenAL32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +179,7 @@
     <Link>
       <AdditionalLibraryDirectories>contrib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;Glu32.lib;glew32.lib;SDL2.lib;OpenAL32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Trace)|x64'">
@@ -180,6 +201,7 @@
     <Link>
       <AdditionalLibraryDirectories>contrib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;Glu32.lib;glew32.lib;SDL2.lib;OpenAL32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
