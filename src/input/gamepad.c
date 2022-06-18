@@ -298,14 +298,19 @@ _S_input_gamepad_event(SDL_Event event)
 
 	for (i = 0; i < S_GAMEPAD_MAX_PADS; ++i)
 	{
-		if (event.type == SDL_CONTROLLERAXISMOTION)
-			thisid = event.caxis.which;
-		else if (event.type == SDL_CONTROLLERBUTTONDOWN ||
-		         event.type == SDL_CONTROLLERBUTTONUP)
-			thisid = event.cbutton.which;
-		id = SDL_JoystickGetDeviceInstanceID(i);
-		if (id != thisid)
-			continue;
+		if (event.type == SDL_CONTROLLERAXISMOTION ||
+		    event.type == SDL_CONTROLLERBUTTONDOWN ||
+		    event.type == SDL_CONTROLLERBUTTONUP)
+		{
+			if (event.type == SDL_CONTROLLERAXISMOTION)
+				thisid = event.caxis.which;
+			else if (event.type == SDL_CONTROLLERBUTTONDOWN ||
+			         event.type == SDL_CONTROLLERBUTTONUP)
+				thisid = event.cbutton.which;
+			id = SDL_JoystickGetDeviceInstanceID(i);
+			if (id != thisid)
+				continue;
+		}
 		switch (event.type)
 		{
 		case SDL_CONTROLLERBUTTONDOWN:
