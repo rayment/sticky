@@ -55,7 +55,10 @@ S_input_is_gamepad_button_down(Suint8 gamepad,
 
 	if (gamepad >= S_GAMEPAD_MAX_PADS ||
 	    (idx = padidx[gamepad]) < 0 || idx >= S_GAMEPAD_MAX_PADS)
+	{
 		_S_SET_ERROR(S_INVALID_INDEX, "S_input_is_gamepad_button_down");
+		return S_FALSE;
+	}
 
 	switch (button)
 	{
@@ -103,7 +106,10 @@ S_input_is_gamepad_button_pressed(Suint8 gamepad,
 
 	if (gamepad >= S_GAMEPAD_MAX_PADS ||
 	    (idx = padidx[gamepad]) < 0 || idx >= S_GAMEPAD_MAX_PADS)
+	{
 		_S_SET_ERROR(S_INVALID_INDEX, "S_input_is_gamepad_button_pressed");
+		return S_FALSE;
+	}
 
 	switch (button)
 	{
@@ -157,7 +163,10 @@ S_input_get_gamepad_axis(Suint8 gamepad,
 
 	if (gamepad >= S_GAMEPAD_MAX_PADS ||
 	    (idx = padidx[gamepad]) < 0 || idx >= S_GAMEPAD_MAX_PADS)
+	{
 		_S_SET_ERROR(S_INVALID_INDEX, "S_input_get_gamepad_axis");
+		return 0;
+	}
 
 	switch (axis)
 	{
