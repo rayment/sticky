@@ -26,7 +26,7 @@ jobs:
           make test
       - name: Execute test suite
         run: |
-          cd test && sh stats.sh && sh test.sh
+          cd test && sh test.sh && cd ../tools && sh stats
   build-macos:
     name: macOS build
     runs-on: macos-latest
@@ -49,7 +49,7 @@ jobs:
           make test
       - name: Execute test suite
         run: |
-          cd test && sh stats.sh && sh test.sh
+          cd test && sh test.sh && cd ../tools && sh stats
   build-windows-x86:
     name: Windows build (x86)
     runs-on: windows-latest
