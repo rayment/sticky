@@ -14,7 +14,7 @@ tags="TODO FIXME"
 # scan for tags in files and print them
 for i in $tags;
 do
-	search=`cd .. && grep --color=always -B1 -A3 -e "$i" -n -r $folders`
+	search=`grep --color=always -B1 -A3 -e "$i" -n -r $folders`
 	numsearch=`printf "%s" "$search" | grep "$i" | grep -c "^"`
 
 	echo "-----------"
@@ -25,8 +25,8 @@ do
 	fi
 done
 
-lines_hdr=`cd .. && find include/ -name '*.h' | xargs cat | wc -l | xargs`
-lines_src=`cd .. && find src/ -name '*.c' | xargs cat | wc -l | xargs`
+lines_hdr=`find include/ -name '*.h' | xargs cat | wc -l | xargs`
+lines_src=`find src/ -name '*.c' | xargs cat | wc -l | xargs`
 echo "There are $lines_hdr lines of header code."
 echo "There are $lines_src lines of source code."
 
