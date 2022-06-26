@@ -178,11 +178,19 @@ S_tcp_bind(Senum family,
 	}
 	if (bind(sock->fd, saddr, saddr_len) == -1)
 	{
+#if defined(STICKY_POSIX)
 		if (errno == EADDRINUSE)
+#elif defined(STICKY_WINDOWS)
+		if (errno == WSAEADDRINUSE)
+#endif /* STICKY_POSIX */
 		{
 			_S_SET_ERROR(S_PORT_IN_USE, "S_tcp_bind");
 		}
+#if defined(STICKY_POSIX)
 		else if (errno == EACCES)
+#elif defined(STICKY_WINDOWS)
+		else if (errno == WSAEACCES)
+#endif /* STICKY_POSIX */
 		{
 			_S_SET_ERROR(S_INVALID_ACCESS, "S_tcp_bind");
 		}
@@ -225,7 +233,11 @@ S_tcp_listen(Ssocket *sock,
 	}
 	else if (listen(sock->fd, TCP_BACKLOG_SIZE) == -1)
 	{
+#if defined(STICKY_POSIX)
 		if (errno == EADDRINUSE)
+#elif defined(STICKY_WINDOWS)
+		if (errno == WSAEADDRINUSE)
+#endif /* STICKY_POSIX */
 		{
 			_S_SET_ERROR(S_PORT_IN_USE, "S_tcp_listen");
 		}
@@ -257,16 +269,22 @@ S_tcp_accept(Ssocket *sock)
 	addrlen = sizeof(addr);
 	if ((fd = accept(sock->fd, (struct sockaddr *) &addr, &addrlen)) == -1)
 	{
-		if (errno == ECONNABORTED)
-		{
-			/* connection was aborted */
-			_S_SET_ERROR(S_CONNECTION_ABORTED, "S_tcp_accept");
-		}
-		else if (errno == EAGAIN)
+#if defined(STICKY_POSIX)
+		if (errno == EAGAIN)
+#elif defined(STICKY_WINDOWS)
+		if (errno == WSAEAGAIN)
+#endif /* STICKY_POSIX */
 		{
 			/* no clients trying to connect */
 			_S_SET_ERROR(S_TIMEOUT, "S_tcp_accept");
 		}
+#ifdef STICKY_POSIX
+		else if (errno == ECONNABORTED)
+		{
+			/* connection was aborted */
+			_S_SET_ERROR(S_CONNECTION_ABORTED, "S_tcp_accept");
+		}
+#endif /* STICKY_POSIX */
 		else
 		{
 			/* unknown error */
@@ -356,14 +374,20 @@ S_tcp_connect(Senum family,
 	sprintf(portstr, "%d", port);
 	if ((a = getaddrinfo(addr, portstr, NULL, &info)) != 0)
 	{
+#if defined(STICKY_POSIX)
 		if (a == EAI_AGAIN)
+#elif defined(STICKY_WINDOWS)
+		if (a == WSATRY_AGAIN)
+#endif /* STICKY_POSIX */
 		{
 			_S_SET_ERROR(S_NAMERES_FAIL, "S_tcp_connect");
 		}
+#ifdef STICKY_POSIX
 		else if (a == EAI_SYSTEM)
 		{
 			_S_SET_ERROR(S_UNKNOWN_ERROR, "S_tcp_connect");
 		}
+#endif /* STICKY_POSIX */
 		else
 		{
 			_S_SET_ERROR(S_NETWORK_ERROR, "S_tcp_connect");
