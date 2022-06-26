@@ -11,6 +11,7 @@
  * Date created : 26/06/2022
  */
 
+#include "sticky/common/error.h"
 #include "sticky/net/socket.h"
 
 #ifndef STICKY_WINDOWS
@@ -30,8 +31,8 @@ _S_socket_init(void)
 {
 	if (WSAStartup(MAKEWORD(WINSOCK_VER_MAJ, WINSOCK_VER_MIN), &wsa) != 0)
 	{
-		fprintf(stderr, "Failed to init WinSock: %d\n", WSAGetLastError());
-		exit(EXIT_FAILURE);
+		_S_error_other("WSA", "Failed to init WinSock: %d\n",
+		               WSAGetLastError());
 	}
 }
 

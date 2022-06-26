@@ -13,18 +13,14 @@
 
 #include "sticky/net/tcp.h"
 
-#ifndef STICKY_POSIX
-#error This source file cannot be compiled on non-POSIX systems.
-#endif /* STICKY_POSIX */
-
 #include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <poll.h>
 #include <stdio.h>
 #include <string.h>
 
 #if defined(STICKY_POSIX)
+#include <fcntl.h>
+#include <netdb.h>
+#include <poll.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
