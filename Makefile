@@ -9,6 +9,9 @@ VERSION:=1.0.0
 PREFIX:=/usr/local
 DEBUG:=1
 # extra debug tracing info if DEBUG=1
+# 0 = tracing off
+# 1 = memory tracing
+# 2 = memory tracing + function calls + errors
 DEBUG_TRACE:=0
 
 # optional library-specific functionality
@@ -33,8 +36,8 @@ CXXFLAGS:=-Wall -Wextra -Werror --pedantic-errors \
           -fPIC -m$(ARCH) -O3 -DVERSION=\"${VERSION}\"
 ifeq ($(DEBUG),1)
 CXXFLAGS+=-g -DDEBUG=1
-ifeq ($(DEBUG_TRACE),1)
-CXXFLAGS+= -DDEBUG_TRACE=1
+ifneq ($(DEBUG_TRACE),0)
+CXXFLAGS+= -DDEBUG_TRACE=$(DEBUG_TRACE)
 endif
 else
 CXXFLAGS+=-DNDEBUG

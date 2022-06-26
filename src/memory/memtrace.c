@@ -9,17 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sticky/common/error.h"
 #include "sticky/common/types.h"
 #include "sticky/memory/memtrace.h"
 
 #ifdef DEBUG
 
-#define RED    "\x1b[1;31m"
-#define YELLOW "\x1b[1;33m"
-#define GREEN  "\x1b[1;32m"
-#define BOLD   "\x1b[1m"
-#define RESET  "\x1b[0m"
-#define MEMTRACE BOLD YELLOW "memtrace" RESET ": "
+#define MEMTRACE S_COLOR_BOLD S_COLOR_YELLOW "memtrace" S_COLOR_RESET ": "
 
 #ifdef DEBUG_TRACE
 struct _S_memtrace_stack_frame_s *stack_frames;
@@ -51,6 +47,10 @@ _S_memtrace_push_stack(const Schar *callee,
 {
 	struct _S_memtrace_stack_frame_s *frame;
 
+#if defined(DEBUG_TRACE) && DEBUG_TRACE > 1
+	fprintf(stderr, MEMTRACE "%s called at %s:%d\n",
+	        callee, location, line);
+#endif /* DEBUG_TRACE > 1 */
 	frame = (struct _S_memtrace_stack_frame_s *)
 		malloc(sizeof(struct _S_memtrace_stack_frame_s));
 	if (!frame)
@@ -248,11 +248,17 @@ _S_memtrace_free(void)
 #endif /* DEBUG_TRACE */
 
 	fprintf(stdout,
-	        BOLD "==============================================" RESET "\n");
+	        S_COLOR_BOLD
+	        "=============================================="
+	        S_COLOR_RESET "\n");
 	fprintf(stdout,
-	        YELLOW "               MEMORY ALLOCATOR               " RESET "\n");
+	        S_COLOR_YELLOW
+	        "               MEMORY ALLOCATOR               "
+	        S_COLOR_RESET "\n");
 	fprintf(stdout,
-	        BOLD "==============================================" RESET "\n");
+	        S_COLOR_BOLD
+	        "=============================================="
+	        S_COLOR_RESET "\n");
 	/* statistical readout */
 	if (num_allocated_bytes != 0)
 	{
@@ -262,7 +268,8 @@ _S_memtrace_free(void)
 			fprintf(stdout, "    of which %ld were resized\n", num_resizes);
 		fprintf(stdout, "    of which %ld were free'd.\n", num_frees);
 		if (num_allocations != num_frees)
-			fprintf(stdout, RED "  Memory leak detected!\n" RESET);
+			fprintf(stdout,
+			        S_COLOR_RED "  Memory leak detected!\n" S_COLOR_RESET);
 	}
 	else
 	{
@@ -273,7 +280,8 @@ _S_memtrace_free(void)
 	if (frame)
 	{
 		fprintf(stdout, "\n  "
-		        RED "The following allocations were not free'd" RESET ":\n");
+		        S_COLOR_RED "The following allocations were not free'd"
+		        S_COLOR_RESET ":\n");
 		while (frame)
 		{
 			fprintf(stdout, "    (%p) %ldb at %s:%d\n",
@@ -286,7 +294,9 @@ _S_memtrace_free(void)
 	}
 #endif /* DEBUG_TRACE */
 	fprintf(stdout,
-	        BOLD "==============================================" RESET "\n");
+	        S_COLOR_BOLD
+	        "=============================================="
+	        S_COLOR_RESET "\n");
 }
 
 #endif /* DEBUG */

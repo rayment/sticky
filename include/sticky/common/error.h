@@ -70,10 +70,25 @@ Schar  *_S_error_loc;
  */
 #define SERRLOC  _S_error_loc
 
+#define S_COLOR_RED    "\x1b[1;31m"
+#define S_COLOR_YELLOW "\x1b[1;33m"
+#define S_COLOR_GREEN  "\x1b[1;32m"
+#define S_COLOR_BOLD   "\x1b[1m"
+#define S_COLOR_RESET  "\x1b[0m"
+
 #define _S_ERR_LOC __FILE__, __LINE__
+#if defined(DEBUG_TRACE) && DEBUG_TRACE > 1
 #define _S_SET_ERROR(x, y)  \
-	SERRNO   = x;        \
+	SERRNO   = x;           \
+	SERRLOC  = y;           \
+	fprintf(stderr,         \
+	        S_COLOR_BOLD S_COLOR_RED "memtrace" S_COLOR_RESET \
+	        ": error "#x" called at %s:%d\n", __FILE__, __LINE__)
+#else /* DEBUG_TRACE > 1 */
+#define _S_SET_ERROR(x, y)  \
+	SERRNO   = x;           \
 	SERRLOC  = y
+#endif /* DEBUG_TRACE > 1 */
 
 /**
  * @addtogroup error_codes Error codes
