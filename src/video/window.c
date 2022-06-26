@@ -41,10 +41,10 @@ S_window_new(void)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
 			_S_error_sdl("S_window_new");
-		_S_input_gamepad_init();
-		_S_input_keyboard_init();
-		_S_input_mouse_init();
-		_S_sound_init();
+		_S_CALL("_S_input_gamepad_init", _S_input_gamepad_init());
+		_S_CALL("_S_input_keyboard_init", _S_input_keyboard_init());
+		_S_CALL("_S_input_mouse_init", _S_input_mouse_init());
+		_S_CALL("_S_sound_init", _S_sound_init());
 		init = S_TRUE;
 	}
 	if (exists)
