@@ -489,6 +489,7 @@ S_tcp_recv(Ssocket *sock,
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_tcp_recv");
 		return -1;
+	}
 	if ((rb = read(sock->fd, buf, len)) == -1)
 	{
 		if (!sock->blocking)
