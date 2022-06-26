@@ -4,8 +4,8 @@
  */
 
 /*
- * tcp_posix.c
- * TCP networking, POSIX implementation.
+ * tcp.c
+ * TCP networking implementation.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 06/10/2021
@@ -23,10 +23,17 @@
 #include <poll.h>
 #include <stdio.h>
 #include <string.h>
+
+#if defined(STICKY_POSIX)
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#elif defined(STICKY_WINDOWS)
+#include <winsock2.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+#endif /* STICKY_POSIX */
 
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
@@ -82,6 +89,7 @@ static
 Ssocket *
 _S_tcp_unblock_socket(Ssocket *sock)
 {
+#if defined(STICKY_POSIX)
 	Sint32 flags;
 	flags = fcntl(sock->fd, F_GETFL, 0);
 	if (flags == -1)
@@ -95,6 +103,13 @@ _S_tcp_unblock_socket(Ssocket *sock)
 		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_unblock_socket");
 		return NULL;
 	}
+#elif defined(STICKY_WINDOWS)
+	if (ioctlsocket(sock, FIONBIO, &(u_long){1}) != 0)
+	{
+		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_unblock_socket");
+		return NULL;
+	}
+#endif
 	sock->blocking = S_FALSE;
 	return sock;
 }
@@ -571,7 +586,11 @@ S_tcp_poll(Ssocket *sock,
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_tcp_poll");
 		return -1;
 	}
+#if defined(STICKY_POSIX)
 	ret = poll(sock->polls, sock->poll_len, timeout);
+#elif defined(STICKY_WINDOWS)
+	ret = WSAPoll(sock->polls, sock->poll_len, timeout);
+#endif /* STICKY_POSIX */
 	if (ret == -1)
 	{
 		_S_SET_ERROR(S_IO_ERROR, "S_tcp_poll");

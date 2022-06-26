@@ -57,11 +57,7 @@ Ssocket_s
 	Senum type, family, state;
 	Sbool blocking;
 	Ssize_t poll_len;
-#if defined(STICKY_POSIX)
 	struct pollfd *polls;
-#elif defined(STICKY_WINDOWS)
-	WSAPOLLFD *polls;
-#endif /* STICKY_POSIX || STICKY_WINDOWS */
 	struct Ssocket_s *parent;
 	Slinkedlist *children;
 } Ssocket;
@@ -70,6 +66,9 @@ Sssize_t  S_socket_recvfrom(Ssocket *, Schar *, Ssize_t, Senum *);
 Sssize_t  S_socket_sendto(Ssocket *, const Schar *, Ssize_t, Senum *);
 void      S_socket_close(Ssocket *);
 Sbool     S_socket_poll(Ssocket *, Sint32);
+
+void _S_socket_init(void);
+void _S_socket_free(void);
 
 #ifdef __cplusplus
 }

@@ -26,6 +26,8 @@ S_sticky_init()
 	SERRLOC = "null";
 	/* random number generator init */
 	_S_CALL("S_random_set_seed", S_random_set_seed(time(NULL)));
+	/* network stack */
+	_S_socket_init();
 #ifdef DEBUG
 	_S_memtrace_init();
 #endif
@@ -40,6 +42,7 @@ S_sticky_free()
 		SDL_Quit();
 		_S_sound_free();
 	}
+	_S_socket_free();
 #ifdef DEBUG
 	_S_memtrace_free();
 #endif
