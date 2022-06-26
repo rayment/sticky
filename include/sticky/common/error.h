@@ -99,65 +99,100 @@ Schar  *_S_error_loc;
  * @brief No error.
  * @since 1.0.0
  */
-#define S_NO_ERROR          0
+#define S_NO_ERROR           0
 /**
  * @brief An unknown error occurred.
  * @since 1.0.0
  */
-#define S_UNKNOWN_ERROR     1
+#define S_UNKNOWN_ERROR      1
 /* general errors */
 /**
  * @brief An error occurred because an invalid value was given.
  * @since 1.0.0
  */
-#define S_INVALID_VALUE     101
+#define S_INVALID_VALUE      101
 /**
  * @brief An error occurred because an invalid enum value was given.
  * @since 1.0.0
  */
-#define S_INVALID_ENUM      102
+#define S_INVALID_ENUM       102
 /**
  * @brief An error occurred because an invalid operation was requested.
  * @since 1.0.0
  */
-#define S_INVALID_OPERATION 103
+#define S_INVALID_OPERATION  103
 /**
  * @brief An error occurred because an invalid address was given.
  * @since 1.0.0
  */
-#define S_INVALID_ADDRESS   104
+#define S_INVALID_ADDRESS    104
 /**
  * @brief An error occurred because of an invalid request to access a resource.
  * @since 1.0.0
  */
-#define S_INVALID_ACCESS    105
+#define S_INVALID_ACCESS     105
 /**
  * @brief An error occurred because an invalid format was given.
  * @since 1.0.0
  */
-#define S_INVALID_FORMAT    106
+#define S_INVALID_FORMAT     106
 /**
  * @brief An error occurred because an invalid index was given.
  * @since 1.0.0
  */
-#define S_INVALID_INDEX     107
+#define S_INVALID_INDEX      107
 /**
  * @brief An error occurred because an invalid number of channels was given.
  * @since 1.0.0
  */
-#define S_INVALID_CHANNELS  108
+#define S_INVALID_CHANNELS   108
 /* system errors */
 /**
  * @brief An error occurred because the machine or program ran out of available
  * memory.
  * @since 1.0.0
  */
-#define S_OUT_OF_MEMORY     201
+#define S_OUT_OF_MEMORY      201
 /**
  * @brief An error occurred because of a system IO error.
  * @since 1.0.0
  */
-#define S_IO_ERROR          202
+#define S_IO_ERROR           202
+/**
+ * @brief A timeout occurred or the timeout on a block was exceeded.
+ * @since 1.0.0
+ */
+#define S_TIMEOUT            203
+/**
+ * @brief A generic network error occurred.
+ * @since 1.0.0
+ */
+#define S_NETWORK_ERROR      301
+/**
+ * @brief The selected port is already in use.
+ * @since 1.0.0
+ */
+#define S_PORT_IN_USE        302
+/**
+ * @brief The socket connection was aborted.
+ * @since 1.0.0
+ */
+#define S_CONNECTION_ABORTED 303
+/**
+ * @brief The socket connection was refused by the other end.
+ * @since 1.0.0
+ */
+#define S_CONNECTION_REFUSED 304
+/**
+ * @brief A temporary failure in name resolution occurred.
+ * @since 1.0.0
+ */
+#define S_NAMERES_FAIL       305
+/**
+ * @brief The requested host is unknown.
+ * @since 1.0.0
+ */
+#define S_UNKNOWN_HOST       306
 
 /**
  * @}
@@ -185,18 +220,25 @@ S_error_string(void)
 	(void) SERRLOC;
 	switch (SERRNO)
 	{
-	case S_NO_ERROR          : return "No error.";
-	case S_INVALID_VALUE     : return "Invalid value.";
-	case S_INVALID_ENUM      : return "Invalid enum.";
-	case S_INVALID_OPERATION : return "Invalid operation.";
-	case S_INVALID_ADDRESS   : return "Invalid address.";
-	case S_INVALID_ACCESS    : return "Invalid access.";
-	case S_INVALID_FORMAT    : return "Invalid format.";
-	case S_INVALID_INDEX     : return "Invalid index.";
-	case S_INVALID_CHANNELS  : return "Invalid number of channels.";
-	case S_OUT_OF_MEMORY     : return "Out of memory.";
-	case S_IO_ERROR          : return "I/O error.";
-	default                  : return "Unknown error.";
+	case S_NO_ERROR           : return "No error.";
+	case S_INVALID_VALUE      : return "Invalid value.";
+	case S_INVALID_ENUM       : return "Invalid enum.";
+	case S_INVALID_OPERATION  : return "Invalid operation.";
+	case S_INVALID_ADDRESS    : return "Invalid address.";
+	case S_INVALID_ACCESS     : return "Invalid access.";
+	case S_INVALID_FORMAT     : return "Invalid format.";
+	case S_INVALID_INDEX      : return "Invalid index.";
+	case S_INVALID_CHANNELS   : return "Invalid number of channels.";
+	case S_OUT_OF_MEMORY      : return "Out of memory.";
+	case S_IO_ERROR           : return "I/O error.";
+	case S_TIMEOUT            : return "Timeout exceeded.";
+	case S_NETWORK_ERROR      : return "Network error.";
+	case S_PORT_IN_USE        : return "Port in use.";
+	case S_CONNECTION_ABORTED : return "Connection aborted.";
+	case S_CONNECTION_REFUSED : return "Connection refused.";
+	case S_NAMERES_FAIL       : return "Temporary failure in name resolution.";
+	case S_UNKNOWN_HOST       : return "Unknown host.";
+	default                   : return "Unknown error.";
 	}
 }
 

@@ -37,6 +37,8 @@ assert_pass math/vec2
 assert_pass math/vec3
 assert_pass math/vec4
 assert_pass math/transform
+assert_pass net/tcp_single_block
+assert_pass net/tcp_single_noblock
 assert_pass util/random
 assert_pass util/string
 
