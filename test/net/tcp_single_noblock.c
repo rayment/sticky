@@ -41,7 +41,15 @@ func_cli(void *data)
 
 	/* attempt connect */
 	TEST(
-		socket = S_tcp_connect(cli_data->family, "localhost", PORT, S_FALSE);
+		if (cli_data->family == S_FAMILY_IPV4)
+		{
+			socket =
+			    S_tcp_connect(cli_data->family, "127.0.0.1", PORT, S_FALSE);
+		}
+		else
+		{
+			socket = S_tcp_connect(cli_data->family, "::1", PORT, S_FALSE);
+		}
 	, socket
 	, "cli: S_tcp_connect");
 
