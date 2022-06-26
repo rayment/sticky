@@ -22,6 +22,8 @@
 
 #if defined(_WIN32) || defined(WIN32)
 #define STICKY_WINDOWS 1
+/* disable superfluous Windows headers */
+#define WIN32_LEAN_AND_MEAN
 #endif /* _WIN32 || WIN32 */
 
 #if defined(_WIN64)
