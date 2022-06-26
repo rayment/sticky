@@ -195,6 +195,9 @@ run(Senum family)
 	S_thread_join(cli_thread);
 	S_thread_join(srv_thread);
 
+	if (!cli_data.response || !srv_data.response)
+		return EXIT_FAILURE;
+
 	/* client closes and server detects closure */
 	cli_data.last = S_FALSE;
 	srv_data.last = S_TRUE;

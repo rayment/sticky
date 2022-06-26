@@ -468,8 +468,8 @@ S_tcp_close(Ssocket *sock)
 			_S_CALL("S_linkedlist_delete",
 			        S_linkedlist_delete(sock->children));
 		}
-		S_memory_delete(sock);
 	}
+	S_memory_delete(sock);
 }
 
 Sssize_t
@@ -489,7 +489,6 @@ S_tcp_recv(Ssocket *sock,
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_tcp_recv");
 		return -1;
-	}
 	if ((rb = read(sock->fd, buf, len)) == -1)
 	{
 		if (!sock->blocking)
