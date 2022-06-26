@@ -23,9 +23,7 @@ extern "C"
 #include "sticky/common/defines.h"
 #include "sticky/common/types.h"
 
-#ifdef STICKY_POSIX
-#include <poll.h>
-#endif /* STICKY_POSIX */
+#include <errno.h>
 
 #define S_FAMILY_IPV4         0x4
 #define S_FAMILY_IPV6         0x6
@@ -45,7 +43,12 @@ extern "C"
 #define _S_SOCK_BLOCKED(x) ((x) == EAGAIN || (x) == EWOULDBLOCK)
 #define _S_SOCK_DIED(x) ((x) == ECONNRESET || (x) == ETIMEDOUT)
 
-#ifdef STICKY_POSIX
+#if defined(STICKY_POSIX)
+#include <poll.h>
+#elif defined(STICKY_WINDOWS)
+#include <winsock2.h>
+#endif /* STICKY_POSIX || STICKY_WINDOWS */
+
 typedef
 struct
 Ssocket_s
@@ -54,11 +57,14 @@ Ssocket_s
 	Senum type, family, state;
 	Sbool blocking;
 	Ssize_t poll_len;
+#if defined(STICKY_POSIX)
 	struct pollfd *polls;
+#elif defined(STICKY_WINDOWS)
+	WSAPOLLFD *polls;
+#endif /* STICKY_POSIX || STICKY_WINDOWS */
 	struct Ssocket_s *parent;
 	Slinkedlist *children;
 } Ssocket;
-#endif /* STICKY_POSIX */
 
 Sssize_t  S_socket_recvfrom(Ssocket *, Schar *, Ssize_t, Senum *);
 Sssize_t  S_socket_sendto(Ssocket *, const Schar *, Ssize_t, Senum *);
