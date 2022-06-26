@@ -14,6 +14,10 @@
 
 #include "sticky.h"
 
+/* single definitions */
+Senum  _S_error;
+Schar *_S_error_loc;
+
 void
 S_sticky_init()
 {
