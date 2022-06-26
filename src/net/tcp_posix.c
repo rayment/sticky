@@ -408,11 +408,12 @@ _S_tcp_clear_poll(Ssocket *sock,
 	Ssize_t i;
 	if (!sock)
 		return;
+	shuffle = S_FALSE;
 	for (i = 0; i < sock->poll_len; ++i)
 	{
 		if ((sock->polls+i)->fd == fd)
 			shuffle = S_TRUE;
-		if (shuffle)
+		else if (shuffle) /* will skip idx 0 */
 			(sock->polls+i-1)->fd = (sock->polls+i)->fd;
 	}
 	if (shuffle)
