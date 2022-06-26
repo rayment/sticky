@@ -272,7 +272,7 @@ S_tcp_accept(Ssocket *sock)
 #if defined(STICKY_POSIX)
 		if (errno == EAGAIN)
 #elif defined(STICKY_WINDOWS)
-		if (errno == WSAEAGAIN)
+		if (errno == WSAEWOULDBLOCK)
 #endif /* STICKY_POSIX */
 		{
 			/* no clients trying to connect */
