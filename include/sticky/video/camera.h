@@ -101,7 +101,7 @@ void        S_camera_attach(Scamera *, Swindow *);
  * rendering.
  *
  * @param[in,out] camera The camera.
- * @param[in] near The near-plane to set for the camera.
+ * @param[in] near_plane The near-plane to set for the camera.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
  * the function.
  * @since 1.0.0
@@ -116,7 +116,7 @@ void        S_camera_set_near_plane(Scamera *, Sfloat);
  * rendering.
  *
  * @param[in,out] camera The camera.
- * @param[in] far The near-plane to set for the camera.
+ * @param[in] far_plane The near-plane to set for the camera.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
  * the function.
  * @since 1.0.0

@@ -98,27 +98,27 @@ S_camera_attach(Scamera *camera,
 
 void
 S_camera_set_near_plane(Scamera *camera,
-                        Sfloat near)
+                        Sfloat near_plane)
 {
 	if (!camera)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_near_plane");
 		return;
 	}
-	camera->near_plane = near;
+	camera->near_plane = near_plane;
 	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
 void
 S_camera_set_far_plane(Scamera *camera,
-                       Sfloat far)
+                       Sfloat far_plane)
 {
 	if (!camera)
 	{
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_set_far_plane");
 		return;
 	}
-	camera->far_plane = far;
+	camera->far_plane = far_plane;
 	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 }
 
