@@ -28,6 +28,10 @@ export ARCH:=64
 export LIBNAME:=sticky
 export VERSION
 
+DISTFILES:=COPYING DOCUMENTATION INSTALL README Doxyfile Makefile \
+           sticky.sln sticky.vcxproj sticky.vcxproj.filters sticky.vcxproj.user
+DISTDIRS:=contrib docs src include test tools
+
 CC:=cc
 LD:=$(CC)
 
@@ -188,6 +192,19 @@ test/%.o: test/%.c
 test/%: test/%.o
 	$(LD) $< $(TEST_LDFLAGS) $(LDFLAGS) -o $@
 
+dist:
+	@echo "Calling \`make clean' functions to delete work prior to archival."
+	@echo "You have 5 seconds to cancel the clean actions with Ctrl+C."
+	@sleep 5
+	cd contrib && $(MAKE) clean && $(MAKE) purge
+	$(MAKE) clean_test
+	$(MAKE) clean_docs
+	rm -rf lib$(LIBNAME)-$(VERSION)
+	mkdir -p lib$(LIBNAME)-$(VERSION)
+	cp -R $(DISTFILES) $(DISTDIRS) lib$(LIBNAME)-$(VERSION)
+	tar -cJf lib$(LIBNAME)-$(VERSION).tar.xz lib$(LIBNAME)-$(VERSION)
+	rm -rf lib$(LIBNAME)-$(VERSION)
+
 clean:
 	rm -rf build/ obj/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
 
@@ -197,5 +214,5 @@ clean_test:
 clean_docs:
 	rm -rf docs/html || true
 
-.PHONY: all vardump docs install uninstall test clean clean_test
+.PHONY: all vardump dist docs install uninstall test clean clean_test
 
