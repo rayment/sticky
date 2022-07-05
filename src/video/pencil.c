@@ -41,10 +41,10 @@
 #define DRAW_FRAGMENT_SOURCE                                                \
 "#version 330\n                                                            "\
 "out vec4 o_color;                                                         "\
-"uniform vec3 u_color;                                                     "\
+"uniform vec4 u_color;                                                     "\
 "void main()                                                               "\
 "{                                                                         "\
-"	o_color = vec4(u_color, 1.0);                                          "\
+"	o_color = u_color;                                                     "\
 "}"
 
 #define DRAW_VERTEX_SOURCE_2D                                               \
@@ -59,10 +59,10 @@
 #define DRAW_FRAGMENT_SOURCE_2D                                             \
 "#version 330\n                                                            "\
 "out vec4 o_color;                                                         "\
-"uniform vec3 u_color;                                                     "\
+"uniform vec4 u_color;                                                     "\
 "void main()                                                               "\
 "{                                                                         "\
-"	o_color = vec4(u_color, 1.0);                                          "\
+"	o_color = u_color;                                                     "\
 "}"
 
 #define DRAW_VERTEX_SOURCE_2DTEX                                            \
@@ -81,11 +81,11 @@
 "#version 330\n                                                            "\
 "in vec2 g_texcoord;                                                       "\
 "out vec4 o_color;                                                         "\
-"uniform vec3 u_color;                                                     "\
+"uniform vec4 u_color;                                                     "\
 "uniform sampler2D u_tex;                                                  "\
 "void main()                                                               "\
 "{                                                                         "\
-"	o_color = texture(u_tex, g_texcoord) * vec4(u_color, 1.0);             "\
+"	o_color = texture(u_tex, g_texcoord) * u_color;                        "\
 "}"
 
 #define POINT_SIZE 0.005f
@@ -203,7 +203,7 @@ S_pencil_new(void)
 
 	pencil->camera = NULL;
 	pencil->texture = NULL;
-	_S_CALL("S_vec3_fill", S_vec3_fill(&pencil->color, 1.0f));
+	_S_CALL("S_vec4_fill", S_vec4_fill(&pencil->color, 1.0f));
 
 	_S_CALL("S_transform_new", pencil->transform = S_transform_new());
 
@@ -268,8 +268,8 @@ S_pencil_draw_line_3d(const Spencil *pencil,
 	_S_CALL("S_shader_set_uniform_mat4",
 	        S_shader_set_uniform_mat4(shader,
 	                                  "u_model", &model));
-	_S_CALL("S_shader_set_uniform_vec3",
-	        S_shader_set_uniform_vec3(shader, "u_color", &pencil->color));
+	_S_CALL("S_shader_set_uniform_vec4",
+	        S_shader_set_uniform_vec4(shader, "u_color", &pencil->color));
 	/* draw line */
 	_S_CALL("_S_mesh_draw", _S_mesh_draw(line_mesh, S_MESH_LINES));
 }
@@ -306,8 +306,8 @@ S_pencil_draw_point_3d(const Spencil *pencil,
 	_S_CALL("S_shader_set_uniform_mat4",
 	        S_shader_set_uniform_mat4(shader,
 	                                  "u_model", &model));
-	_S_CALL("S_shader_set_uniform_vec3",
-	        S_shader_set_uniform_vec3(shader, "u_color", &pencil->color));
+	_S_CALL("S_shader_set_uniform_vec4",
+	        S_shader_set_uniform_vec4(shader, "u_color", &pencil->color));
 	_S_CALL("_S_mesh_draw_count",
 	        _S_mesh_draw_count(line_mesh, S_MESH_POINTS, 1));
 }
@@ -384,8 +384,8 @@ S_pencil_draw_quad_2d(const Spencil *pencil,
 	_S_CALL("S_shader_set_uniform_mat4",
 	        S_shader_set_uniform_mat4(quadshader,
 	                                  "u_projection", &projection));
-	_S_CALL("S_shader_set_uniform_vec3",
-	        S_shader_set_uniform_vec3(quadshader, "u_color", &pencil->color));
+	_S_CALL("S_shader_set_uniform_vec4",
+	        S_shader_set_uniform_vec4(quadshader, "u_color", &pencil->color));
 	/* draw */
 	_S_GL(glDisable(GL_DEPTH_TEST));
 	_S_GL(glDrawArrays(GL_TRIANGLES, 0, 6));
@@ -409,7 +409,8 @@ void
 S_pencil_set_color(Spencil *pencil,
                    float r,
                    float g,
-                   float b)
+                   float b,
+				   float a)
 {
 	if (!pencil)
 	{
@@ -419,7 +420,8 @@ S_pencil_set_color(Spencil *pencil,
 	r = S_clamp(r, 0.0f, 1.0f);
 	g = S_clamp(g, 0.0f, 1.0f);
 	b = S_clamp(b, 0.0f, 1.0f);
-	_S_CALL("S_vec3_set", S_vec3_set(&pencil->color, r, g, b));
+	a = S_clamp(a, 0.0f, 1.0f);
+	_S_CALL("S_vec4_set", S_vec4_set(&pencil->color, r, g, b, a));
 }
 
 void

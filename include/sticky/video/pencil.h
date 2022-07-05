@@ -49,7 +49,7 @@ Spencil_s
 {
 	Sshader *shader;
 	Stransform *transform;
-	Svec3 color;
+	Svec4 color;
 	const Stexture *texture;
 	const Scamera *camera;
 } Spencil;
@@ -167,11 +167,12 @@ void   S_pencil_set_camera(Spencil *, const Scamera *);
  * @param[in] r The red colour component.
  * @param[in] g The green colour component.
  * @param[in] b The blue colour component.
+ * @param[in] a The alpha colour component.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid pencil is provided to
  * the function.
  * @since 1.0.0
  */
-void   S_pencil_set_color(Spencil *, float, float, float);
+void   S_pencil_set_color(Spencil *, float, float, float, float);
 
 /**
  * @brief Set the texture of a pencil.
