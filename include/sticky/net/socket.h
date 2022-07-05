@@ -45,9 +45,9 @@ extern "C"
 
 #if defined(STICKY_POSIX)
 #include <poll.h>
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 #include <winsock2.h>
-#endif /* STICKY_POSIX || STICKY_WINDOWS */
+#endif /* STICKY_POSIX */
 
 typedef
 struct

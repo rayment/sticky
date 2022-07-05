@@ -6,6 +6,7 @@
  * Date created : 05/09/2021
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,10 +27,19 @@ _S_memory_new(Ssize_t size,
 		return NULL;
 	}
 	ptr = malloc(size);
-	if (!ptr)
+	if (!ptr || errno == ENOMEM)
+	{
 		_S_out_of_memory(location, line);
+		return NULL;
+	}
 #ifdef DEBUG
+	/* GCC 11 complains because the meomry pointer has not been zero'ed.
+	   Given the onus is on the user to initialize the allocated block, we can
+	   safely ignore the error and trace the new pointer. */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 	_S_memtrace_add_frame(ptr, size, location, line);
+#pragma GCC diagnostic pop
 #endif /* DEBUG */
 	return ptr;
 }

@@ -4,7 +4,7 @@
  */
 
 /*
- * socket.c
+ * socket_win32.c
  * Win32 socket function implementation.
  *
  * Author       : Finn Rayment <finn@rayment.fr>

@@ -25,7 +25,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 #include <winsock2.h>
 #include <ws2ipdef.h>
 #include <ws2tcpip.h>
@@ -48,7 +48,11 @@ _S_tcp_open(Senum family)
 	else
 		domain = AF_INET;
 	fd = socket(domain, SOCK_STREAM, 0);
+#if defined(STICKY_POSIX)
 	if (fd == -1)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
+	if (fd == INVALID_SOCKET)
+#endif /* STICKY_POSIX */
 	{
 		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_open");
 		return NULL;
@@ -99,7 +103,7 @@ _S_tcp_unblock_socket(Ssocket *sock)
 		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_unblock_socket");
 		return NULL;
 	}
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 	if (ioctlsocket(sock, FIONBIO, &(u_long){1}) != 0)
 	{
 		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_unblock_socket");
@@ -180,7 +184,7 @@ S_tcp_bind(Senum family,
 	{
 #if defined(STICKY_POSIX)
 		if (errno == EADDRINUSE)
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 		if (errno == WSAEADDRINUSE)
 #endif /* STICKY_POSIX */
 		{
@@ -188,7 +192,7 @@ S_tcp_bind(Senum family,
 		}
 #if defined(STICKY_POSIX)
 		else if (errno == EACCES)
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 		else if (errno == WSAEACCES)
 #endif /* STICKY_POSIX */
 		{
@@ -235,7 +239,7 @@ S_tcp_listen(Ssocket *sock,
 	{
 #if defined(STICKY_POSIX)
 		if (errno == EADDRINUSE)
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 		if (errno == WSAEADDRINUSE)
 #endif /* STICKY_POSIX */
 		{
@@ -271,7 +275,7 @@ S_tcp_accept(Ssocket *sock)
 	{
 #if defined(STICKY_POSIX)
 		if (errno == EAGAIN)
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 		if (errno == WSAEWOULDBLOCK)
 #endif /* STICKY_POSIX */
 		{
@@ -376,7 +380,7 @@ S_tcp_connect(Senum family,
 	{
 #if defined(STICKY_POSIX)
 		if (a == EAI_AGAIN)
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 		if (a == WSATRY_AGAIN)
 #endif /* STICKY_POSIX */
 		{
@@ -608,7 +612,7 @@ S_tcp_poll(Ssocket *sock,
 	}
 #if defined(STICKY_POSIX)
 	ret = poll(sock->polls, sock->poll_len, timeout);
-#elif defined(STICKY_WINDOWS)
+#elif defined(STICKY_WINDOWS) /* STICKY_POSIX */
 	ret = WSAPoll(sock->polls, sock->poll_len, timeout);
 #endif /* STICKY_POSIX */
 	if (ret == -1)
