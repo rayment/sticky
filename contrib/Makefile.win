@@ -42,6 +42,9 @@ install: .phony
 !IF !EXISTS(include)
 	mkdir include
 !ENDIF
+!IF !EXISTS(include\sticky)
+	mkdir include\sticky
+!ENDIF
 !IF !EXISTS(include\sticky\stb)
 	mkdir include\sticky\stb
 !ENDIF
