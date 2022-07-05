@@ -146,10 +146,12 @@ _S_tcp_gen_poll(Ssocket *sock,
 	(sock->polls+sock->poll_len-1)->events = POLLIN;
 }
 
+static
 Ssocket *
-S_tcp_bind(Senum family,
-           Suint16 port,
-           Sbool blocking)
+_S_tcp_bind(Senum family,
+            Suint16 port,
+            Sbool blocking,
+            Sbool local)
 {
 	Ssocket *sock;
 	Ssize_t saddr_len;
@@ -167,7 +169,10 @@ S_tcp_bind(Senum family,
 		memset(&saddr4, 0, sizeof(struct sockaddr_in));
 		saddr4.sin_family = sock->family;
 		saddr4.sin_port = htons(port);
-		saddr4.sin_addr.s_addr = htonl(INADDR_ANY);
+		if (local)
+			saddr4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+		else
+			saddr4.sin_addr.s_addr = htonl(INADDR_ANY);
 		saddr = (struct sockaddr *) &saddr4;
 		saddr_len = sizeof(saddr4);
 	}
@@ -176,7 +181,10 @@ S_tcp_bind(Senum family,
 		memset(&saddr6, 0, sizeof(struct sockaddr_in6));
 		saddr6.sin6_family = sock->family;
 		saddr6.sin6_port = htons(port);
-		saddr6.sin6_addr = in6addr_any;
+		if (local)
+			saddr6.sin6_addr = in6addr_loopback;
+		else
+			saddr6.sin6_addr = in6addr_any;
 		saddr = (struct sockaddr *) &saddr6;
 		saddr_len = sizeof(saddr6);
 	}
@@ -218,6 +226,26 @@ S_tcp_bind(Senum family,
 	sock->type = _S_SOCK_SERVER_LOCAL;
 	_S_CALL("S_linkedlist_new", sock->children = S_linkedlist_new());
 	_S_CALL("_S_tcp_gen_poll", _S_tcp_gen_poll(sock, sock->fd));
+	return sock;
+}
+
+Ssocket *
+S_tcp_bind(Senum family,
+           Suint16 port,
+           Sbool blocking)
+{
+	Ssocket *sock;
+	_S_CALL("_S_tcp_bind", sock = _S_tcp_bind(family, port, blocking, S_FALSE));
+	return sock;
+}
+
+Ssocket *
+S_tcp_bind_local(Senum family,
+                 Suint16 port,
+                 Sbool blocking)
+{
+	Ssocket *sock;
+	_S_CALL("_S_tcp_bind", sock = _S_tcp_bind(family, port, blocking, S_TRUE));
 	return sock;
 }
 

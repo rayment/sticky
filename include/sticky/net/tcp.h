@@ -23,6 +23,7 @@ extern "C"
 #include "sticky/net/socket.h"
 
 Ssocket  *S_tcp_bind(Senum, Suint16, Sbool);
+Ssocket  *S_tcp_bind_local(Senum, Suint16, Sbool);
 void      S_tcp_listen(Ssocket *, Sint32);
 Ssocket  *S_tcp_accept(Ssocket *);
 Ssocket  *S_tcp_connect(Senum, const Schar *, Suint16, Sbool);
