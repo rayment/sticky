@@ -410,7 +410,9 @@ S_string_substring(Sstring *dest,
 		return;
 	}
 	if (dest != src)
+	{
 		_S_CALL("_S_string_grow", _S_string_grow(dest, len+1));
+	}
 	if (dest != src || start != 0) /* no need to move if shrinking src string */
 		memmove(dest->ptr, src->ptr+start, len);
 	dest->len = len;

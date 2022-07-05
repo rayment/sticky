@@ -100,7 +100,9 @@ S_listener_set_rot(Slistener *listener,
 	}
 	_S_CALL("S_quat_copy", S_quat_copy(&listener->rot, rot));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_rot", _S_listener_update_rot(listener));
+	}
 }
 
 void
@@ -114,7 +116,9 @@ S_listener_add_rot(Slistener *listener,
 	}
 	_S_CALL("S_quat_multiply", S_quat_multiply(&listener->rot, rot));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_rot", _S_listener_update_rot(listener));
+	}
 }
 
 void
@@ -128,7 +132,9 @@ S_listener_set_pos(Slistener *listener,
 	}
 	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->pos, pos));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_pos", _S_listener_update_pos(listener));
+	}
 }
 
 void
@@ -142,7 +148,9 @@ S_listener_add_pos(Slistener *listener,
 	}
 	_S_CALL("S_vec3_add", S_vec3_add(&listener->pos, pos));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_pos", _S_listener_update_pos(listener));
+	}
 }
 
 void
@@ -156,7 +164,9 @@ S_listener_set_vel(Slistener *listener,
 	}
 	_S_CALL("S_vec3_copy", S_vec3_copy(&listener->vel, vel));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_vel", _S_listener_update_vel(listener));
+	}
 }
 
 void
@@ -170,7 +180,9 @@ S_listener_add_vel(Slistener *listener,
 	}
 	_S_CALL("S_vec3_add", S_vec3_add(&listener->vel, vel));
 	if (active == listener)
+	{
 		_S_CALL("_S_listener_update_vel", _S_listener_update_vel(listener));
+	}
 }
 
 Sbool

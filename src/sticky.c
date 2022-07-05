@@ -30,7 +30,7 @@ S_sticky_init(void)
 	_S_CALL("_S_socket_init", _S_socket_init());
 #ifdef DEBUG
 	_S_memtrace_init();
-#endif
+#endif /* DEBUG */
 }
 
 void
@@ -45,6 +45,6 @@ S_sticky_free(void)
 	_S_CALL("_S_socket_free", _S_socket_free());
 #ifdef DEBUG
 	_S_memtrace_free();
-#endif
+#endif /* DEBUG */
 }
 
