@@ -456,7 +456,7 @@ _S_error_al(const Schar *location,
             const Suint32 line)
 {
 	ALenum err;
-	Schar *msg;
+	const Schar *msg;
 
 	err = alGetError();
 	switch (err)
@@ -479,7 +479,7 @@ _S_error_alc(const Schar *location,
              ALCdevice *dev)
 {
 	ALCenum err;
-	Schar *msg;
+	const Schar *msg;
 
 	err = alcGetError(dev);
 	switch (err)
