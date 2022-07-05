@@ -7,7 +7,7 @@
 
 VERSION:=1.0.0
 PREFIX:=/usr/local
-DEBUG:=1
+DEBUG:=0
 # extra debug tracing info if DEBUG=1
 # 0 = tracing off
 # 1 = memory tracing
@@ -33,7 +33,8 @@ LD:=$(CC)
 
 CCFLAGS:=--std=c99
 CXXFLAGS:=-Wall -Wextra -Werror --pedantic-errors \
-          -fPIC -m$(ARCH) -O3 -DVERSION=\"${VERSION}\"
+          -fPIC -m$(ARCH) -O3 -DVERSION=\"${VERSION}\" \
+          -fvisibility=hidden
 ifeq ($(DEBUG),1)
 CXXFLAGS+=-g -DDEBUG=1
 ifneq ($(DEBUG_TRACE),0)

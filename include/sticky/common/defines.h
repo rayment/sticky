@@ -47,9 +47,19 @@
 #if defined(__GNUC__)
 #define PACK(...) __VA_ARGS__ __attribute__((__packed__))
 #define ALIGN(x,...) __VA_ARGS__ __attribute__((aligned(x)))
+#if __GNUC__ >= 4
+#define STICKY_API __attribute__((visibility("default")))
+#else /* __GNUC__ >= 4 */
+#define STICKY_API
+#endif /* __GNUC__ >= 4 */
 #elif defined(_MSC_VER) /* __GNUC__ and _MSC_VER */
 #define PACK(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
 #define ALIGN(x,...) __VA_ARGS__ __declspec(align(x))
+#define STICKY_API __declspec(dllexport)
+#else /* __GNUC__ and _MSC_VER */
+#define PACK(...)
+#define ALIGN(x,...)
+#define STICKY_API
 #endif /* __GNUC__ and _MSC_VER */
 
 #endif /* FR_RAYMENT_STICKY_DEFINES_H */
