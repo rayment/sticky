@@ -19,7 +19,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-#include <dr_libs/dr_wav.h>
+#include "sticky/dr_libs/dr_wav.h"
 
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"

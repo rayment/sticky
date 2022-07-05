@@ -25,7 +25,7 @@
 #include "sticky/video/shader.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb/stb_image_write.h>
+#include "sticky/stb/stb_image_write.h"
 
 #define FONT_VERTEX_SOURCE                                                  \
 "#version 330\n                                                            "\

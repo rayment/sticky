@@ -42,11 +42,11 @@ install: .phony
 !IF !EXISTS(include)
 	mkdir include
 !ENDIF
-!IF !EXISTS(include\stb)
-	mkdir include\stb
+!IF !EXISTS(include\sticky\stb)
+	mkdir include\sticky\stb
 !ENDIF
-!IF !EXISTS(include\dr_libs)
-	mkdir include\dr_libs
+!IF !EXISTS(include\sticky\dr_libs)
+	mkdir include\sticky\dr_libs
 !ENDIF
 !IF !EXISTS(include\SDL2)
 	mkdir include\SDL2
@@ -57,8 +57,8 @@ install: .phony
 !IF !EXISTS(include\AL)
 	mkdir include\AL
 !ENDIF
-	xcopy /E /Y build\stb-master\*.h include\stb
-	xcopy /E /Y build\dr_libs-master\*.h include\dr_libs
+	xcopy /E /Y build\stb-master\*.h include\sticky\stb
+	xcopy /E /Y build\dr_libs-master\*.h include\sticky\dr_libs
 	xcopy /E /Y build\SDL2-$(SDL2_VER)\include\*.h include\SDL2
 	xcopy /E /Y build\glew-$(GLEW_VER)\include\GL\*.h include\GL
 	xcopy /E /Y build\openal-soft-$(OPENAL_VER)-bin\include\AL\*.h include\AL
