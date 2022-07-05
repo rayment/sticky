@@ -126,12 +126,28 @@ TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
 TEST_OBJECTS:=$(patsubst %.c,%.o,$(TEST_SOURCES))
 TEST_BINARIES:=$(patsubst %.c,%,$(TEST_SOURCES))
 
+# create a build string
+BUILD_STRING:=lib$(LIBNAME)-$(VERSION)
+ifeq ($(DEBUG),1)
+BUILD_STRING+=+debug
+endif
+ifneq ($(DEBUG_TRACE),0)
+BUILD_STRING+=+trace($(DEBUG_TRACE))
+endif
+ifeq ($(ENABLE_ASSIMP),1)
+BUILD_STRING+=+assimp
+endif
+ifeq ($(ENABLE_OPENMP),1)
+BUILD_STRING+=+openmp
+endif
+
 all: vardump $(OBJECTS)
 	mkdir -p build
 	ar -crv build/$(STATIC_LIB) $(OBJECTS)
 	ranlib build/$(STATIC_LIB)
 	$(CC) $(OBJECTS) $(LDFLAGS) -shared -o build/$(DYNAMIC_LIB)
 	ln -fs $(DYNAMIC_LIB) build/$(LINK_LIB)
+	echo "$(BUILD_STRING)" > build/buildinfo
 
 vardump:
 	@echo "CFLAGS   := $(CFLAGS)"
