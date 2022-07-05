@@ -177,5 +177,8 @@ clean:
 clean_test:
 	rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) || true
 
+clean_docs:
+	rm -rf docs/html || true
+
 .PHONY: all vardump docs install uninstall test clean clean_test
 
