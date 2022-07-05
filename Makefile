@@ -166,7 +166,6 @@ docs:
 install:
 	install -d $(PREFIX)/include/sticky
 	cp -R include/* $(PREFIX)/include/
-	cp -R contrib/include/sticky/ $(PREFIX)/include/
 	find $(PREFIX)/include/sticky -type d -print0 | xargs -0 chmod 755
 	find $(PREFIX)/include/sticky -type f -print0 | xargs -0 chmod 644
 	install -d $(PREFIX)/lib

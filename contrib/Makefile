@@ -25,9 +25,9 @@ patch:
 build:
 
 install:
-	mkdir -p include/sticky
-	mkdir -p include/sticky/stb && cp build/stb/*.h include/sticky/stb/
-	mkdir -p include/sticky/dr_libs && cp build/dr_libs/*.h include/sticky/dr_libs/
+	mkdir -p include
+	mkdir -p include/stb && cp build/stb/*.h include/stb/
+	mkdir -p include/dr_libs && cp build/dr_libs/*.h include/dr_libs/
 
 clean:
 	rm -rf include

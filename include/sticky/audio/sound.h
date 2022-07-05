@@ -19,8 +19,6 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-#include "sticky/dr_libs/dr_wav.h"
-
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 
@@ -31,6 +29,10 @@ extern "C"
  * @addtogroup sound
  * @{
  */
+
+/* NOTE: Ssound has opaque data because it contains dr_libs data which has to be
+         built-in at compile-time. See src/audio/sound.c */
+typedef struct _Ssound_opaque_data_s _Ssound_opaque_data;
 
 /**
  * @brief Audio structure.
@@ -57,7 +59,7 @@ Ssound_s
 	ALenum format;
 	Sfloat pitch, gain;
 
-	drwav wav;
+	_Ssound_opaque_data *data;
 } Ssound;
 
 /**

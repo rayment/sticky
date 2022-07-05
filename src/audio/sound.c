@@ -20,10 +20,18 @@
 #include "sticky/memory/allocator.h"
 
 #define DR_WAV_IMPLEMENTATION
-#include "sticky/dr_libs/dr_wav.h"
+#include <dr_libs/dr_wav.h>
 
 static ALCdevice *dev;
 static ALCcontext *context;
+
+/* drwav is compiled into this source file rather than being exposed in the
+   header all the time */
+struct
+_Ssound_opaque_data_s
+{
+	drwav wav;
+};
 
 void
 _S_sound_init(void)
@@ -72,7 +80,7 @@ _S_sound_stream_reset_wav(Ssound *sound)
 	}
 	else
 	{
-		drwav_seek_to_pcm_frame(&sound->wav, 0);
+		drwav_seek_to_pcm_frame(&sound->data->wav, 0);
 	}
 }
 
@@ -100,7 +108,7 @@ _S_sound_stream_buffer_wav(Ssound *sound,
 	   therefore:
 	   max frame count = buffer size / (channels * sizeof(Sint16)) */
 	num_frames = S_SOUND_STREAM_SIZE / (sound->channels * sizeof(Sint16));
-	rd = drwav_read_pcm_frames_s16(&sound->wav, num_frames, data);
+	rd = drwav_read_pcm_frames_s16(&sound->data->wav, num_frames, data);
 	if (rd > 0)
 	{
 		tmp = rd * sizeof(Sint16) * sound->channels;
@@ -125,22 +133,24 @@ _S_sound_load_wav(const Schar *filename)
 		return NULL;
 	}
 	sound = (Ssound *) S_memory_new(sizeof(Ssound));
+	sound->data = (_Ssound_opaque_data *) S_memory_new(sizeof(drwav));
 
-	if (!drwav_init_file(&sound->wav, filename, NULL))
+	if (!drwav_init_file(&sound->data->wav, filename, NULL))
 		_S_error_dr("drwav_init_file", "Failed to load WAV");
 
-	if (sound->wav.bitsPerSample != 8 && sound->wav.bitsPerSample != 16)
+	if (sound->data->wav.bitsPerSample != 8 &&
+	    sound->data->wav.bitsPerSample != 16)
 	{
 		_S_SET_ERROR(S_INVALID_FORMAT, "_S_sound_load_wav");
 		return NULL;
 	}
 
-	sound->channels = sound->wav.channels;
-	sound->sample_rate = sound->wav.sampleRate;
+	sound->channels = sound->data->wav.channels;
+	sound->sample_rate = sound->data->wav.sampleRate;
 	sound->pitch = 1.0f;
 	sound->gain = 1.0f;
 	/* converted to signed 16 */
-	sound->bits_per_sample = 16;/*sound->wav.bitsPerSample;*/
+	sound->bits_per_sample = 16;/*sound->data->wav.bitsPerSample;*/
 	_S_CALL("_S_sound_set_format", b = _S_sound_set_format(sound));
 	if (!b)
 	{
@@ -150,7 +160,7 @@ _S_sound_load_wav(const Schar *filename)
 		          sound->channels, sound->bits_per_sample);
 		return NULL;
 	}
-	sound->size = ((Ssize_t) sound->wav.totalPCMFrameCount) *
+	sound->size = ((Ssize_t) sound->data->wav.totalPCMFrameCount) *
 	              sound->channels * sizeof(Sint16);
 
 	return sound;
@@ -172,11 +182,12 @@ S_sound_load_wav(const Schar *filename)
 	sound->queue = 0;
 	_S_AL(alGenBuffers(1, sound->buffer));
 	data = (Sint16 *) S_memory_new(sound->size);
-	drwav_read_pcm_frames_s16(&sound->wav, sound->wav.totalPCMFrameCount, data);
+	drwav_read_pcm_frames_s16(&sound->data->wav,
+	                          sound->data->wav.totalPCMFrameCount, data);
 	_S_AL(alBufferData(*(sound->buffer), sound->format, data,
 	                   sound->size, (ALsizei) sound->sample_rate));
 	S_memory_delete(data);
-	drwav_uninit(&sound->wav);
+	drwav_uninit(&sound->data->wav);
 
 	return sound;
 }
@@ -209,13 +220,14 @@ S_sound_delete(Ssound *sound)
 	}
 	if (sound->stream)
 	{
-		drwav_uninit(&sound->wav);
+		drwav_uninit(&sound->data->wav);
 		_S_AL(alDeleteBuffers(S_SOUND_STREAM_BUFFERS, sound->buffer));
 	}
 	else
 	{
 		_S_AL(alDeleteBuffers(1, sound->buffer));
 	}
+	S_memory_delete(sound->data);
 	S_memory_delete(sound);
 }
 

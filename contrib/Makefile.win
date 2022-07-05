@@ -42,14 +42,11 @@ install: .phony
 !IF !EXISTS(include)
 	mkdir include
 !ENDIF
-!IF !EXISTS(include\sticky)
-	mkdir include\sticky
+!IF !EXISTS(include\stb)
+	mkdir include\stb
 !ENDIF
-!IF !EXISTS(include\sticky\stb)
-	mkdir include\sticky\stb
-!ENDIF
-!IF !EXISTS(include\sticky\dr_libs)
-	mkdir include\sticky\dr_libs
+!IF !EXISTS(include\dr_libs)
+	mkdir include\dr_libs
 !ENDIF
 !IF !EXISTS(include\SDL2)
 	mkdir include\SDL2
