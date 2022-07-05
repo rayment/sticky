@@ -31,6 +31,17 @@ _S_camera_set_projection(Scamera *camera)
 	                                                   camera->height));
 }
 
+void
+_S_camera_resize_hook(Scamera *camera)
+{
+	if (!camera || !camera->win)
+		return; /* end silently */
+	camera->width = camera->win->width;
+	camera->height = camera->win->height;
+	camera->aspect = ((Sfloat) camera->width) / ((Sfloat) camera->height);
+	_S_camera_set_projection(camera);
+}
+
 Scamera *
 S_camera_new(Suint32 width,
              Suint32 height)
@@ -44,6 +55,7 @@ S_camera_new(Suint32 width,
 	camera->aspect = ((Sfloat) width) / ((Sfloat) height);
 	camera->width = width;
 	camera->height = height;
+	camera->win = NULL;
 	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
 	return camera;
 }
@@ -56,8 +68,32 @@ S_camera_delete(Scamera *camera)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_delete");
 		return;
 	}
+	if (camera->win)
+		camera->win->cam = NULL;
 	_S_CALL("S_transform_delete", S_transform_delete(camera->transform));
 	S_memory_delete(camera);
+}
+
+void
+S_camera_attach(Scamera *camera,
+                Swindow *window)
+{
+	if (!camera)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_camera_attach");
+		return;
+	}
+	if (camera->win == window)
+		return; /* nothing to do */
+	if (camera->win)
+	{
+		/* deattach old window */
+		camera->win->cam = NULL;
+	}
+	camera->win = window;
+	window->cam = camera;
+	if (window) /* only call the hook on a dirty camera if the window exists */
+		_S_camera_resize_hook(camera);
 }
 
 void

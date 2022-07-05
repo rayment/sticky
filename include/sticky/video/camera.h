@@ -20,6 +20,7 @@ extern "C"
 
 #include "sticky/math/mat4.h"
 #include "sticky/math/transform.h"
+#include "sticky/video/window.h"
 
 /**
  * @addtogroup camera
@@ -42,6 +43,7 @@ Scamera_s
 	Sfloat near_plane, far_plane, fov, aspect;
 	Suint32 width, height;
 	Smat4 perspective, orthographic;
+	Swindow *win;
 } Scamera;
 
 /**
@@ -71,6 +73,25 @@ Scamera    *S_camera_new(Suint32, Suint32);
  * @since 1.0.0
  */
 void        S_camera_delete(Scamera *);
+
+/**
+ * @brief Hook a camera to a window for resize updates.
+ *
+ * Causes a given camera to attach itself to a window, thus automatically
+ * changing its display dimensions to match that of the window whenever a
+ * display update is invoked. Note that only one camera can be attached to any
+ * one window at a time. Attaching a camera to a window that already has a
+ * camera will replace the hook, not append to it.
+ *
+ * If a <c>NULL</c> window is provided, then the camera will be unattached.
+ *
+ * @param[in,out] camera The camera to attach to the window.
+ * @param[in,out] window The window to attach to the camera.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void        S_camera_attach(Scamera *, Swindow *);
 
 /**
  * @brief Set the near-plane of a camera.
@@ -246,6 +267,8 @@ void        S_camera_get_orthographic_matrix(const Scamera *, Smat4 *);
  * @since 1.0.0
  */
 void        S_camera_get_view_matrix(const Scamera *, Smat4 *);
+
+void       _S_camera_resize_hook(Scamera *);
 
 /**
  * @}

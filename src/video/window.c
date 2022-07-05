@@ -56,6 +56,7 @@ S_window_new(void)
 	window->window = NULL;
 	window->context = NULL;
 	window->icon = NULL;
+	window->cam = NULL;
 	window->display_mode = S_WINDOWED;
 	window->vsync = S_FALSE;
 	window->gl_profile = S_GL_CORE;
@@ -97,6 +98,8 @@ S_window_delete(Swindow *window)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_delete");
 		return;
 	}
+	if (window->cam)
+		window->cam->win = NULL;
 	_S_pencil_free();
 	_S_font_free();
 	SDL_GL_DeleteContext(window->context);
@@ -264,7 +267,7 @@ S_window_poll(Swindow *window)
 			/* window or program exit */
 			if (window->on_exit)
 			{
-				window->on_exit(window);
+				_S_CALL("HOOK (Swindow::on_exit)", window->on_exit(window));
 			}
 			else
 			{
@@ -282,7 +285,15 @@ S_window_poll(Swindow *window)
 				_S_CALL("_S_window_recalculate_viewport",
 				        _S_window_recalculate_viewport(window));
 				if (window->on_resize)
-					window->on_resize(window);
+				{
+					_S_CALL("HOOK (Swindow::on_resize)",
+					        window->on_resize(window));
+				}
+				if (window->cam)
+				{
+					_S_CALL("_S_camera_resize_hook",
+					        _S_camera_resize_hook(window->cam));
+				}
 				break;
 			}
 			break;
@@ -293,19 +304,25 @@ S_window_poll(Swindow *window)
 		case SDL_CONTROLLERDEVICEREMOVED:
 		case SDL_CONTROLLERDEVICEREMAPPED:
 			if ((window->input_mode & S_GAMEPAD) == S_GAMEPAD)
-				_S_input_gamepad_event(e);
+			{
+				_S_CALL("_S_input_gamepad_event", _S_input_gamepad_event(e));
+			}
 			break;
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			if ((window->input_mode & S_KEYBOARD) == S_KEYBOARD)
-				_S_input_keyboard_event(e);
+			{
+				_S_CALL("_S_input_keyboard_event", _S_input_keyboard_event(e));
+			}
 			break;
 		case SDL_MOUSEMOTION:
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
 		case SDL_MOUSEWHEEL:
 			if ((window->input_mode & S_MOUSE) == S_MOUSE)
-				_S_input_mouse_event(e);
+			{
+				_S_CALL("_S_input_mouse_event", _S_input_mouse_event(e));
+			}
 			break;
 		}
 	}
@@ -581,6 +598,35 @@ S_window_get_delta_time(const Swindow *window)
 		return 0.0f;
 	}
 	return (Sfloat) window->delta_time / 1000.0f;
+}
+
+Suint8
+S_window_get_num_displays(void)
+{
+	Sint32 num;
+	if ((num = SDL_GetNumVideoDisplays() < 1))
+		_S_error_sdl("S_window_get_num_displays");
+	return (Suint8) num;
+}
+
+void
+S_window_get_display_info(Suint8 id,
+                          Sint32 *w,
+						  Sint32 *h,
+						  Sint32 *refresh)
+{
+	SDL_DisplayMode dm;
+	if ((SDL_GetDesktopDisplayMode(id, &dm)) != 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_window_get_display_info");
+		return;
+	}
+	if (w)
+		*w = dm.w;
+	if (h)
+		*h = dm.h;
+	if (refresh)
+		*refresh = dm.refresh_rate;
 }
 
 Sbool

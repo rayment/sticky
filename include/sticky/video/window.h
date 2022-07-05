@@ -25,6 +25,10 @@ extern "C"
 #include "sticky/concurrency/thread.h"
 #include "sticky/input/keyboard.h"
 #include "sticky/math/vec4.h"
+#include "sticky/video/camera.h"
+
+/* forward declaration */
+struct Scamera_s;
 
 /**
  * @addtogroup window
@@ -169,6 +173,7 @@ Swindow_s
 	Sbool running;
 	Suint16 ticks, tick_limit, skip_ticks, next_tick;
 	Suint32 delta_time, current_frame, last_frame;
+	struct Scamera_s *cam;
 
 	void (*on_exit)(struct Swindow_s *);
 	void (*on_resize)(struct Swindow_s *);
@@ -707,6 +712,37 @@ void     S_window_get_size(const Swindow *, Suint16 *, Suint16 *);
  * @since 1.0.0
  */
 Sfloat   S_window_get_delta_time(const Swindow *);
+
+/**
+ * @brief Get the number of video displays available.
+ *
+ * Video displays are used to output the window contents. This function will
+ * query the operating system and return the number of available displays that
+ * can be used.
+ *
+ * @return The number of available video displays.
+ * @since 1.0.0
+ */
+Suint8   S_window_get_num_displays(void);
+
+/**
+ * @brief Get display size and refresh rate.
+ *
+ * This function queries the operating system for a given display index and
+ * returns the width and height in pixels, and the refresh rate in Hz (or 0 if
+ * the refresh rate is unspecified).
+ *
+ * If any pointer argument is equal to <c>NULL</c>, then the given value will
+ * not be set.
+ *
+ * @param[in] id The display index. See {@link S_window_get_num_displays(void)}.
+ * @param[out] w The display width in pixels.
+ * @param[out] h The display height in pixels.
+ * @param[out] refresh The display refresh rate in Hz.
+ * @exception S_INVALID_VALUE If the given display index is invalid.
+ * @since 1.0.0
+ */
+void     S_window_get_display_info(Suint8, Sint32 *, Sint32 *, Sint32 *);
 
 /**
  * @brief Check if a window is currently running.
