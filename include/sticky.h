@@ -18,6 +18,11 @@
  * @{
  */
 
+/*
+ * WARNING: Don't put this include section in an __cplusplus extern guard
+ * because any code loaded from external libaries may be affected.
+ */
+
 /* these must come before all other includes */
 #include "sticky/common/defines.h"
 #include "sticky/common/includes.h"
@@ -65,6 +70,11 @@
 #include "sticky/video/texture.h"
 #include "sticky/video/window.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+
 /**
  * @brief Initialise core engine components.
  *
@@ -92,6 +102,10 @@ void S_sticky_init(void);
  * @since 1.0.0
  */
 void S_sticky_free(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 /**
  * @}

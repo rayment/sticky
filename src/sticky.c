@@ -19,7 +19,7 @@ Senum  _S_error;
 Schar *_S_error_loc;
 
 void
-S_sticky_init()
+S_sticky_init(void)
 {
 	/* error handler init */
 	SERRNO = S_NO_ERROR;
@@ -34,7 +34,7 @@ S_sticky_init()
 }
 
 void
-S_sticky_free()
+S_sticky_free(void)
 {
 	if (_S_window_is_init())
 	{
