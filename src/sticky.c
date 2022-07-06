@@ -48,3 +48,9 @@ S_sticky_free(void)
 #endif /* DEBUG */
 }
 
+const Schar *
+S_sticky_get_version(void)
+{
+	return VERSION;
+}
+

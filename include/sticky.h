@@ -103,6 +103,17 @@ STICKY_API void S_sticky_init(void);
  */
 STICKY_API void S_sticky_free(void);
 
+/**
+ * @brief Get the string version of the libary.
+ *
+ * This function will return a constant pointer to a string that contains the
+ * version identifier for the current build of <b>sticky</b> that is in use.
+ *
+ * @return A string that contains the version of <b>sticky</b>.
+ * @since 1.0.0
+ */
+STICKY_API const Schar *S_sticky_get_version(void);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
