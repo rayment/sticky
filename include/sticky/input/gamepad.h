@@ -24,6 +24,7 @@ extern "C"
  * @{
  */
 
+#include "sticky/common/defines.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 

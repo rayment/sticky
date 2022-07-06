@@ -20,6 +20,7 @@ extern "C"
 #endif /* __cplusplus */
 
 #include "sticky/collections/linkedlist.h"
+#include "sticky/common/defines.h"
 #include "sticky/common/types.h"
 #include "sticky/math/math.h"
 

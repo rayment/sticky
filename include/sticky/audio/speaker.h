@@ -22,6 +22,7 @@ extern "C"
 #include <string.h>
 
 #include "sticky/audio/sound.h"
+#include "sticky/common/defines.h"
 #include "sticky/common/error.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"

@@ -19,6 +19,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#include "sticky/common/defines.h"
 #include "sticky/common/types.h"
 #include "sticky/math/transform.h"
 #include "sticky/math/vec3.h"

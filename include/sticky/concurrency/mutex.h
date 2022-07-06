@@ -43,7 +43,7 @@ typedef pthread_mutex_t _Smutex_raw;
  *
  * @since 1.0.0
  */
-STICKY_API typedef _Smutex_raw *Smutex;
+typedef _Smutex_raw *Smutex;
 
 /**
  * @brief Allocate a new mutex in memory.

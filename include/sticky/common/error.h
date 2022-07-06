@@ -23,6 +23,7 @@ extern "C"
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sticky/common/defines.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
 #include "sticky/memory/memtrace.h"
