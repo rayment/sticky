@@ -26,9 +26,9 @@ extern "C"
  * @{
  */
 
-void  *_S_memory_new(Ssize_t, const Schar *, Suint32);
-void  *_S_memory_resize(void *, Ssize_t, const Schar *, Suint32);
-void   _S_memory_delete(void *, const Schar *, Suint32);
+STICKY_API void  *_S_memory_new(Ssize_t, const Schar *, Suint32);
+STICKY_API void  *_S_memory_resize(void *, Ssize_t, const Schar *, Suint32);
+STICKY_API void   _S_memory_delete(void *, const Schar *, Suint32);
 void   _S_out_of_memory(const Schar *, Suint32);
 
 /**

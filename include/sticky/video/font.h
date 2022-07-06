@@ -87,7 +87,7 @@ typedef struct Sfont_s
  * to the function, or if @p pixel_size is less than or equal to @f$0@f$.
  * @since 1.0.0
  */
-Sfont *S_font_load(const Schar *, float);
+STICKY_API Sfont *S_font_load(const Schar *, float);
 
 /**
  * @brief Free a font from memory.
@@ -100,7 +100,7 @@ Sfont *S_font_load(const Schar *, float);
  * the function.
  * @since 1.0.0
  */
-void  S_font_delete(Sfont *);
+STICKY_API void  S_font_delete(Sfont *);
 
 /**
  * @brief Draws text to the screen.
@@ -119,8 +119,8 @@ void  S_font_delete(Sfont *);
  * provided to the function.
  * @since 1.0.0
  */
-void  S_font_draw_text(const Sfont *, const Schar *, Ssize_t,
-                       float, float, float);
+STICKY_API void  S_font_draw_text(const Sfont *, const Schar *, Ssize_t,
+                                  float, float, float);
 
 /**
  * @brief Set the camera of a font.
@@ -137,7 +137,7 @@ void  S_font_draw_text(const Sfont *, const Schar *, Ssize_t,
  * provided to the function.
  * @since 1.0.0
  */
-void  S_font_set_camera(Sfont *, const Scamera *);
+STICKY_API void  S_font_set_camera(Sfont *, const Scamera *);
 
 /**
  * @brief Set the colour of a font.
@@ -155,7 +155,7 @@ void  S_font_set_camera(Sfont *, const Scamera *);
  * the function.
  * @since 1.0.0
  */
-void  S_font_set_color(Sfont *, float, float, float);
+STICKY_API void  S_font_set_color(Sfont *, float, float, float);
 
 void _S_font_init(Suint8, Suint8);
 void _S_font_free(void);

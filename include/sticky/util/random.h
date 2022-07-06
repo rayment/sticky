@@ -38,7 +38,7 @@ extern "C"
  * @param[in] seed The seed to initialise the number generator.
  * @since 1.0.0
  */
-void    S_random_set_seed(Suint32);
+STICKY_API void    S_random_set_seed(Suint32);
 
 /**
  * @brief Get the current seed of the random number generator.
@@ -49,7 +49,7 @@ void    S_random_set_seed(Suint32);
  * @return The current seed for the number generator.
  * @since 1.0.0
  */
-Suint32 S_random_get_seed(void);
+STICKY_API Suint32 S_random_get_seed(void);
 
 /**
  * @brief Randomly generate a boolean value.
@@ -59,7 +59,7 @@ Suint32 S_random_get_seed(void);
  * @return A random boolean value.
  * @since 1.0.0
  */
-Sbool   S_random_next_bool(void);
+STICKY_API Sbool   S_random_next_bool(void);
 
 /**
  * @brief Randomly generate a char value.
@@ -69,7 +69,7 @@ Sbool   S_random_next_bool(void);
  * @return A random char value.
  * @since 1.0.0
  */
-Schar   S_random_next_char(void);
+STICKY_API Schar   S_random_next_char(void);
 
 /**
  * @brief Randomly generate a single-precision floating-point value.
@@ -79,7 +79,7 @@ Schar   S_random_next_char(void);
  * @return A random single-precision floating-point value.
  * @since 1.0.0
  */
-Sfloat  S_random_next_float(void);
+STICKY_API Sfloat  S_random_next_float(void);
 
 /**
  * @brief Randomly generate a double-precision floating-point value.
@@ -89,7 +89,7 @@ Sfloat  S_random_next_float(void);
  * @return A random double-precision floating-point value.
  * @since 1.0.0
  */
-Sdouble S_random_next_double(void);
+STICKY_API Sdouble S_random_next_double(void);
 
 /**
  * @brief Randomly generate an 8-bit unsigned integer value.
@@ -99,7 +99,7 @@ Sdouble S_random_next_double(void);
  * @return A random 8-bit unsigned integer value.
  * @since 1.0.0
  */
-Suint8  S_random_next_uint8(void);
+STICKY_API Suint8  S_random_next_uint8(void);
 
 /**
  * @brief Randomly generate an 16-bit unsigned integer value.
@@ -109,7 +109,7 @@ Suint8  S_random_next_uint8(void);
  * @return A random 16-bit unsigned integer value.
  * @since 1.0.0
  */
-Suint16 S_random_next_uint16(void);
+STICKY_API Suint16 S_random_next_uint16(void);
 
 /**
  * @brief Randomly generate an 32-bit unsigned integer value.
@@ -119,7 +119,7 @@ Suint16 S_random_next_uint16(void);
  * @return A random 32-bit unsigned integer value.
  * @since 1.0.0
  */
-Suint32 S_random_next_uint32(void);
+STICKY_API Suint32 S_random_next_uint32(void);
 
 /**
  * @brief Randomly generate an 64-bit unsigned integer value.
@@ -129,7 +129,7 @@ Suint32 S_random_next_uint32(void);
  * @return A random 64-bit unsigned integer value.
  * @since 1.0.0
  */
-Suint64 S_random_next_uint64(void);
+STICKY_API Suint64 S_random_next_uint64(void);
 
 /**
  * @brief Randomly generate an 8-bit signed integer value.
@@ -139,7 +139,7 @@ Suint64 S_random_next_uint64(void);
  * @return A random 8-bit signed integer value.
  * @since 1.0.0
  */
-Sint8   S_random_next_int8(void);
+STICKY_API Sint8   S_random_next_int8(void);
 
 /**
  * @brief Randomly generate an 16-bit signed integer value.
@@ -149,7 +149,7 @@ Sint8   S_random_next_int8(void);
  * @return A random 16-bit signed integer value.
  * @since 1.0.0
  */
-Sint16  S_random_next_int16(void);
+STICKY_API Sint16  S_random_next_int16(void);
 
 /**
  * @brief Randomly generate an 32-bit signed integer value.
@@ -159,7 +159,7 @@ Sint16  S_random_next_int16(void);
  * @return A random 32-bit signed integer value.
  * @since 1.0.0
  */
-Sint32  S_random_next_int32(void);
+STICKY_API Sint32  S_random_next_int32(void);
 
 /**
  * @brief Randomly generate an 64-bit signed integer value.
@@ -169,7 +169,7 @@ Sint32  S_random_next_int32(void);
  * @return A random 64-bit signed integer value.
  * @since 1.0.0
  */
-Sint64  S_random_next_int64(void);
+STICKY_API Sint64  S_random_next_int64(void);
 
 /**
  * @brief Randomly generate a char between two values.

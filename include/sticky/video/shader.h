@@ -69,7 +69,7 @@ Sshader_s
  * string length of 0 is provided to the function.
  * @since 1.0.0
  */
-Sshader *S_shader_new(const Schar *, Sint64, const Schar *, Sint64);
+STICKY_API Sshader *S_shader_new(const Schar *, Sint64, const Schar *, Sint64);
 
 /**
  * @brief Load a shader program from file.
@@ -84,7 +84,7 @@ Sshader *S_shader_new(const Schar *, Sint64, const Schar *, Sint64);
  * file.
  * @since 1.0.0
  */
-Sshader *S_shader_load(const Schar *, const Schar *);
+STICKY_API Sshader *S_shader_load(const Schar *, const Schar *);
 
 /**
  * @brief Free a shader program from memory.
@@ -97,7 +97,7 @@ Sshader *S_shader_load(const Schar *, const Schar *);
  * the function.
  * @since 1.0.0
  */
-void     S_shader_delete(Sshader *);
+STICKY_API void     S_shader_delete(Sshader *);
 
 /**
  * @brief Set a single-precision floating-point uniform for a shader.
@@ -116,7 +116,8 @@ void     S_shader_delete(Sshader *);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_float(Sshader *, const Schar *, Sfloat);
+STICKY_API void     S_shader_set_uniform_float(Sshader *, const Schar *,
+                                               Sfloat);
 
 /**
  * @brief Set a 32-bit signed integer uniform for a shader.
@@ -134,7 +135,8 @@ void     S_shader_set_uniform_float(Sshader *, const Schar *, Sfloat);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_int32(Sshader *, const Schar *, Sint32);
+STICKY_API void     S_shader_set_uniform_int32(Sshader *, const Schar *,
+                                               Sint32);
 
 /**
  * @brief Set a 3D vector uniform for a shader.
@@ -152,7 +154,8 @@ void     S_shader_set_uniform_int32(Sshader *, const Schar *, Sint32);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_vec3(Sshader *, const Schar *, const Svec3 *);
+STICKY_API void     S_shader_set_uniform_vec3(Sshader *, const Schar *,
+                                              const Svec3 *);
 
 /**
  * @brief Set a 4D vector uniform for a shader.
@@ -170,7 +173,8 @@ void     S_shader_set_uniform_vec3(Sshader *, const Schar *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_vec4(Sshader *, const Schar *, const Svec4 *);
+STICKY_API void     S_shader_set_uniform_vec4(Sshader *, const Schar *,
+                                              const Svec4 *);
 
 /**
  * @brief Set a 3D matrix uniform for a shader.
@@ -188,7 +192,8 @@ void     S_shader_set_uniform_vec4(Sshader *, const Schar *, const Svec4 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_mat3(Sshader *, const Schar *, const Smat3 *);
+STICKY_API void     S_shader_set_uniform_mat3(Sshader *, const Schar *,
+                                              const Smat3 *);
 
 /**
  * @brief Set a 4D matrix uniform for a shader.
@@ -206,9 +211,10 @@ void     S_shader_set_uniform_mat3(Sshader *, const Schar *, const Smat3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void     S_shader_set_uniform_mat4(Sshader *, const Schar *, const Smat4 *);
+STICKY_API void     S_shader_set_uniform_mat4(Sshader *, const Schar *,
+                                              const Smat4 *);
 
-void    _S_shader_attach(const Sshader *);
+void _S_shader_attach(const Sshader *);
 
 /**
  * @}

@@ -93,7 +93,7 @@ Ssound_s
  * 16 bits per sample and is not in mono or stereo format.
  * @since 1.0.0
  */
-Ssound  *S_sound_load_wav(const Schar *);
+STICKY_API Ssound  *S_sound_load_wav(const Schar *);
 
 /**
  * @brief Stream audio from a WAV file.
@@ -124,7 +124,7 @@ Ssound  *S_sound_load_wav(const Schar *);
  * 16 bits per sample and is not in mono or stereo format.
  * @since 1.0.0
  */
-Ssound  *S_sound_stream_wav(const Schar *);
+STICKY_API Ssound  *S_sound_stream_wav(const Schar *);
 
 /**
  * @brief Free audio from memory.
@@ -145,7 +145,7 @@ Ssound  *S_sound_stream_wav(const Schar *);
  * the function.
  * @since 1.0.0
  */
-void     S_sound_delete(Ssound *);
+STICKY_API void     S_sound_delete(Ssound *);
 
 /**
  * @brief Set the pitch of a sound.
@@ -160,7 +160,7 @@ void     S_sound_delete(Ssound *);
  * the function or @p pitch is less than or equal to zero.
  * @since 1.0.0
  */
-void     S_sound_set_pitch(Ssound *, Sfloat);
+STICKY_API void     S_sound_set_pitch(Ssound *, Sfloat);
 
 /**
  * @brief Set the gain of a sound.
@@ -173,7 +173,7 @@ void     S_sound_set_pitch(Ssound *, Sfloat);
  * the function or @p gain is not between zero and one.
  * @since 1.0.0
  */
-void     S_sound_set_gain(Ssound *, Sfloat);
+STICKY_API void     S_sound_set_gain(Ssound *, Sfloat);
 
 /**
  * @brief Get the pitch of a sound.
@@ -184,7 +184,7 @@ void     S_sound_set_gain(Ssound *, Sfloat);
  * the function.
  * @since 1.0.0
  */
-Sfloat   S_sound_get_pitch(const Ssound *);
+STICKY_API Sfloat   S_sound_get_pitch(const Ssound *);
 
 /**
  * @brief Get the gain of a sound.
@@ -195,7 +195,7 @@ Sfloat   S_sound_get_pitch(const Ssound *);
  * the function.
  * @since 1.0.0
  */
-Sfloat   S_sound_get_gain(const Ssound *);
+STICKY_API Sfloat   S_sound_get_gain(const Ssound *);
 
 void    _S_sound_init(void);
 void    _S_sound_free(void);

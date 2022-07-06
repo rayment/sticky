@@ -80,7 +80,7 @@ extern "C"
  * @param[out] y The change in y position of the mouse pointer in the window.
  * @since 1.0.0
  */
-void   S_input_get_mouse_motion(Sint32 *, Sint32 *);
+STICKY_API void   S_input_get_mouse_motion(Sint32 *, Sint32 *);
 
 /**
  * @brief Get the current motion of the mouse wheel.
@@ -93,7 +93,7 @@ void   S_input_get_mouse_motion(Sint32 *, Sint32 *);
  * @param[out] y The change in y position of the mouse wheel in the window.
  * @since 1.0.0
  */
-void   S_input_get_mouse_wheel_motion(Sint32 *, Sint32 *);
+STICKY_API void   S_input_get_mouse_wheel_motion(Sint32 *, Sint32 *);
 
 /**
  * @brief Get the position of the mouse in the window.
@@ -105,7 +105,7 @@ void   S_input_get_mouse_wheel_motion(Sint32 *, Sint32 *);
  * @param[out] y The y position of the mouse pointer in the window.
  * @since 1.0.0
  */
-void   S_input_get_mouse_pos(Sint32 *, Sint32 *);
+STICKY_API void   S_input_get_mouse_pos(Sint32 *, Sint32 *);
 
 /**
  * @brief Check if a given mouse button is currently being pressed down.
@@ -127,7 +127,7 @@ void   S_input_get_mouse_pos(Sint32 *, Sint32 *);
  * button.
  * @since 1.0.0
  */
-Sbool  S_input_is_button_down(Senum);
+STICKY_API Sbool  S_input_is_button_down(Senum);
 
 /**
  * @brief Check if a given button is currently being held down.
@@ -144,11 +144,11 @@ Sbool  S_input_is_button_down(Senum);
  * button.
  * @since 1.0.0
  */
-Sbool  S_input_is_button_pressed(Senum);
+STICKY_API Sbool  S_input_is_button_pressed(Senum);
 
-void  _S_input_mouse_init(void);
-void  _S_input_mouse_reset(void);
-void  _S_input_mouse_event(SDL_Event);
+void _S_input_mouse_init(void);
+void _S_input_mouse_reset(void);
+void _S_input_mouse_event(SDL_Event);
 
 /**
  * @}

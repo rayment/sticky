@@ -22,16 +22,16 @@ extern "C"
 #include "sticky/common/types.h"
 #include "sticky/net/socket.h"
 
-Ssocket  *S_tcp_bind(Senum, Suint16, Sbool);
-Ssocket  *S_tcp_bind_local(Senum, Suint16, Sbool);
-void      S_tcp_listen(Ssocket *, Sint32);
-Ssocket  *S_tcp_accept(Ssocket *);
-Ssocket  *S_tcp_connect(Senum, const Schar *, Suint16, Sbool);
-Sssize_t  S_tcp_recv(Ssocket *, Schar *, Ssize_t);
-Sssize_t  S_tcp_send(Ssocket *, const Schar *, Ssize_t);
-Sbool     S_tcp_poll(Ssocket *, Sint32);
-void      S_tcp_close(Ssocket *);
-Senum     S_tcp_get_state(Ssocket *);
+STICKY_API Ssocket  *S_tcp_bind(Senum, Suint16, Sbool);
+STICKY_API Ssocket  *S_tcp_bind_local(Senum, Suint16, Sbool);
+STICKY_API void      S_tcp_listen(Ssocket *, Sint32);
+STICKY_API Ssocket  *S_tcp_accept(Ssocket *);
+STICKY_API Ssocket  *S_tcp_connect(Senum, const Schar *, Suint16, Sbool);
+STICKY_API Sssize_t  S_tcp_recv(Ssocket *, Schar *, Ssize_t);
+STICKY_API Sssize_t  S_tcp_send(Ssocket *, const Schar *, Ssize_t);
+STICKY_API Sbool     S_tcp_poll(Ssocket *, Sint32);
+STICKY_API void      S_tcp_close(Ssocket *);
+STICKY_API Senum     S_tcp_get_state(Ssocket *);
 
 #ifdef __cplusplus
 }

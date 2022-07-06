@@ -94,7 +94,7 @@ Sspeaker_s
  * @exception S_INVALID_ENUM If an invalid mode is provided to the function.
  * @since 1.0.0
  */
-Sspeaker *S_speaker_new(Senum);
+STICKY_API Sspeaker *S_speaker_new(Senum);
 
 /**
  * @brief Free an audio speaker from memory.
@@ -110,7 +110,7 @@ Sspeaker *S_speaker_new(Senum);
  * the function.
  * @since 1.0.0
  */
-void      S_speaker_delete(Sspeaker *);
+STICKY_API void      S_speaker_delete(Sspeaker *);
 
 /**
  * @brief Play a sound through an audio speaker.
@@ -127,7 +127,7 @@ void      S_speaker_delete(Sspeaker *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_play(Sspeaker *, Ssound *);
+STICKY_API void      S_speaker_play(Sspeaker *, Ssound *);
 
 /**
  * @brief Pause an audio speaker.
@@ -141,7 +141,7 @@ void      S_speaker_play(Sspeaker *, Ssound *);
  * the function.
  * @since 1.0.0
  */
-void      S_speaker_pause(Sspeaker *);
+STICKY_API void      S_speaker_pause(Sspeaker *);
 
 /**
  * @brief Resume playback through an audio speaker.
@@ -154,7 +154,7 @@ void      S_speaker_pause(Sspeaker *);
  * the function.
  * @since 1.0.0
  */
-void      S_speaker_resume(Sspeaker *);
+STICKY_API void      S_speaker_resume(Sspeaker *);
 
 /**
  * @brief Stop playback through an audio speaker.
@@ -167,7 +167,7 @@ void      S_speaker_resume(Sspeaker *);
  * the function.
  * @since 1.0.0
  */
-void      S_speaker_stop(Sspeaker *);
+STICKY_API void      S_speaker_stop(Sspeaker *);
 
 /**
  * @brief Set the position of an audio speaker.
@@ -178,7 +178,7 @@ void      S_speaker_stop(Sspeaker *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_set_pos(Sspeaker *, const Svec3 *);
+STICKY_API void      S_speaker_set_pos(Sspeaker *, const Svec3 *);
 
 /**
  * @brief Set the velocity of an audio speaker.
@@ -191,7 +191,7 @@ void      S_speaker_set_pos(Sspeaker *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_set_vel(Sspeaker *, const Svec3 *);
+STICKY_API void      S_speaker_set_vel(Sspeaker *, const Svec3 *);
 
 /**
  * @brief Add to the position of an audio speaker.
@@ -203,7 +203,7 @@ void      S_speaker_set_vel(Sspeaker *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_add_pos(Sspeaker *, const Svec3 *);
+STICKY_API void      S_speaker_add_pos(Sspeaker *, const Svec3 *);
 
 /**
  * @brief Add to the velocity of an audio speaker.
@@ -215,7 +215,7 @@ void      S_speaker_add_pos(Sspeaker *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_add_vel(Sspeaker *, const Svec3 *);
+STICKY_API void      S_speaker_add_vel(Sspeaker *, const Svec3 *);
 
 /**
  * @brief Get the current position of an audio speaker.
@@ -226,7 +226,7 @@ void      S_speaker_add_vel(Sspeaker *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_get_pos(const Sspeaker *, Svec3 *);
+STICKY_API void      S_speaker_get_pos(const Sspeaker *, Svec3 *);
 
 /**
  * @brief Get the current velocity of an audio speaker.
@@ -237,7 +237,7 @@ void      S_speaker_get_pos(const Sspeaker *, Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_speaker_get_vel(const Sspeaker *, Svec3 *);
+STICKY_API void      S_speaker_get_vel(const Sspeaker *, Svec3 *);
 
 /**
  * @brief Check if a speaker is playing.
@@ -249,7 +249,7 @@ void      S_speaker_get_vel(const Sspeaker *, Svec3 *);
  * the function.
  * @since 1.0.0
  */
-Sbool     S_speaker_is_playing(const Sspeaker *);
+STICKY_API Sbool     S_speaker_is_playing(const Sspeaker *);
 
 /**
  * @brief Check if a speaker is paused.
@@ -261,7 +261,7 @@ Sbool     S_speaker_is_playing(const Sspeaker *);
  * the function.
  * @since 1.0.0
  */
-Sbool     S_speaker_is_paused(const Sspeaker *);
+STICKY_API Sbool     S_speaker_is_paused(const Sspeaker *);
 
 /**
  * @brief Check if a speaker is stopped.
@@ -273,7 +273,7 @@ Sbool     S_speaker_is_paused(const Sspeaker *);
  * the function.
  * @since 1.0.0
  */
-Sbool     S_speaker_is_stopped(const Sspeaker *);
+STICKY_API Sbool     S_speaker_is_stopped(const Sspeaker *);
 
 /**
  * @}

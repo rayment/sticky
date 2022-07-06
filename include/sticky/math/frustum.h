@@ -102,7 +102,7 @@ Sfrustum_s
  * provided to the function.
  * @since 1.0.0
  */
-void  S_frustum_load(Sfrustum *, const Scamera *);
+STICKY_API void  S_frustum_load(Sfrustum *, const Scamera *);
 
 /**
  * @brief Check if a point lies within a frustum.
@@ -118,7 +118,7 @@ void  S_frustum_load(Sfrustum *, const Scamera *);
  * is provided to the function.
  * @since 1.0.0
  */
-Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
+STICKY_API Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
 
 /**
  * @brief Check if a sphere lies within a frustum.
@@ -135,10 +135,11 @@ Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-Sbool S_frustum_intersects_sphere(const Sfrustum *, const Svec3 *, Sfloat);
+STICKY_API Sbool S_frustum_intersects_sphere(const Sfrustum *,
+                                             const Svec3 *, Sfloat);
 
-Sbool S_frustum_intersects_bounds(const Sfrustum *,
-                                  const Svec3 *, const Svec3 *);
+STICKY_API Sbool S_frustum_intersects_bounds(const Sfrustum *,
+                                             const Svec3 *, const Svec3 *);
 
 /**
  * @}

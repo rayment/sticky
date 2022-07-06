@@ -41,7 +41,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_zero(Svec3 *);
+STICKY_API void   S_vec3_zero(Svec3 *);
 
 /**
  * @brief Set all three vector components to a given value.
@@ -58,7 +58,7 @@ void   S_vec3_zero(Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_fill(Svec3 *, Sfloat);
+STICKY_API void   S_vec3_fill(Svec3 *, Sfloat);
 
 /**
  * @brief Set the three vector components of a vector.
@@ -78,7 +78,7 @@ void   S_vec3_fill(Svec3 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_set(Svec3 *, Sfloat, Sfloat, Sfloat);
+STICKY_API void   S_vec3_set(Svec3 *, Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Add two vectors together.
@@ -98,7 +98,7 @@ void   S_vec3_set(Svec3 *, Sfloat, Sfloat, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_add(Svec3 *, const Svec3 *);
+STICKY_API void   S_vec3_add(Svec3 *, const Svec3 *);
 
 /**
  * @brief Subtract a vector from another.
@@ -118,7 +118,7 @@ void   S_vec3_add(Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_subtract(Svec3 *, const Svec3 *);
+STICKY_API void   S_vec3_subtract(Svec3 *, const Svec3 *);
 
 /**
  * @brief Multiply two vectors together.
@@ -138,7 +138,7 @@ void   S_vec3_subtract(Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_multiply(Svec3 *, const Svec3 *);
+STICKY_API void   S_vec3_multiply(Svec3 *, const Svec3 *);
 
 /**
  * @brief Multiply a vector by a quaternion.
@@ -151,7 +151,7 @@ void   S_vec3_multiply(Svec3 *, const Svec3 *);
  * quaternion is provided to the function.
  * @since 1.0.0
  */
-void   S_vec3_multiply_quat(Svec3 *, const Squat *);
+STICKY_API void   S_vec3_multiply_quat(Svec3 *, const Squat *);
 
 /**
  * @brief Scale all three vector components by a given value.
@@ -172,7 +172,7 @@ void   S_vec3_multiply_quat(Svec3 *, const Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_scale(Svec3 *, Sfloat);
+STICKY_API void   S_vec3_scale(Svec3 *, Sfloat);
 
 /**
  * @brief Calculate the dot product of two vectors.
@@ -190,7 +190,7 @@ void   S_vec3_scale(Svec3 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
+STICKY_API Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
 
 /**
  * @brief Calculate the Euclidian distance between two vectors.
@@ -209,7 +209,7 @@ Sfloat S_vec3_dot(const Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec3_distance(const Svec3 *, const Svec3 *);
+STICKY_API Sfloat S_vec3_distance(const Svec3 *, const Svec3 *);
 
 /**
  * @brief Calculate the cross product of two vectors.
@@ -229,7 +229,7 @@ Sfloat S_vec3_distance(const Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_cross(Svec3 *, const Svec3 *);
+STICKY_API void   S_vec3_cross(Svec3 *, const Svec3 *);
 
 /**
  * @brief Normalise a vector.
@@ -252,7 +252,7 @@ void   S_vec3_cross(Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_normalize(Svec3 *);
+STICKY_API void   S_vec3_normalize(Svec3 *);
 
 /**
  * @brief Invert a vector.
@@ -270,7 +270,7 @@ void   S_vec3_normalize(Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_inverse(Svec3 *);
+STICKY_API void   S_vec3_inverse(Svec3 *);
 
 /**
  * @brief Negate a vector.
@@ -288,7 +288,7 @@ void   S_vec3_inverse(Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_negative(Svec3 *);
+STICKY_API void   S_vec3_negative(Svec3 *);
 
 /**
  * @brief Perform a linear interpolation on two vectors.
@@ -305,7 +305,7 @@ void   S_vec3_negative(Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_lerp(Svec3 *, const Svec3 *, Sfloat);
+STICKY_API void   S_vec3_lerp(Svec3 *, const Svec3 *, Sfloat);
 
 /**
  * @brief Create a copy of a vector.
@@ -318,7 +318,7 @@ void   S_vec3_lerp(Svec3 *, const Svec3 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec3_copy(Svec3 *, const Svec3 *);
+STICKY_API void   S_vec3_copy(Svec3 *, const Svec3 *);
 
 /**
  * @brief Check if two vectors are equivalent.
@@ -336,7 +336,7 @@ void   S_vec3_copy(Svec3 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
+STICKY_API Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
 
 /**
  * @brief Convert Euler angles to a quaternion.
@@ -357,7 +357,7 @@ Sbool  S_vec3_equals(Sfloat, const Svec3 *, const Svec3 *);
  * @see {@link S_quat_to_vec3} To turn a quaternion back into Euler angles.
  * @since 1.0.0
  */
-void   S_vec3_to_quat(Squat *, const Svec3 *);
+STICKY_API void   S_vec3_to_quat(Squat *, const Svec3 *);
 
 /**
  * @}

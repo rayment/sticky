@@ -894,7 +894,7 @@ typedef SDL_Keycode Skey;
  * {@link S_FALSE}.
  * @since 1.0.0
  */
-Sbool  S_input_is_key_down(Skey);
+STICKY_API Sbool  S_input_is_key_down(Skey);
 
 /**
  * @brief Check if a given key is currently being held down.
@@ -908,11 +908,11 @@ Sbool  S_input_is_key_down(Skey);
  * {@link S_TRUE} will also be returned. Otherwise, {@link S_FALSE}.
  * @since 1.0.0
  */
-Sbool  S_input_is_key_pressed(Skey);
+STICKY_API Sbool  S_input_is_key_pressed(Skey);
 
-void  _S_input_keyboard_init(void);
-void  _S_input_keyboard_reset(void);
-void  _S_input_keyboard_event(SDL_Event);
+void _S_input_keyboard_init(void);
+void _S_input_keyboard_reset(void);
+void _S_input_keyboard_event(SDL_Event);
 
 /**
  * @}

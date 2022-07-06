@@ -41,7 +41,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_zero(Svec4 *);
+STICKY_API void   S_vec4_zero(Svec4 *);
 
 /**
  * @brief Set all four vector components to a given value.
@@ -58,7 +58,7 @@ void   S_vec4_zero(Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_fill(Svec4 *, Sfloat);
+STICKY_API void   S_vec4_fill(Svec4 *, Sfloat);
 
 /**
  * @brief Set the four vector components of a vector.
@@ -79,7 +79,7 @@ void   S_vec4_fill(Svec4 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_set(Svec4 *, Sfloat, Sfloat, Sfloat, Sfloat);
+STICKY_API void   S_vec4_set(Svec4 *, Sfloat, Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Add two vectors together.
@@ -99,7 +99,7 @@ void   S_vec4_set(Svec4 *, Sfloat, Sfloat, Sfloat, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_add(Svec4 *, const Svec4 *);
+STICKY_API void   S_vec4_add(Svec4 *, const Svec4 *);
 
 /**
  * @brief Subtract a vector from another.
@@ -119,7 +119,7 @@ void   S_vec4_add(Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_subtract(Svec4 *, const Svec4 *);
+STICKY_API void   S_vec4_subtract(Svec4 *, const Svec4 *);
 
 /**
  * @brief Multiply two vectors together.
@@ -139,7 +139,7 @@ void   S_vec4_subtract(Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_multiply(Svec4 *, const Svec4 *);
+STICKY_API void   S_vec4_multiply(Svec4 *, const Svec4 *);
 
 /**
  * @brief Scale all four vector components by a given value.
@@ -160,7 +160,7 @@ void   S_vec4_multiply(Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_scale(Svec4 *, Sfloat);
+STICKY_API void   S_vec4_scale(Svec4 *, Sfloat);
 
 /**
  * @brief Calculate the dot product of two vectors.
@@ -178,7 +178,7 @@ void   S_vec4_scale(Svec4 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec4_dot(const Svec4 *, const Svec4 *);
+STICKY_API Sfloat S_vec4_dot(const Svec4 *, const Svec4 *);
 
 /**
  * @brief Calculate the Euclidian distance between two vectors.
@@ -197,7 +197,7 @@ Sfloat S_vec4_dot(const Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec4_distance(const Svec4 *, const Svec4 *);
+STICKY_API Sfloat S_vec4_distance(const Svec4 *, const Svec4 *);
 
 /**
  * @brief Normalise a vector.
@@ -220,7 +220,7 @@ Sfloat S_vec4_distance(const Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_normalize(Svec4 *);
+STICKY_API void   S_vec4_normalize(Svec4 *);
 
 /**
  * @brief Invert a vector.
@@ -238,7 +238,7 @@ void   S_vec4_normalize(Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_inverse(Svec4 *);
+STICKY_API void   S_vec4_inverse(Svec4 *);
 
 /**
  * @brief Negate a vector.
@@ -256,7 +256,7 @@ void   S_vec4_inverse(Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_negative(Svec4 *);
+STICKY_API void   S_vec4_negative(Svec4 *);
 
 /**
  * @brief Perform a linear interpolation on two vectors.
@@ -273,7 +273,7 @@ void   S_vec4_negative(Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_lerp(Svec4 *, const Svec4 *, Sfloat);
+STICKY_API void   S_vec4_lerp(Svec4 *, const Svec4 *, Sfloat);
 
 /**
  * @brief Create a copy of a vector.
@@ -286,7 +286,7 @@ void   S_vec4_lerp(Svec4 *, const Svec4 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec4_copy(Svec4 *, const Svec4 *);
+STICKY_API void   S_vec4_copy(Svec4 *, const Svec4 *);
 
 /**
  * @brief Check if two vectors are equivalent.
@@ -304,7 +304,7 @@ void   S_vec4_copy(Svec4 *, const Svec4 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool  S_vec4_equals(Sfloat, const Svec4 *, const Svec4 *);
+STICKY_API Sbool  S_vec4_equals(Sfloat, const Svec4 *, const Svec4 *);
 
 /**
  * @}

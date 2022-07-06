@@ -67,7 +67,7 @@ Spencil_s
  * @return A pointer to a newly allocated pencil struct.
  * @since 1.0.0
  */
-Spencil *S_pencil_new(void);
+STICKY_API Spencil *S_pencil_new(void);
 
 /**
  * @brief Free a primitive pencil from memory.
@@ -83,7 +83,7 @@ Spencil *S_pencil_new(void);
  * the function.
  * @since 1.0.0
  */
-void   S_pencil_delete(Spencil *);
+STICKY_API void   S_pencil_delete(Spencil *);
 
 /**
  * @brief Draw a line in 3D space.
@@ -100,7 +100,8 @@ void   S_pencil_delete(Spencil *);
  * is provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_draw_line_3d(const Spencil *, const Svec3 *, const Svec3 *);
+STICKY_API void   S_pencil_draw_line_3d(const Spencil *,
+                                        const Svec3 *, const Svec3 *);
 
 /**
  * @brief Draw a point in 3D space.
@@ -116,7 +117,7 @@ void   S_pencil_draw_line_3d(const Spencil *, const Svec3 *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_draw_point_3d(const Spencil *, const Svec3 *);
+STICKY_API void   S_pencil_draw_point_3d(const Spencil *, const Svec3 *);
 
 /**
  * @brief Draw a quad in 2D space.
@@ -133,7 +134,8 @@ void   S_pencil_draw_point_3d(const Spencil *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_draw_quad_2d(const Spencil *, const Svec2 *, const Svec2 *);
+STICKY_API void   S_pencil_draw_quad_2d(const Spencil *,
+                                        const Svec2 *, const Svec2 *);
 
 /**
  * @brief Set the camera of a pencil.
@@ -151,7 +153,7 @@ void   S_pencil_draw_quad_2d(const Spencil *, const Svec2 *, const Svec2 *);
  * provided to the function.
  * @since 1.0.0
  */
-void   S_pencil_set_camera(Spencil *, const Scamera *);
+STICKY_API void   S_pencil_set_camera(Spencil *, const Scamera *);
 
 /**
  * @brief Set the colour of a pencil.
@@ -172,7 +174,7 @@ void   S_pencil_set_camera(Spencil *, const Scamera *);
  * the function.
  * @since 1.0.0
  */
-void   S_pencil_set_color(Spencil *, float, float, float, float);
+STICKY_API void   S_pencil_set_color(Spencil *, float, float, float, float);
 
 /**
  * @brief Set the texture of a pencil.
@@ -193,10 +195,10 @@ void   S_pencil_set_color(Spencil *, float, float, float, float);
  * the function.
  * @since 1.0.0
  */
-void   S_pencil_set_texture(Spencil *, const Stexture *);
+STICKY_API void   S_pencil_set_texture(Spencil *, const Stexture *);
 
-void  _S_pencil_init(Suint8, Suint8);
-void  _S_pencil_free(void);
+void _S_pencil_init(Suint8, Suint8);
+void _S_pencil_free(void);
 
 /**
  * @}

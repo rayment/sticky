@@ -103,7 +103,7 @@ Stexture_s
  * of pixels in either width or height.
  * @since 1.0.0
  */
-Stexture *S_texture_load(const Schar *);
+STICKY_API Stexture *S_texture_load(const Schar *);
 
 /**
  * @brief Load a cubemap texture into memory.
@@ -125,8 +125,9 @@ Stexture *S_texture_load(const Schar *);
  * of pixels in either width or height.
  * @since 1.0.0
  */
-Stexture *S_texture_load_cubemap(const Schar *, const Schar *, const Schar *,
-                                 const Schar *, const Schar *, const Schar *);
+STICKY_API Stexture *S_texture_load_cubemap(const Schar *, const Schar *,
+                                            const Schar *, const Schar *,
+                                            const Schar *, const Schar *);
 
 /**
  * @brief Free a texture from memory.
@@ -139,7 +140,7 @@ Stexture *S_texture_load_cubemap(const Schar *, const Schar *, const Schar *,
  * the function.
  * @since 1.0.0
  */
-void      S_texture_delete(Stexture *);
+STICKY_API void      S_texture_delete(Stexture *);
 
 /**
  * @brief Set the filter mode for a texture.
@@ -158,7 +159,7 @@ void      S_texture_delete(Stexture *);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_texture_set_filter(Stexture *, Senum);
+STICKY_API void      S_texture_set_filter(Stexture *, Senum);
 
 /**
  * @brief Set the wrapping mode for a texture.
@@ -179,10 +180,10 @@ void      S_texture_set_filter(Stexture *, Senum);
  * provided to the function.
  * @since 1.0.0
  */
-void      S_texture_set_wrap(Stexture *, Senum);
+STICKY_API void      S_texture_set_wrap(Stexture *, Senum);
 
-void     _S_texture_init(void);
-void     _S_texture_attach(const Stexture *, Suint32);
+void _S_texture_init(void);
+void _S_texture_attach(const Stexture *, Suint32);
 
 /**
  * @}

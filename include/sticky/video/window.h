@@ -218,7 +218,7 @@ typedef void (*Swindow_callback)(Swindow *);
  * the function.
  * @since 1.0.0
  */
-Swindow *S_window_new(void);
+STICKY_API Swindow *S_window_new(void);
 
 /**
  * @brief Free a window from memory.
@@ -233,7 +233,7 @@ Swindow *S_window_new(void);
  * the function.
  * @since 1.0.0
  */
-void     S_window_delete(Swindow *);
+STICKY_API void     S_window_delete(Swindow *);
 
 /**
  * @brief Apply any window settings and initialise it.
@@ -258,7 +258,7 @@ void     S_window_delete(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_apply(Swindow *);
+STICKY_API void     S_window_apply(Swindow *);
 
 /**
  * @brief Close a window.
@@ -272,7 +272,7 @@ void     S_window_apply(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_close(Swindow *);
+STICKY_API void     S_window_close(Swindow *);
 
 /**
  * @brief Clears a window.
@@ -286,7 +286,7 @@ void     S_window_close(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_clear(Swindow *);
+STICKY_API void     S_window_clear(Swindow *);
 
 /**
  * @brief Polls a window for input or events.
@@ -303,7 +303,7 @@ void     S_window_clear(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_poll(Swindow *);
+STICKY_API void     S_window_poll(Swindow *);
 
 /**
  * @brief Clears a window.
@@ -319,7 +319,7 @@ void     S_window_poll(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_swap(Swindow *);
+STICKY_API void     S_window_swap(Swindow *);
 
 /**
  * @brief Notify a window of a tick update.
@@ -335,7 +335,7 @@ void     S_window_swap(Swindow *);
  * occur.
  * @since 1.0.0
  */
-void     S_window_tick(Swindow *);
+STICKY_API void     S_window_tick(Swindow *);
 
 /**
  * @brief Set the title of a window.
@@ -353,7 +353,7 @@ void     S_window_tick(Swindow *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_title(Swindow *, const Schar *);
+STICKY_API void     S_window_set_title(Swindow *, const Schar *);
 
 /**
  * @brief Set the size of a window.
@@ -370,7 +370,7 @@ void     S_window_set_title(Swindow *, const Schar *);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_size(Swindow *, Suint16, Suint16);
+STICKY_API void     S_window_set_size(Swindow *, Suint16, Suint16);
 
 /**
  * @brief Allow a window to be resized.
@@ -390,7 +390,7 @@ void     S_window_set_size(Swindow *, Suint16, Suint16);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_resizable(Swindow *, Sbool);
+STICKY_API void     S_window_set_resizable(Swindow *, Sbool);
 
 /**
  * @brief Set the mouse-capture rule for a window.
@@ -410,7 +410,7 @@ void     S_window_set_resizable(Swindow *, Sbool);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_capture_mouse(Swindow *, Sbool);
+STICKY_API void     S_window_set_capture_mouse(Swindow *, Sbool);
 
 /**
  * @brief Set the centering rule for a window.
@@ -429,7 +429,7 @@ void     S_window_set_capture_mouse(Swindow *, Sbool);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_centered(Swindow *, Sbool);
+STICKY_API void     S_window_set_centered(Swindow *, Sbool);
 
 /**
  * @brief Set the display mode for a window.
@@ -455,7 +455,7 @@ void     S_window_set_centered(Swindow *, Sbool);
  * provided to the function.
  * @since 1.0.0
  */
-void     S_window_set_display_mode(Swindow *, Senum);
+STICKY_API void     S_window_set_display_mode(Swindow *, Senum);
 
 /**
  * @brief Toggle vsync for a window.
@@ -472,7 +472,7 @@ void     S_window_set_display_mode(Swindow *, Senum);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_vsync(Swindow *, Sbool);
+STICKY_API void     S_window_set_vsync(Swindow *, Sbool);
 
 /**
  * @brief Set the OpenGL profile for a window.
@@ -497,7 +497,7 @@ void     S_window_set_vsync(Swindow *, Sbool);
  * to the function.
  * @since 1.0.0
  */
-void     S_window_set_gl_profile(Swindow *, Senum);
+STICKY_API void     S_window_set_gl_profile(Swindow *, Senum);
 
 /**
  * @brief Set the OpenGL version for a window.
@@ -521,7 +521,7 @@ void     S_window_set_gl_profile(Swindow *, Senum);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_gl_version(Swindow *, Suint8, Suint8);
+STICKY_API void     S_window_set_gl_version(Swindow *, Suint8, Suint8);
 
 /**
  * @brief Set the clear colour for a window.
@@ -549,7 +549,8 @@ void     S_window_set_gl_version(Swindow *, Suint8, Suint8);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_clear_color(Swindow *, Sfloat, Sfloat, Sfloat, Sfloat);
+STICKY_API void     S_window_set_clear_color(Swindow *,
+                                             Sfloat, Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Set hardware acceleration for a window.
@@ -568,7 +569,7 @@ void     S_window_set_clear_color(Swindow *, Sfloat, Sfloat, Sfloat, Sfloat);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_hardware_acceleration(Swindow *, Sbool);
+STICKY_API void     S_window_set_hardware_acceleration(Swindow *, Sbool);
 
 /**
  * @brief Set double buffering for a window.
@@ -588,7 +589,7 @@ void     S_window_set_hardware_acceleration(Swindow *, Sbool);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_double_buffer(Swindow *, Sbool);
+STICKY_API void     S_window_set_double_buffer(Swindow *, Sbool);
 
 /**
  * @brief Sets the number of ticks per second for a window.
@@ -607,7 +608,7 @@ void     S_window_set_double_buffer(Swindow *, Sbool);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_ticks_per_second(Swindow *, Suint16);
+STICKY_API void     S_window_set_ticks_per_second(Swindow *, Suint16);
 
 /**
  * @brief Sets the input mode for a window.
@@ -634,7 +635,7 @@ void     S_window_set_ticks_per_second(Swindow *, Suint16);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_input_mode(Swindow *, Senum);
+STICKY_API void     S_window_set_input_mode(Swindow *, Senum);
 
 /**
  * @addtogroup window_callback
@@ -656,7 +657,8 @@ void     S_window_set_input_mode(Swindow *, Senum);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_callback_on_exit(Swindow *, Swindow_callback);
+STICKY_API void     S_window_set_callback_on_exit(Swindow *,
+                                                  Swindow_callback);
 
 /**
  * @brief Sets the resize callback for a window.
@@ -673,7 +675,8 @@ void     S_window_set_callback_on_exit(Swindow *, Swindow_callback);
  * the function.
  * @since 1.0.0
  */
-void     S_window_set_callback_on_resize(Swindow *, Swindow_callback);
+STICKY_API void     S_window_set_callback_on_resize(Swindow *,
+                                                    Swindow_callback);
 
 /**
  * @}
@@ -695,7 +698,8 @@ void     S_window_set_callback_on_resize(Swindow *, Swindow_callback);
  * the function.
  * @since 1.0.0
  */
-void     S_window_get_size(const Swindow *, Suint16 *, Suint16 *);
+STICKY_API void     S_window_get_size(const Swindow *,
+                                      Suint16 *, Suint16 *);
 
 /**
  * @brief Get the delta time of a window.
@@ -711,7 +715,7 @@ void     S_window_get_size(const Swindow *, Suint16 *, Suint16 *);
  * the function.
  * @since 1.0.0
  */
-Sfloat   S_window_get_delta_time(const Swindow *);
+STICKY_API Sfloat   S_window_get_delta_time(const Swindow *);
 
 /**
  * @brief Get the number of video displays available.
@@ -723,7 +727,7 @@ Sfloat   S_window_get_delta_time(const Swindow *);
  * @return The number of available video displays.
  * @since 1.0.0
  */
-Suint8   S_window_get_num_displays(void);
+STICKY_API Suint8   S_window_get_num_displays(void);
 
 /**
  * @brief Get display size and refresh rate.
@@ -742,7 +746,8 @@ Suint8   S_window_get_num_displays(void);
  * @exception S_INVALID_VALUE If the given display index is invalid.
  * @since 1.0.0
  */
-void     S_window_get_display_info(Suint8, Sint32 *, Sint32 *, Sint32 *);
+STICKY_API void     S_window_get_display_info(Suint8, Sint32 *, Sint32 *,
+                                              Sint32 *);
 
 /**
  * @brief Check if a window is currently running.
@@ -761,7 +766,7 @@ void     S_window_get_display_info(Suint8, Sint32 *, Sint32 *, Sint32 *);
  * the function.
  * @since 1.0.0
  */
-Sbool    S_window_is_running(const Swindow *);
+STICKY_API Sbool    S_window_is_running(const Swindow *);
 
 /**
  * @brief Check if a window is ready for a tick.
@@ -782,9 +787,9 @@ Sbool    S_window_is_running(const Swindow *);
  * the function.
  * @since 1.0.0
  */
-Sbool    S_window_is_tick(const Swindow *);
+STICKY_API Sbool    S_window_is_tick(const Swindow *);
 
-Sbool   _S_window_is_init(void);
+Sbool _S_window_is_init(void);
 
 /**
  * @}

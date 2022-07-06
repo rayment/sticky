@@ -98,7 +98,7 @@ typedef struct _Slinkedlist_node_s Slinkedlist_iter;
  * {@link S_linkedlist_delete(Slinkedlist *)}.
  * @since 1.0.0
  */
-Slinkedlist *S_linkedlist_new(void);
+STICKY_API Slinkedlist *S_linkedlist_new(void);
 
 /**
  * @brief Free a linked-list from memory.
@@ -115,7 +115,7 @@ Slinkedlist *S_linkedlist_new(void);
  * provided to the function.
  * @since 1.0.0
  */
-void    S_linkedlist_delete(Slinkedlist *);
+STICKY_API void    S_linkedlist_delete(Slinkedlist *);
 
 /**
  * @brief Add an element to a given index of a linked-list.
@@ -135,7 +135,7 @@ void    S_linkedlist_delete(Slinkedlist *);
  * linked-list is provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_add(Slinkedlist *, void *, Ssize_t);
+STICKY_API void   *S_linkedlist_add(Slinkedlist *, void *, Ssize_t);
 
 /**
  * @brief Add an element to the start of a linked-list.
@@ -154,7 +154,7 @@ void   *S_linkedlist_add(Slinkedlist *, void *, Ssize_t);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_add_head(Slinkedlist *, void *);
+STICKY_API void   *S_linkedlist_add_head(Slinkedlist *, void *);
 
 /**
  * @brief Add an element to the end of a linked-list.
@@ -166,7 +166,7 @@ void   *S_linkedlist_add_head(Slinkedlist *, void *);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_add_tail(Slinkedlist *, void *);
+STICKY_API void   *S_linkedlist_add_tail(Slinkedlist *, void *);
 
 /**
  * @brief Remove a given element from a linked-list.
@@ -186,7 +186,7 @@ void   *S_linkedlist_add_tail(Slinkedlist *, void *);
  * provided to the function.
  * @since 1.0.0
  */
-Sbool   S_linkedlist_remove_ptr(Slinkedlist *, const void *);
+STICKY_API Sbool   S_linkedlist_remove_ptr(Slinkedlist *, const void *);
 
 /**
  * @brief Remove an element at a certain index from a linked-list and return it.
@@ -206,7 +206,7 @@ Sbool   S_linkedlist_remove_ptr(Slinkedlist *, const void *);
  * linked-list is provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_remove(Slinkedlist *, Ssize_t);
+STICKY_API void   *S_linkedlist_remove(Slinkedlist *, Ssize_t);
 
 /**
  * @brief Remove an element from the start of a linked-list.
@@ -226,7 +226,7 @@ void   *S_linkedlist_remove(Slinkedlist *, Ssize_t);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_remove_head(Slinkedlist *);
+STICKY_API void   *S_linkedlist_remove_head(Slinkedlist *);
 
 /**
  * @brief Remove an element from the end of a linked-list.
@@ -241,7 +241,7 @@ void   *S_linkedlist_remove_head(Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_remove_tail(Slinkedlist *);
+STICKY_API void   *S_linkedlist_remove_tail(Slinkedlist *);
 
 /**
  * @brief Remove all elements from a linked-list.
@@ -257,7 +257,7 @@ void   *S_linkedlist_remove_tail(Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-void    S_linkedlist_clear(Slinkedlist *);
+STICKY_API void    S_linkedlist_clear(Slinkedlist *);
 
 /**
  * @brief Get an element at a certain index from a linked-list and return it.
@@ -276,7 +276,7 @@ void    S_linkedlist_clear(Slinkedlist *);
  * linked-list is provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_get(Slinkedlist *, Ssize_t);
+STICKY_API void   *S_linkedlist_get(Slinkedlist *, Ssize_t);
 
 /**
  * @brief Get the first element from a linked-list and return it.
@@ -288,7 +288,7 @@ void   *S_linkedlist_get(Slinkedlist *, Ssize_t);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_get_head(const Slinkedlist *);
+STICKY_API void   *S_linkedlist_get_head(const Slinkedlist *);
 
 /**
  * @brief Get the last element from a linked-list and return it.
@@ -300,7 +300,7 @@ void   *S_linkedlist_get_head(const Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_get_tail(const Slinkedlist *);
+STICKY_API void   *S_linkedlist_get_tail(const Slinkedlist *);
 
 /**
  * @brief Search a linked-list for an element and store the index it is found
@@ -316,7 +316,7 @@ void   *S_linkedlist_get_tail(const Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-Sbool   S_linkedlist_search(const Slinkedlist *, const void *, Ssize_t *);
+STICKY_API Sbool   S_linkedlist_search(const Slinkedlist *, const void *, Ssize_t *);
 
 /**
  * @brief Get the size of a linked-list.
@@ -330,7 +330,7 @@ Sbool   S_linkedlist_search(const Slinkedlist *, const void *, Ssize_t *);
  * provided to the function.
  * @since 1.0.0
  */
-Ssize_t S_linkedlist_size(const Slinkedlist *);
+STICKY_API Ssize_t S_linkedlist_size(const Slinkedlist *);
 
 /**
  * @brief Get an iterator for a linked-list pointing to the beginning of the
@@ -345,7 +345,7 @@ Ssize_t S_linkedlist_size(const Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-Slinkedlist_iter *S_linkedlist_iter_begin(Slinkedlist *);
+STICKY_API Slinkedlist_iter *S_linkedlist_iter_begin(Slinkedlist *);
 
 /**
  * @brief Get an iterator for a linked-list pointing to the end of the list.
@@ -359,7 +359,7 @@ Slinkedlist_iter *S_linkedlist_iter_begin(Slinkedlist *);
  * provided to the function.
  * @since 1.0.0
  */
-Slinkedlist_iter *S_linkedlist_iter_end(Slinkedlist *);
+STICKY_API Slinkedlist_iter *S_linkedlist_iter_end(Slinkedlist *);
 
 /**
  * @brief Advance an iterator to the next element.
@@ -376,7 +376,7 @@ Slinkedlist_iter *S_linkedlist_iter_end(Slinkedlist *);
  * to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_iter_next(Slinkedlist_iter **);
+STICKY_API void   *S_linkedlist_iter_next(Slinkedlist_iter **);
 
 /**
  * @brief Advance an iterator to the previous element.
@@ -394,7 +394,7 @@ void   *S_linkedlist_iter_next(Slinkedlist_iter **);
  * to the function.
  * @since 1.0.0
  */
-void   *S_linkedlist_iter_prev(Slinkedlist_iter **);
+STICKY_API void   *S_linkedlist_iter_prev(Slinkedlist_iter **);
 
 /**
  * @brief Check whether or not a list iterator has a following element or not.
@@ -404,7 +404,7 @@ void   *S_linkedlist_iter_prev(Slinkedlist_iter **);
  * {@link S_FALSE} otherwise.
  * @since 1.0.0
  */
-Sbool   S_linkedlist_iter_hasnext(const Slinkedlist_iter *);
+STICKY_API Sbool   S_linkedlist_iter_hasnext(const Slinkedlist_iter *);
 
 /**
  * @brief Check whether or not a list iterator has a previous element or not.
@@ -414,7 +414,7 @@ Sbool   S_linkedlist_iter_hasnext(const Slinkedlist_iter *);
  * {@link S_FALSE} otherwise.
  * @since 1.0.0
  */
-Sbool   S_linkedlist_iter_hasprev(const Slinkedlist_iter *);
+STICKY_API Sbool   S_linkedlist_iter_hasprev(const Slinkedlist_iter *);
 
 /**
  * @}

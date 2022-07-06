@@ -44,7 +44,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_identity(Squat *);
+STICKY_API void   S_quat_identity(Squat *);
 
 /**
  * @brief Multiply two quaternions.
@@ -63,7 +63,7 @@ void   S_quat_identity(Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_multiply(Squat *, const Squat *);
+STICKY_API void   S_quat_multiply(Squat *, const Squat *);
 
 /**
  * @brief Get the conjugate value of a quaternion.
@@ -80,7 +80,7 @@ void   S_quat_multiply(Squat *, const Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_conjugate(Squat *);
+STICKY_API void   S_quat_conjugate(Squat *);
 
 /**
  * @brief Calculate the dot product of two quaternions.
@@ -98,7 +98,7 @@ void   S_quat_conjugate(Squat *);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_quat_dot(const Squat *, const Squat *);
+STICKY_API Sfloat S_quat_dot(const Squat *, const Squat *);
 
 /**
  * @brief Normalise a quaternion.
@@ -122,7 +122,7 @@ Sfloat S_quat_dot(const Squat *, const Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_normalize(Squat *);
+STICKY_API void   S_quat_normalize(Squat *);
 
 /**
  * @brief Calculate the inverse of a quaternion.
@@ -147,7 +147,7 @@ void   S_quat_normalize(Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_inverse(Squat *);
+STICKY_API void   S_quat_inverse(Squat *);
 
 /**
  * @brief Perform a linear interpolation on two quaternions.
@@ -167,7 +167,7 @@ void   S_quat_inverse(Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_lerp(Squat *, const Squat *, Sfloat);
+STICKY_API void   S_quat_lerp(Squat *, const Squat *, Sfloat);
 
 /**
  * @brief Perform a spherical linear interpolation on two quaternions.
@@ -187,7 +187,7 @@ void   S_quat_lerp(Squat *, const Squat *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_slerp(Squat *, const Squat *, Sfloat);
+STICKY_API void   S_quat_slerp(Squat *, const Squat *, Sfloat);
 
 /**
  * @brief Calculate the quaternion angle and Euler angle between two
@@ -216,7 +216,7 @@ void   S_quat_slerp(Squat *, const Squat *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_quat_angle(Squat *, const Squat *);
+STICKY_API Sfloat S_quat_angle(Squat *, const Squat *);
 
 /**
  * @brief Rotate a number of degrees around an axis.
@@ -230,7 +230,7 @@ Sfloat S_quat_angle(Squat *, const Squat *);
  * vector is provided to the function.
  * @since 1.0.0
  */
-void   S_quat_angleaxis(Squat *, const Svec3 *, Sfloat);
+STICKY_API void   S_quat_angleaxis(Squat *, const Svec3 *, Sfloat);
 
 /**
  * @brief Return the rotation from one point to another.
@@ -248,7 +248,7 @@ void   S_quat_angleaxis(Squat *, const Svec3 *, Sfloat);
  * vector is provided to the function.
  * @since 1.0.0
  */
-void   S_quat_lookpoint(Squat *, const Svec3 *, const Svec3 *);
+STICKY_API void   S_quat_lookpoint(Squat *, const Svec3 *, const Svec3 *);
 
 /**
  * @brief Get the forward component of a quaternion rotation.
@@ -259,7 +259,7 @@ void   S_quat_lookpoint(Squat *, const Svec3 *, const Svec3 *);
  * vector is provided to the function.
  * @since 1.0.0
  */
-void   S_quat_forward(Svec3 *, const Squat *);
+STICKY_API void   S_quat_forward(Svec3 *, const Squat *);
 
 /**
  * @brief Get the upward component of a quaternion rotation.
@@ -270,7 +270,7 @@ void   S_quat_forward(Svec3 *, const Squat *);
  * vector is provided to the function.
  * @since 1.0.0
  */
-void   S_quat_up(Svec3 *, const Squat *);
+STICKY_API void   S_quat_up(Svec3 *, const Squat *);
 
 /**
  * @brief Get the right component of a quaternion rotation.
@@ -281,7 +281,7 @@ void   S_quat_up(Svec3 *, const Squat *);
  * vector is provided to the function.
  * @since 1.0.0
  */
-void   S_quat_right(Svec3 *, const Squat *);
+STICKY_API void   S_quat_right(Svec3 *, const Squat *);
 
 /**
  * @brief Create a copy of a quaternion.
@@ -295,7 +295,7 @@ void   S_quat_right(Svec3 *, const Squat *);
  * to the function.
  * @since 1.0.0
  */
-void   S_quat_copy(Squat *, const Squat *);
+STICKY_API void   S_quat_copy(Squat *, const Squat *);
 
 /**
  * @brief Check if two quaternions are equivalent.
@@ -322,7 +322,7 @@ void   S_quat_copy(Squat *, const Squat *);
  * to the function.
  * @since 1.0.0
  */
-Sbool  S_quat_equals(Sfloat, const Squat *, const Squat *);
+STICKY_API Sbool  S_quat_equals(Sfloat, const Squat *, const Squat *);
 
 /**
  * @brief Convert a quaternion to Euler angles.
@@ -347,7 +347,7 @@ Sbool  S_quat_equals(Sfloat, const Squat *, const Squat *);
  * @see {@link S_vec3_to_quat} To turn Euler angles back into a quaternion.
  * @since 1.0.0
  */
-void   S_quat_to_vec3(Svec3 *, const Squat *);
+STICKY_API void   S_quat_to_vec3(Svec3 *, const Squat *);
 
 /**
  * @}

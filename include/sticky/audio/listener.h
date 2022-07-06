@@ -56,7 +56,7 @@ Slistener_s
  * @return A new listener.
  * @since 1.0.0
  */
-Slistener *S_listener_new(void);
+STICKY_API Slistener *S_listener_new(void);
 
 /**
  * @brief Free an audio listener from memory.
@@ -69,7 +69,7 @@ Slistener *S_listener_new(void);
  * to the function.
  * @since 1.0.0
  */
-void       S_listener_delete(Slistener *);
+STICKY_API void       S_listener_delete(Slistener *);
 
 /**
  * @brief Active an audio listener.
@@ -83,7 +83,7 @@ void       S_listener_delete(Slistener *);
  * @param[in,out] listener The listener to active.
  * @since 1.0.0
  */
-void       S_listener_set_active(Slistener *);
+STICKY_API void       S_listener_set_active(Slistener *);
 
 /**
  * @brief Set the rotation of an audio listener.
@@ -94,7 +94,7 @@ void       S_listener_set_active(Slistener *);
  * is provided to the function.
  * @since 1.0.0
  */
-void       S_listener_set_rot(Slistener *, const Squat *);
+STICKY_API void       S_listener_set_rot(Slistener *, const Squat *);
 
 /**
  * @brief Set the position of an audio listener.
@@ -105,7 +105,7 @@ void       S_listener_set_rot(Slistener *, const Squat *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_set_pos(Slistener *, const Svec3 *);
+STICKY_API void       S_listener_set_pos(Slistener *, const Svec3 *);
 
 /**
  * @brief Set the velocity of an audio listener.
@@ -118,7 +118,7 @@ void       S_listener_set_pos(Slistener *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_set_vel(Slistener *, const Svec3 *);
+STICKY_API void       S_listener_set_vel(Slistener *, const Svec3 *);
 
 /**
  * @brief Add to the rotation of an audio listener.
@@ -129,7 +129,7 @@ void       S_listener_set_vel(Slistener *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void       S_listener_add_rot(Slistener *, const Squat *);
+STICKY_API void       S_listener_add_rot(Slistener *, const Squat *);
 
 /**
  * @brief Add to the position of an audio listener.
@@ -141,7 +141,7 @@ void       S_listener_add_rot(Slistener *, const Squat *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_add_pos(Slistener *, const Svec3 *);
+STICKY_API void       S_listener_add_pos(Slistener *, const Svec3 *);
 
 /**
  * @brief Add to the velocity of an audio listener.
@@ -155,7 +155,7 @@ void       S_listener_add_pos(Slistener *, const Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_add_vel(Slistener *, const Svec3 *);
+STICKY_API void       S_listener_add_vel(Slistener *, const Svec3 *);
 
 /**
  * @brief Check if a given audio listener is active.
@@ -173,7 +173,7 @@ void       S_listener_add_vel(Slistener *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool      S_listener_is_active(const Slistener *);
+STICKY_API Sbool      S_listener_is_active(const Slistener *);
 
 /**
  * @brief Get the current position of an audio listener.
@@ -184,7 +184,7 @@ Sbool      S_listener_is_active(const Slistener *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_get_pos(const Slistener *, Svec3 *);
+STICKY_API void       S_listener_get_pos(const Slistener *, Svec3 *);
 
 /**
  * @brief Get the current velocity of an audio listener.
@@ -197,7 +197,7 @@ void       S_listener_get_pos(const Slistener *, Svec3 *);
  * provided to the function.
  * @since 1.0.0
  */
-void       S_listener_get_vel(const Slistener *, Svec3 *);
+STICKY_API void       S_listener_get_vel(const Slistener *, Svec3 *);
 
 /**
  * @brief Get the current rotation of an audio listener.
@@ -209,7 +209,7 @@ void       S_listener_get_vel(const Slistener *, Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void       S_listener_get_rot(const Slistener *, Squat *);
+STICKY_API void       S_listener_get_rot(const Slistener *, Squat *);
 
 /**
  * @}

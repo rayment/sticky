@@ -175,7 +175,7 @@ extern "C"
  *
  * @since 1.0.0
  */
-Suint8 S_input_get_num_gamepads(void);
+STICKY_API Suint8 S_input_get_num_gamepads(void);
 
 /**
  * @brief Get the current offset of one of the gamepad axis.
@@ -199,7 +199,7 @@ Suint8 S_input_get_num_gamepads(void);
  * @exception S_INVALID_ENUM If an invalid axis is provided.
  * @since 1.0.0
  */
-Sint16 S_input_get_gamepad_axis(Suint8, Senum);
+STICKY_API Sint16 S_input_get_gamepad_axis(Suint8, Senum);
 
 /**
  * @brief Check if a given gamepad button is currently being pressed down.
@@ -226,7 +226,7 @@ Sint16 S_input_get_gamepad_axis(Suint8, Senum);
  * @exception S_INVALID_ENUM If an invalid button is provided.
  * @since 1.0.0
  */
-Sbool  S_input_is_gamepad_button_down(Suint8, Senum);
+STICKY_API Sbool  S_input_is_gamepad_button_down(Suint8, Senum);
 
 /**
  * @brief Check if a given gamepad button is currently being held down.
@@ -247,11 +247,11 @@ Sbool  S_input_is_gamepad_button_down(Suint8, Senum);
  * @exception S_INVALID_ENUM If an invalid button is provided.
  * @since 1.0.0
  */
-Sbool  S_input_is_gamepad_button_pressed(Suint8, Senum);
+STICKY_API Sbool  S_input_is_gamepad_button_pressed(Suint8, Senum);
 
-void  _S_input_gamepad_init(void);
-void  _S_input_gamepad_reset(void);
-void  _S_input_gamepad_event(SDL_Event);
+void _S_input_gamepad_init(void);
+void _S_input_gamepad_reset(void);
+void _S_input_gamepad_event(SDL_Event);
 
 /**
  * @}

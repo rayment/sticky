@@ -43,7 +43,7 @@ typedef pthread_mutex_t _Smutex_raw;
  *
  * @since 1.0.0
  */
-typedef _Smutex_raw *Smutex;
+STICKY_API typedef _Smutex_raw *Smutex;
 
 /**
  * @brief Allocate a new mutex in memory.
@@ -56,7 +56,7 @@ typedef _Smutex_raw *Smutex;
  * {@link S_mutex_delete(Smutex)}.
  * @since 1.0.0
  */
-Smutex S_mutex_new(void);
+STICKY_API Smutex S_mutex_new(void);
 /**
  * @brief Free a mutex from memory.
  *
@@ -75,7 +75,7 @@ Smutex S_mutex_new(void);
  * delete the mutex.
  * @since 1.0.0
  */
-void   S_mutex_delete(Smutex);
+STICKY_API void   S_mutex_delete(Smutex);
 /**
  * @brief Block and wait to lock a mutex.
  *
@@ -93,7 +93,7 @@ void   S_mutex_delete(Smutex);
  * lock the mutex.
  * @since 1.0.0
  */
-void   S_mutex_lock(Smutex);
+STICKY_API void   S_mutex_lock(Smutex);
 
 /**
  * @brief Attempt to lock a mutex without blocking.
@@ -107,7 +107,7 @@ void   S_mutex_lock(Smutex);
  * the function.
  * @since 1.0.0
  */
-Sbool  S_mutex_trylock(Smutex);
+STICKY_API Sbool  S_mutex_trylock(Smutex);
 /**
  * @brief Unlock a mutex.
  *
@@ -128,7 +128,7 @@ Sbool  S_mutex_trylock(Smutex);
  * unlock the mutex.
  * @since 1.0.0
  */
-void   S_mutex_unlock(Smutex);
+STICKY_API void   S_mutex_unlock(Smutex);
 
 /**
  * @}

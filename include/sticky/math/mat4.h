@@ -46,7 +46,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_identity(Smat4 *);
+STICKY_API void  S_mat4_identity(Smat4 *);
 
 /**
  * @brief Multiply two 4x4 matrices.
@@ -62,7 +62,7 @@ void  S_mat4_identity(Smat4 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_multiply(Smat4 *, const Smat4 *);
+STICKY_API void  S_mat4_multiply(Smat4 *, const Smat4 *);
 
 /**
  * @brief Transpose a 4x4 matrix.
@@ -91,7 +91,7 @@ void  S_mat4_multiply(Smat4 *, const Smat4 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_transpose(Smat4 *);
+STICKY_API void  S_mat4_transpose(Smat4 *);
 
 /**
  * @brief Inverse a 4x4 matrix.
@@ -116,7 +116,7 @@ void  S_mat4_transpose(Smat4 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool S_mat4_inverse(Smat4 *);
+STICKY_API Sbool S_mat4_inverse(Smat4 *);
 
 /**
  * @brief Create a translation matrix.
@@ -143,7 +143,7 @@ Sbool S_mat4_inverse(Smat4 *);
  * vector pointer is provided to the function.
  * @since 1.0.0
  */
-void  S_mat4_translate(Smat4 *, const Svec3 *);
+STICKY_API void  S_mat4_translate(Smat4 *, const Svec3 *);
 
 /**
  * @brief Create a rotation matrix.
@@ -168,7 +168,7 @@ void  S_mat4_translate(Smat4 *, const Svec3 *);
  * quaternion pointer is provided to the function.
  * @since 1.0.0
  */
-void  S_mat4_rotate(Smat4 *, const Squat *);
+STICKY_API void  S_mat4_rotate(Smat4 *, const Squat *);
 
 /**
  * @brief Create a scale matrix.
@@ -194,7 +194,7 @@ void  S_mat4_rotate(Smat4 *, const Squat *);
  * vector pointer is provided to the function.
  * @since 1.0.0
  */
-void  S_mat4_scale(Smat4 *, const Svec3 *);
+STICKY_API void  S_mat4_scale(Smat4 *, const Svec3 *);
 
 /**
  * @brief Generate a perspective projection matrix.
@@ -239,7 +239,7 @@ void  S_mat4_scale(Smat4 *, const Svec3 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_perspective(Smat4 *, Sfloat, Sfloat, Sfloat, Sfloat);
+STICKY_API void  S_mat4_perspective(Smat4 *, Sfloat, Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Generate an orthographic projection matrix.
@@ -268,7 +268,7 @@ void  S_mat4_perspective(Smat4 *, Sfloat, Sfloat, Sfloat, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_orthographic(Smat4 *, Sfloat, Sfloat);
+STICKY_API void  S_mat4_orthographic(Smat4 *, Sfloat, Sfloat);
 
 /**
  * @brief Create a copy of a 4x4 matrix.
@@ -281,7 +281,7 @@ void  S_mat4_orthographic(Smat4 *, Sfloat, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat4_copy(Smat4 *, const Smat4 *);
+STICKY_API void  S_mat4_copy(Smat4 *, const Smat4 *);
 
 /**
  * @brief Check if two 4x4 matrices are equivalent.
@@ -309,7 +309,7 @@ void  S_mat4_copy(Smat4 *, const Smat4 *);
  * to the function, or if the given epsilon value is less than 0.
  * @since 1.0.0
  */
-Sbool  S_mat4_equals(Sfloat, const Smat4 *, const Smat4 *);
+STICKY_API Sbool  S_mat4_equals(Sfloat, const Smat4 *, const Smat4 *);
 
 /**
  * @brief Convert a 4x4 matrix to a 3x3 matrix.
@@ -339,7 +339,7 @@ Sbool  S_mat4_equals(Sfloat, const Smat4 *, const Smat4 *);
  * pointer is provided to the function.
  * @since 1.0.0
  */
-void  S_mat4_to_mat3(Smat3 *, const Smat4 *);
+STICKY_API void  S_mat4_to_mat3(Smat3 *, const Smat4 *);
 
 /**
  * @}

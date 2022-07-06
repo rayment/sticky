@@ -88,7 +88,7 @@ extern "C"
  * before calling this. You have been warned.</b>
  * @since 1.0.0
  */
-void S_sticky_init(void);
+STICKY_API void S_sticky_init(void);
 
 /**
  * @brief Clean up engine at the end of program execution.
@@ -101,7 +101,7 @@ void S_sticky_init(void);
  * @see S_sticky_init(void)
  * @since 1.0.0
  */
-void S_sticky_free(void);
+STICKY_API void S_sticky_free(void);
 
 #ifdef __cplusplus
 }

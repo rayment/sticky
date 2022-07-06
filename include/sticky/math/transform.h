@@ -63,7 +63,7 @@ Stransform_s
  * the transform, call {@link S_transform_delete(Stransform *)}.
  * @since 1.0.0
  */
-Stransform *S_transform_new(void);
+STICKY_API Stransform *S_transform_new(void);
 
 /**
  * @brief Free an object transform from memory.
@@ -78,7 +78,7 @@ Stransform *S_transform_new(void);
  * to the function.
  * @since 1.0.0
  */
-void        S_transform_delete(Stransform *);
+STICKY_API void        S_transform_delete(Stransform *);
 
 /**
  * @brief Create a parent-child relationship between two transforms.
@@ -111,7 +111,7 @@ void        S_transform_delete(Stransform *);
  * to the function.
  * @since 1.0.0
  */
-void        S_transform_set_parent(Stransform *, Stransform *);
+STICKY_API void        S_transform_set_parent(Stransform *, Stransform *);
 
 /**
  * @brief Get the parent of a transform.
@@ -124,7 +124,7 @@ void        S_transform_set_parent(Stransform *, Stransform *);
  * to the function.
  * @since 1.0.0
  */
-Stransform *S_transform_get_parent(const Stransform *);
+STICKY_API Stransform *S_transform_get_parent(const Stransform *);
 
 /**
  * @brief Get the number of direct children a transform contains.
@@ -139,7 +139,7 @@ Stransform *S_transform_get_parent(const Stransform *);
  * to the function.
  * @since 1.0.0
  */
-Ssize_t     S_transform_get_number_children(const Stransform *);
+STICKY_API Ssize_t     S_transform_get_number_children(const Stransform *);
 
 /**
  * @brief Get a child of a transform by index.
@@ -156,7 +156,7 @@ Ssize_t     S_transform_get_number_children(const Stransform *);
  * children of the transform is provided to the function.
  * @since 1.0.0
  */
-Stransform *S_transform_get_child(const Stransform *, Ssize_t);
+STICKY_API Stransform *S_transform_get_child(const Stransform *, Ssize_t);
 
 /**
  * @brief Determine whether or not a child is a descendant of a transform.
@@ -172,8 +172,8 @@ Stransform *S_transform_get_child(const Stransform *, Ssize_t);
  * to the function.
  * @since 1.0.0
  */
-Sbool       S_transform_is_child_in_tree(const Stransform *,
-                                         const Stransform *);
+STICKY_API Sbool       S_transform_is_child_in_tree(const Stransform *,
+                                                    const Stransform *);
 
 /**
  * @brief Set the local position of a transform.
@@ -192,7 +192,7 @@ Sbool       S_transform_is_child_in_tree(const Stransform *,
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_set_pos(Stransform *, const Svec3 *);
+STICKY_API void        S_transform_set_pos(Stransform *, const Svec3 *);
 
 /**
  * @brief Add to the local position of a transform.
@@ -203,7 +203,7 @@ void        S_transform_set_pos(Stransform *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_add_pos(Stransform *, const Svec3 *);
+STICKY_API void        S_transform_add_pos(Stransform *, const Svec3 *);
 
 /**
  * @brief Get the local position of a transform.
@@ -214,7 +214,7 @@ void        S_transform_add_pos(Stransform *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_pos(const Stransform *, Svec3 *);
+STICKY_API void        S_transform_get_pos(const Stransform *, Svec3 *);
 
 /**
  * @brief Set the local rotation of a transform.
@@ -225,7 +225,7 @@ void        S_transform_get_pos(const Stransform *, Svec3 *);
  * quaternion is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_set_rot(Stransform *, const Squat *);
+STICKY_API void        S_transform_set_rot(Stransform *, const Squat *);
 
 /**
  * @brief Add to the local rotation of a transform.
@@ -236,7 +236,7 @@ void        S_transform_set_rot(Stransform *, const Squat *);
  * quaternion is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_add_rot(Stransform *, const Squat *);
+STICKY_API void        S_transform_add_rot(Stransform *, const Squat *);
 
 /**
  * @brief Get the local rotation of a transform.
@@ -247,7 +247,7 @@ void        S_transform_add_rot(Stransform *, const Squat *);
  * quaternion is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_rot(const Stransform *, Squat *);
+STICKY_API void        S_transform_get_rot(const Stransform *, Squat *);
 
 /**
  * @brief Set the local scale of a transform.
@@ -266,7 +266,7 @@ void        S_transform_get_rot(const Stransform *, Squat *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_set_scale(Stransform *, const Svec3 *);
+STICKY_API void        S_transform_set_scale(Stransform *, const Svec3 *);
 
 /**
  * @brief Add to the local scale of a transform.
@@ -277,7 +277,7 @@ void        S_transform_set_scale(Stransform *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_add_scale(Stransform *, const Svec3 *);
+STICKY_API void        S_transform_add_scale(Stransform *, const Svec3 *);
 
 /**
  * @brief Get the local scale of a transform.
@@ -288,7 +288,7 @@ void        S_transform_add_scale(Stransform *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_scale(const Stransform *, Svec3 *);
+STICKY_API void        S_transform_get_scale(const Stransform *, Svec3 *);
 
 /**
  * @brief Get the local transformation matrix of a transform.
@@ -300,7 +300,8 @@ void        S_transform_get_scale(const Stransform *, Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_transformation_matrix(const Stransform *, Smat4 *);
+STICKY_API void        S_transform_get_transformation_matrix(const Stransform *,
+                                                             Smat4 *);
 
 /**
  * @brief Get the forward vector of a transform.
@@ -314,7 +315,7 @@ void        S_transform_get_transformation_matrix(const Stransform *, Smat4 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_forward(const Stransform *, Svec3 *);
+STICKY_API void        S_transform_get_forward(const Stransform *, Svec3 *);
 
 /**
  * @brief Get the right vector of a transform.
@@ -328,7 +329,7 @@ void        S_transform_get_forward(const Stransform *, Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_right(const Stransform *, Svec3 *);
+STICKY_API void        S_transform_get_right(const Stransform *, Svec3 *);
 
 /**
  * @brief Get the upward vector of a transform.
@@ -342,7 +343,7 @@ void        S_transform_get_right(const Stransform *, Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_transform_get_up(const Stransform *, Svec3 *);
+STICKY_API void        S_transform_get_up(const Stransform *, Svec3 *);
 
 /**
  * @}

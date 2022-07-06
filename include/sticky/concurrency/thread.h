@@ -85,7 +85,7 @@ typedef _Sthread_raw *Sthread;
  * the thread.
  * @since 1.0.0
  */
-Sthread S_thread_new(Sthread_func, void *);
+STICKY_API Sthread S_thread_new(Sthread_func, void *);
 
 /**
  * @brief Sleep for a number of seconds in the current thread.
@@ -98,7 +98,7 @@ Sthread S_thread_new(Sthread_func, void *);
  * @param[in] sec The number of seconds to sleep for.
  * @since 1.0.0
  */
-void    S_thread_sleep(Suint64);
+STICKY_API void    S_thread_sleep(Suint64);
 
 /**
  * @brief Sleep for a number of milliseconds in the current thread.
@@ -111,7 +111,7 @@ void    S_thread_sleep(Suint64);
  * @param[in] msec The number of milliseconds to sleep for.
  * @since 1.0.0
  */
-void    S_thread_msleep(Suint64);
+STICKY_API void    S_thread_msleep(Suint64);
 
 /**
  * @brief Wait for a thread to join and finish, and then deallocate it.
@@ -133,7 +133,7 @@ void    S_thread_msleep(Suint64);
  * the thread.
  * @since 1.0
  */
-void   *S_thread_join(Sthread);
+STICKY_API void   *S_thread_join(Sthread);
 
 /**
  * @}

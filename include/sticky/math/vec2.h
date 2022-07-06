@@ -41,7 +41,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_zero(Svec2 *);
+STICKY_API void   S_vec2_zero(Svec2 *);
 
 /**
  * @brief Set both vector components to a given value.
@@ -58,7 +58,7 @@ void   S_vec2_zero(Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_fill(Svec2 *, Sfloat);
+STICKY_API void   S_vec2_fill(Svec2 *, Sfloat);
 
 /**
  * @brief Set the two vector components of a vector.
@@ -77,7 +77,7 @@ void   S_vec2_fill(Svec2 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_set(Svec2 *, Sfloat, Sfloat);
+STICKY_API void   S_vec2_set(Svec2 *, Sfloat, Sfloat);
 
 /**
  * @brief Add two vectors together.
@@ -97,7 +97,7 @@ void   S_vec2_set(Svec2 *, Sfloat, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_add(Svec2 *, const Svec2 *);
+STICKY_API void   S_vec2_add(Svec2 *, const Svec2 *);
 
 /**
  * @brief Subtract a vector from another.
@@ -117,7 +117,7 @@ void   S_vec2_add(Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_subtract(Svec2 *, const Svec2 *);
+STICKY_API void   S_vec2_subtract(Svec2 *, const Svec2 *);
 
 /**
  * @brief Multiply two vectors together.
@@ -137,7 +137,7 @@ void   S_vec2_subtract(Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_multiply(Svec2 *, const Svec2 *);
+STICKY_API void   S_vec2_multiply(Svec2 *, const Svec2 *);
 
 /**
  * @brief Scale both vector components by a given value.
@@ -158,7 +158,7 @@ void   S_vec2_multiply(Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_scale(Svec2 *, Sfloat);
+STICKY_API void   S_vec2_scale(Svec2 *, Sfloat);
 
 /**
  * @brief Calculate the dot product of two vectors.
@@ -176,7 +176,7 @@ void   S_vec2_scale(Svec2 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec2_dot(const Svec2 *, const Svec2 *);
+STICKY_API Sfloat S_vec2_dot(const Svec2 *, const Svec2 *);
 
 /**
  * @brief Calculate the Euclidian distance between two vectors.
@@ -195,7 +195,7 @@ Sfloat S_vec2_dot(const Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-Sfloat S_vec2_distance(const Svec2 *, const Svec2 *);
+STICKY_API Sfloat S_vec2_distance(const Svec2 *, const Svec2 *);
 
 /**
  * @brief Normalise a vector.
@@ -218,7 +218,7 @@ Sfloat S_vec2_distance(const Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_normalize(Svec2 *);
+STICKY_API void   S_vec2_normalize(Svec2 *);
 
 /**
  * @brief Invert a vector.
@@ -236,7 +236,7 @@ void   S_vec2_normalize(Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_inverse(Svec2 *);
+STICKY_API void   S_vec2_inverse(Svec2 *);
 
 /**
  * @brief Negate a vector.
@@ -254,7 +254,7 @@ void   S_vec2_inverse(Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_negative(Svec2 *);
+STICKY_API void   S_vec2_negative(Svec2 *);
 
 /**
  * @brief Perform a linear interpolation on two vectors.
@@ -271,7 +271,7 @@ void   S_vec2_negative(Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_lerp(Svec2 *, const Svec2 *, Sfloat);
+STICKY_API void   S_vec2_lerp(Svec2 *, const Svec2 *, Sfloat);
 
 /**
  * @brief Create a copy of a vector.
@@ -284,7 +284,7 @@ void   S_vec2_lerp(Svec2 *, const Svec2 *, Sfloat);
  * to the function.
  * @since 1.0.0
  */
-void   S_vec2_copy(Svec2 *, const Svec2 *);
+STICKY_API void   S_vec2_copy(Svec2 *, const Svec2 *);
 
 /**
  * @brief Check if two vectors are equivalent.
@@ -302,7 +302,7 @@ void   S_vec2_copy(Svec2 *, const Svec2 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool  S_vec2_equals(Sfloat, const Svec2 *, const Svec2 *);
+STICKY_API Sbool  S_vec2_equals(Sfloat, const Svec2 *, const Svec2 *);
 
 /**
  * @}

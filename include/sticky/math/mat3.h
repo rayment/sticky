@@ -45,7 +45,7 @@ extern "C"
  * to the function.
  * @since 1.0.0
  */
-void  S_mat3_identity(Smat3 *);
+STICKY_API void  S_mat3_identity(Smat3 *);
 
 /**
  * @brief Multiply two 3x3 matrices.
@@ -61,7 +61,7 @@ void  S_mat3_identity(Smat3 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat3_multiply(Smat3 *, const Smat3 *);
+STICKY_API void  S_mat3_multiply(Smat3 *, const Smat3 *);
 
 /**
  * @brief Transpose a 3x3 matrix.
@@ -88,7 +88,7 @@ void  S_mat3_multiply(Smat3 *, const Smat3 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat3_transpose(Smat3 *);
+STICKY_API void  S_mat3_transpose(Smat3 *);
 
 /**
  * @brief Inverse a 3x3 matrix.
@@ -113,7 +113,7 @@ void  S_mat3_transpose(Smat3 *);
  * to the function.
  * @since 1.0.0
  */
-Sbool S_mat3_inverse(Smat3 *);
+STICKY_API Sbool S_mat3_inverse(Smat3 *);
 
 /**
  * @brief Create a copy of a 3x3 matrix.
@@ -126,7 +126,7 @@ Sbool S_mat3_inverse(Smat3 *);
  * to the function.
  * @since 1.0.0
  */
-void  S_mat3_copy(Smat3 *, const Smat3 *);
+STICKY_API void  S_mat3_copy(Smat3 *, const Smat3 *);
 
 /**
  * @brief Check if two 3x3 matrices are equivalent.
@@ -154,7 +154,7 @@ void  S_mat3_copy(Smat3 *, const Smat3 *);
  * to the function, or if the given epsilon value is less than 0.
  * @since 1.0.0
  */
-Sbool S_mat3_equals(Sfloat, const Smat3 *, const Smat3 *);
+STICKY_API Sbool S_mat3_equals(Sfloat, const Smat3 *, const Smat3 *);
 
 /**
  * @brief Convert a 3x3 matrix to a 4x4 matrix.
@@ -184,7 +184,7 @@ Sbool S_mat3_equals(Sfloat, const Smat3 *, const Smat3 *);
  * pointer is provided to the function.
  * @since 1.0.0
  */
-void  S_mat3_to_mat4(Smat4 *, const Smat3 *);
+STICKY_API void  S_mat3_to_mat4(Smat4 *, const Smat3 *);
 
 /**
  * @}

@@ -82,10 +82,10 @@ Smesh_s
  * lengths are not 0.
  * @since 1.0.0
  */
-Smesh *S_mesh_new(const Sfloat *, Ssize_t,
-                  const Suint32 *, Ssize_t,
-                  const Sfloat *, Ssize_t,
-                  const Sfloat *, Ssize_t);
+STICKY_API Smesh *S_mesh_new(const Sfloat *, Ssize_t,
+                             const Suint32 *, Ssize_t,
+                             const Sfloat *, Ssize_t,
+                             const Sfloat *, Ssize_t);
 
 /**
  * @brief Free a mesh from memory.
@@ -98,10 +98,10 @@ Smesh *S_mesh_new(const Sfloat *, Ssize_t,
  * the function.
  * @since 1.0.0
  */
-void   S_mesh_delete(Smesh *);
+STICKY_API void   S_mesh_delete(Smesh *);
 
-void  _S_mesh_draw(const Smesh *, Senum);
-void  _S_mesh_draw_count(const Smesh *, Senum, Suint64);
+void _S_mesh_draw(const Smesh *, Senum);
+void _S_mesh_draw_count(const Smesh *, Senum, Suint64);
 
 /**
  * @}

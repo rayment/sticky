@@ -59,7 +59,7 @@ Scamera_s
  * @return A new camera.
  * @since 1.0.0
  */
-Scamera    *S_camera_new(Suint32, Suint32);
+STICKY_API Scamera    *S_camera_new(Suint32, Suint32);
 
 /**
  * @brief Free a camera from memory.
@@ -72,7 +72,7 @@ Scamera    *S_camera_new(Suint32, Suint32);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_delete(Scamera *);
+STICKY_API void        S_camera_delete(Scamera *);
 
 /**
  * @brief Hook a camera to a window for resize updates.
@@ -91,7 +91,7 @@ void        S_camera_delete(Scamera *);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_attach(Scamera *, Swindow *);
+STICKY_API void        S_camera_attach(Scamera *, Swindow *);
 
 /**
  * @brief Set the near-plane of a camera.
@@ -106,7 +106,7 @@ void        S_camera_attach(Scamera *, Swindow *);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_set_near_plane(Scamera *, Sfloat);
+STICKY_API void        S_camera_set_near_plane(Scamera *, Sfloat);
 
 /**
  * @brief Set the far-plane of a camera.
@@ -121,7 +121,7 @@ void        S_camera_set_near_plane(Scamera *, Sfloat);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_set_far_plane(Scamera *, Sfloat);
+STICKY_API void        S_camera_set_far_plane(Scamera *, Sfloat);
 
 /**
  * @brief Set the field-of-view of a camera.
@@ -135,7 +135,7 @@ void        S_camera_set_far_plane(Scamera *, Sfloat);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_set_field_of_view(Scamera *, Sfloat);
+STICKY_API void        S_camera_set_field_of_view(Scamera *, Sfloat);
 
 /**
  * @brief Set the pixel size and aspect-ratio of a camera.
@@ -150,7 +150,7 @@ void        S_camera_set_field_of_view(Scamera *, Sfloat);
  * the function.
  * @since 1.0.0
  */
-void        S_camera_set_size(Scamera *, Suint32, Suint32);
+STICKY_API void        S_camera_set_size(Scamera *, Suint32, Suint32);
 
 /**
  * @brief Get the near-plane of a camera.
@@ -162,7 +162,7 @@ void        S_camera_set_size(Scamera *, Suint32, Suint32);
  * the function.
  * @since 1.0.0
  */
-Sfloat      S_camera_get_near_plane(const Scamera *);
+STICKY_API Sfloat      S_camera_get_near_plane(const Scamera *);
 
 /**
  * @brief Get the far-plane of a camera.
@@ -174,7 +174,7 @@ Sfloat      S_camera_get_near_plane(const Scamera *);
  * the function.
  * @since 1.0.0
  */
-Sfloat      S_camera_get_far_plane(const Scamera *);
+STICKY_API Sfloat      S_camera_get_far_plane(const Scamera *);
 
 /**
  * @brief Get the field-of-view of a camera.
@@ -186,7 +186,7 @@ Sfloat      S_camera_get_far_plane(const Scamera *);
  * the function.
  * @since 1.0.0
  */
-Sfloat      S_camera_get_field_of_view(const Scamera *);
+STICKY_API Sfloat      S_camera_get_field_of_view(const Scamera *);
 
 /*
  * @brief Get the pixel size of a camera.
@@ -201,7 +201,7 @@ Sfloat      S_camera_get_field_of_view(const Scamera *);
  * the function.
  * @since 1.0.0
  */
-Sfloat      S_camera_get_aspect_ratio(const Scamera *);
+STICKY_API Sfloat      S_camera_get_aspect_ratio(const Scamera *);
 
 /**
  * @brief Get the aspect-ratio of a camera.
@@ -213,7 +213,7 @@ Sfloat      S_camera_get_aspect_ratio(const Scamera *);
  * the function.
  * @since 1.0.0
  */
-Sfloat      S_camera_get_aspect_ratio(const Scamera *);
+STICKY_API Sfloat      S_camera_get_aspect_ratio(const Scamera *);
 
 /**
  * @brief Get the transform of a camera.
@@ -227,7 +227,7 @@ Sfloat      S_camera_get_aspect_ratio(const Scamera *);
  * the function.
  * @since 1.0.0
  */
-Stransform *S_camera_get_transform(const Scamera *);
+STICKY_API Stransform *S_camera_get_transform(const Scamera *);
 
 /**
  * @brief Get the perspective matrix of a camera.
@@ -240,7 +240,8 @@ Stransform *S_camera_get_transform(const Scamera *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_camera_get_perspective_matrix(const Scamera *, Smat4 *);
+STICKY_API void        S_camera_get_perspective_matrix(const Scamera *,
+                                                       Smat4 *);
 
 /**
  * @brief Get the orthographic matrix of a camera.
@@ -253,7 +254,8 @@ void        S_camera_get_perspective_matrix(const Scamera *, Smat4 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_camera_get_orthographic_matrix(const Scamera *, Smat4 *);
+STICKY_API void        S_camera_get_orthographic_matrix(const Scamera *,
+                                                        Smat4 *);
 
 /**
  * @brief Get the view matrix of a camera.
@@ -266,7 +268,7 @@ void        S_camera_get_orthographic_matrix(const Scamera *, Smat4 *);
  * is provided to the function.
  * @since 1.0.0
  */
-void        S_camera_get_view_matrix(const Scamera *, Smat4 *);
+STICKY_API void        S_camera_get_view_matrix(const Scamera *, Smat4 *);
 
 void       _S_camera_resize_hook(Scamera *);
 
