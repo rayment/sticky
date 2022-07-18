@@ -91,9 +91,12 @@ S_camera_attach(Scamera *camera,
 		camera->win->cam = NULL;
 	}
 	camera->win = window;
-	window->cam = camera;
-	if (window) /* only call the hook on a dirty camera if the window exists */
+	if (window)
+	{
+		window->cam = camera;
+		/* only call the hook on a dirty camera if the window exists */
 		_S_camera_resize_hook(camera);
+	}
 }
 
 void

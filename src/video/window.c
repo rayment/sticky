@@ -99,7 +99,9 @@ S_window_delete(Swindow *window)
 		return;
 	}
 	if (window->cam)
-		window->cam->win = NULL;
+	{
+		_S_CALL("S_camera_attach", S_camera_attach(window->cam, NULL));
+	}
 	_S_pencil_free();
 	_S_font_free();
 	SDL_GL_DeleteContext(window->context);
