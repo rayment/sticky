@@ -21,6 +21,8 @@ extern "C"
 
 #ifdef DEBUG
 
+#include <stdlib.h>
+
 #include "sticky/common/types.h"
 
 #ifdef DEBUG_TRACE
@@ -51,7 +53,7 @@ void    _S_memtrace_stack_trace(void);
 #define _S_CALL(name, call) \
 	_S_memtrace_push_stack(name, __FILE__, __LINE__); \
 	call;                                             \
-	_S_memtrace_pop_stack()
+	free(_S_memtrace_pop_stack())
 #else /* DEBUG_TRACE */
 #define _S_CALL(name, call) call
 #endif /* DEBUG_TRACE */

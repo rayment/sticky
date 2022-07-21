@@ -108,6 +108,7 @@ _S_memtrace_stack_trace(void)
 		frame = _S_memtrace_pop_stack();
 		fprintf(stderr, "  %s called from %s on line %d\n",
 		        frame->callee, frame->location, frame->line);
+		free(frame);
 	}
 }
 #endif /* DEBUG_TRACE */
