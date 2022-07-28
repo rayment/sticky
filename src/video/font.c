@@ -40,14 +40,15 @@ void
 _S_font_init(Suint8 gl_maj,
              Suint8 gl_min)
 {
+	Sint32 i;
 	if (gl_maj < 3 || (gl_maj == 3 && gl_min < 3))
 	{
 		/* cannot generate the font shader on old GL versions */
 		return;
 	}
 	init = S_TRUE;
-	if (FT_Init_FreeType(&font_library) != 0)
-		_S_error_freetype("Failed to init FreeType.");
+	if ((i = FT_Init_FreeType(&font_library)) != 0)
+		_S_error_freetype("Failed to init FreeType.", i);
 }
 
 void
@@ -226,7 +227,7 @@ _S_font_pack_texture(_Stexture_node *node,
 
 Sfont *
 S_font_load(const Schar *filename,
-            float pixel_size)
+            Sfloat pixel_size)
 {
 	Suint32 width, height, resizes;
 	Sint16 c;
@@ -235,6 +236,7 @@ S_font_load(const Schar *filename,
 	Suint32 xglyph_size, yglyph_size, xtexsize, ytexsize;
 	FT_Face face;
 	Sfont *font;
+	Sint32 i;
 
 	if (!filename || pixel_size <= 0.0f)
 	{
@@ -242,10 +244,10 @@ S_font_load(const Schar *filename,
 		return NULL;
 	}
 
-	if (FT_New_Face(font_library, filename, 0, &face) != 0)
-		_S_error_freetype("Failed to create font face.");
-	if (FT_Set_Char_Size(face, 0, 64 * pixel_size, 0, 0) != 0)
-		_S_error_freetype("Failed to set font size.");
+	if ((i = FT_New_Face(font_library, filename, 0, &face)) != 0)
+		_S_error_freetype("Failed to create font face.", i);
+	if ((i = FT_Set_Char_Size(face, 0, 64 * pixel_size, 0, 0)) != 0)
+		_S_error_freetype("Failed to set font size.", i);
 
 	font = (Sfont *) S_memory_new(sizeof(Sfont));
 	//memset(font->glyphs, 0, S_GLYPH_NUM * sizeof(_Sglyph));

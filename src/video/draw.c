@@ -377,7 +377,7 @@ S_draw_quad_2d(const Swindow *window,
 			_S_GL(glEnableVertexAttribArray(1));
 			_S_GL(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
 				                        2 * sizeof(Sfloat), (void *) 0));
-			_S_texture_attach(window->dtex, 0);
+			_S_CALL("_S_texture_attach", _S_texture_attach(window->dtex, 0));
 		}
 		_S_GL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
