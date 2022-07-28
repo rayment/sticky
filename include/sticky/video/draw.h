@@ -47,8 +47,8 @@ extern "C"
  * is provided to the function.
  * @since 1.0.0
  */
-STICKY_API void S_draw_draw_line_3d(const Swindow *,
-                                    const Svec3 *, const Svec3 *);
+STICKY_API void S_draw_line_3d(const Swindow *,
+                               const Svec3 *, const Svec3 *);
 
 /**
  * @brief Draw a point in 3D space.
@@ -64,7 +64,7 @@ STICKY_API void S_draw_draw_line_3d(const Swindow *,
  * is provided to the function.
  * @since 1.0.0
  */
-STICKY_API void S_draw_draw_point_3d(const Swindow *, const Svec3 *);
+STICKY_API void S_draw_point_3d(const Swindow *, const Svec3 *);
 
 /**
  * @brief Draw a quad in 2D space.
@@ -85,8 +85,8 @@ STICKY_API void S_draw_draw_point_3d(const Swindow *, const Svec3 *);
  * is provided to the function.
  * @since 1.0.0
  */
-STICKY_API void S_draw_draw_quad_2d(const Swindow *,
-                                    const Svec2 *, const Svec2 *);
+STICKY_API void S_draw_quad_2d(const Swindow *,
+                               const Svec2 *, const Svec2 *);
 
 /* TODO: Should this be changed to Svec2 like the others or use raw floats? */
 /**

@@ -227,9 +227,9 @@ _S_draw_free(void)
 }
 
 void
-S_draw_draw_line_3d(const Swindow *window,
-                    const Svec3 *from,
-                    const Svec3 *to)
+S_draw_line_3d(const Swindow *window,
+               const Svec3 *from,
+               const Svec3 *to)
 {
 	Smat4 projection, view, model;
 	Svec3 scale;
@@ -237,7 +237,7 @@ S_draw_draw_line_3d(const Swindow *window,
 	Sfloat dist;
 	if (!window || !from || !to)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_line");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_line_3d");
 		return;
 	}
 	if (!window->cam)
@@ -280,13 +280,13 @@ S_draw_draw_line_3d(const Swindow *window,
 }
 
 void
-S_draw_draw_point_3d(const Swindow *window,
-                     const Svec3 *point)
+S_draw_point_3d(const Swindow *window,
+                const Svec3 *point)
 {
 	Smat4 projection, view, model;
 	if (!window || !point)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_draw_point");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_point_3d");
 		return;
 	}
 	if (!window->cam)
@@ -321,16 +321,16 @@ S_draw_draw_point_3d(const Swindow *window,
 }
 
 void
-S_draw_draw_quad_2d(const Swindow *window,
-                    const Svec2 *from,
-                    const Svec2 *to)
+S_draw_quad_2d(const Swindow *window,
+               const Svec2 *from,
+               const Svec2 *to)
 {
 	Smat4 projection;
 	Sshader *quadshader;
 	Sbool b1, b2;
 	if (!window || !from || !to)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_draw_quad");
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_quad_2d");
 		return;
 	}
 	if (!window->cam)
