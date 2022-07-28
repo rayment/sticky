@@ -88,6 +88,30 @@ STICKY_API void S_draw_draw_point_3d(const Swindow *, const Svec3 *);
 STICKY_API void S_draw_draw_quad_2d(const Swindow *,
                                     const Svec2 *, const Svec2 *);
 
+/* TODO: Should this be changed to Svec2 like the others or use raw floats? */
+/**
+ * @brief Draws a text string in 2D space.
+ *
+ * Using a given font and its generated texture atlas, one quad (two triangles)
+ * per character of the font will be drawn to the screen in 2D space at a given
+ * position and at a given scale. Note that the 2D space is defined by the
+ * camera currently attached to the window.
+ *
+ * @param[in] window The window to draw to.
+ * @param[in] font The font to draw.
+ * @param[in] text The text to be drawn.
+ * @param[in] len The number of chars in @p text to be drawn.
+ * @param[in] x The @f$x@f$ position on the window at which to draw the text.
+ * @param[in] y The @f$y@f$ position on the window at which to draw the text.
+ * @param[in] scale The scale of the drawn text.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window, font or string
+ * is provided to the function.
+ * @since 1.0.0
+ */
+STICKY_API void  S_draw_text_2d(const Swindow *, const Sfont *,
+                                const Schar *, Ssize_t,
+                                float, float, float);
+
 /**
  * @brief Set the colour for future window drawing.
  *

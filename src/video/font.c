@@ -20,35 +20,10 @@
 #include "sticky/math/math.h"
 #include "sticky/math/vec2.h"
 #include "sticky/memory/allocator.h"
-#include "sticky/video/camera.h"
 #include "sticky/video/font.h"
-#include "sticky/video/shader.h"
 
 /*#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>*/
-
-#define FONT_VERTEX_SOURCE                                                  \
-"#version 330\n                                                            "\
-"in vec4 i_vertex;                                                         "\
-"out vec2 g_texcoord;                                                      "\
-"uniform mat4 u_projection;                                                "\
-"void main()                                                               "\
-"{                                                                         "\
-"	g_texcoord = i_vertex.zw;                                              "\
-"	gl_Position = u_projection * vec4(i_vertex.xy, 0.0, 1.0);              "\
-"}"
-
-#define FONT_FRAGMENT_SOURCE                                                \
-"#version 330\n                                                            "\
-"in vec2 g_texcoord;                                                       "\
-"out vec4 o_color;                                                         "\
-"uniform sampler2D u_text;                                                 "\
-"uniform vec3 u_color;                                                     "\
-"void main()                                                               "\
-"{                                                                         "\
-"	vec4 v_sample = vec4(1.0, 1.0, 1.0, texture(u_text, g_texcoord).r);    "\
-"	o_color = vec4(u_color, 1.0) * v_sample;                               "\
-"}"
 
 typedef struct _Stexture_node_s
 {
@@ -59,42 +34,27 @@ typedef struct _Stexture_node_s
 } _Stexture_node;
 
 static FT_Library font_library;
-static Sfloat font_buffer[S_GLYPH_BUFFER_SIZE*6*4];
-
-static Sshader *font_shader;
+static Sbool init;
 
 void
 _S_font_init(Suint8 gl_maj,
              Suint8 gl_min)
 {
-	Svec3 default_color;
 	if (gl_maj < 3 || (gl_maj == 3 && gl_min < 3))
 	{
 		/* cannot generate the font shader on old GL versions */
-		font_shader = NULL;
 		return;
 	}
+	init = S_TRUE;
 	if (FT_Init_FreeType(&font_library) != 0)
 		_S_error_freetype("Failed to init FreeType.");
-	/* generate shader */
-	_S_CALL("S_shader_new",
-	        font_shader = S_shader_new(FONT_VERTEX_SOURCE,
-	                                   strlen(FONT_VERTEX_SOURCE),
-	                                   FONT_FRAGMENT_SOURCE,
-	                                   strlen(FONT_FRAGMENT_SOURCE)));
-	_S_CALL("S_vec3_set", S_vec3_set(&default_color, 1.0f, 1.0f, 1.0f));
-	_S_CALL("S_shader_set_uniform_vec3",
-	        S_shader_set_uniform_vec3(font_shader, "u_color", &default_color));
 }
 
 void
 _S_font_free(void)
 {
-	if (font_shader)
-	{
+	if (init)
 		FT_Done_FreeType(font_library);
-		_S_CALL("S_shader_delete", S_shader_delete(font_shader));
-	}
 }
 
 static
@@ -354,8 +314,6 @@ S_font_load(const Schar *filename,
 
 	font->width = width;
 	font->height = height;
-	_S_CALL("S_vec3_fill", S_vec3_fill(&font->color, 1.0f));
-	font->camera = NULL;
 
 	/* generate vbo and vao */
 	_S_GL(glGenVertexArrays(1, &font->vao));
@@ -458,155 +416,5 @@ S_font_delete(Sfont *font)
 	_S_GL(glDeleteVertexArrays(1, &font->vao));
 	_S_GL(glDeleteBuffers(1, &font->vbo));
 	S_memory_delete(font);
-}
-
-void
-S_font_draw_text(const Sfont *font,
-                 const Schar *text,
-                 Ssize_t len,
-                 Sfloat x,
-                 Sfloat y,
-                 Sfloat scale)
-{
-	Schar c;
-	Ssize_t i;
-	const _Sglyph *glyph;
-	Sfloat xp, yp, w, h, offx, offy, offw, offh;
-	Sint32 tris, chars;
-	Smat4 projection;
-
-	if (!font || !text || scale <= 0.0f)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_font_draw_text");
-		return;
-	}
-
-	if (len == 0 || !font->camera)
-		return;
-
-	_S_CALL("_S_shader_attach", _S_shader_attach(font_shader));
-	_S_CALL("S_shader_set_uniform_vec3",
-	        S_shader_set_uniform_vec3(font_shader, "u_color", &font->color));
-	/* TODO: Dirty check the camera. */
-	_S_CALL("S_camera_get_orthographic_matrix",
-	        S_camera_get_orthographic_matrix(font->camera, &projection));
-	_S_CALL("S_shader_set_uniform_mat4",
-	        S_shader_set_uniform_mat4(font_shader, "u_projection",
-	                                  &projection));
-
-	_S_GL(glDisable(GL_DEPTH_TEST));
-	_S_GL(glActiveTexture(GL_TEXTURE0));
-	_S_GL(glBindTexture(GL_TEXTURE_2D, font->texture));
-	_S_GL(glBindVertexArray(font->vao));
-	_S_GL(glBindBuffer(GL_ARRAY_BUFFER, font->vbo));
-
-	tris = 0;
-	chars = 0;
-
-	while (1)
-	{
-		for (i = 0; i < len; ++i)
-		{
-			c = *(text+i);
-			glyph = font->glyphs+c-S_GLYPH_BEGIN;
-			w = glyph->size.x * scale;
-			h = glyph->size.y * scale;
-
-			xp = x + glyph->xbearing * scale;
-			yp = y - (glyph->size.y - glyph->ybearing) * scale;
-
-			x += glyph->xadvance * scale;
-			y += glyph->yadvance * scale;
-
-			if (w == 0 || h == 0)
-				continue; /* skip empty glyphs */
-
-			offx = glyph->offset.x;
-			offy = glyph->offset.y;
-			offw = glyph->size.x / font->width;
-			offh = glyph->size.y / font->height;
-
-			font_buffer[4*(tris+0)+0] = xp;
-			font_buffer[4*(tris+0)+1] = yp + h;
-			font_buffer[4*(tris+0)+2] = offx;
-			font_buffer[4*(tris+0)+3] = offy;
-			font_buffer[4*(tris+1)+0] = xp;
-			font_buffer[4*(tris+1)+1] = yp;
-			font_buffer[4*(tris+1)+2] = offx;
-			font_buffer[4*(tris+1)+3] = offy + offh;
-			font_buffer[4*(tris+2)+0] = xp + w;
-			font_buffer[4*(tris+2)+1] = yp;
-			font_buffer[4*(tris+2)+2] = offx + offw;
-			font_buffer[4*(tris+2)+3] = offy + offh;
-			font_buffer[4*(tris+3)+0] = xp;
-			font_buffer[4*(tris+3)+1] = yp + h;
-			font_buffer[4*(tris+3)+2] = offx;
-			font_buffer[4*(tris+3)+3] = offy;
-			font_buffer[4*(tris+4)+0] = xp + w;
-			font_buffer[4*(tris+4)+1] = yp;
-			font_buffer[4*(tris+4)+2] = offx + offw;
-			font_buffer[4*(tris+4)+3] = offy + offh;
-			font_buffer[4*(tris+5)+0] = xp + w;
-			font_buffer[4*(tris+5)+1] = yp + h;
-			font_buffer[4*(tris+5)+2] = offx + offw;
-			font_buffer[4*(tris+5)+3] = offy;
-
-			tris += 6;
-			++chars;
-
-			if (chars >= S_GLYPH_BUFFER_SIZE)
-			{
-				++i;
-				break;
-			}
-		}
-
-		if (tris > 0)
-		{
-			_S_GL(glBufferSubData(GL_ARRAY_BUFFER, 0,
-			                      tris * 4 * sizeof(Sfloat), font_buffer));
-			_S_GL(glDrawArrays(GL_TRIANGLES, 0, tris));
-		}
-
-		if (i >= len)
-			break;
-
-		tris = 0;
-		chars = 0;
-	}
-
-	_S_GL(glBindBuffer(GL_ARRAY_BUFFER, 0));
-	_S_GL(glBindVertexArray(0));
-	_S_GL(glBindTexture(GL_TEXTURE_2D, 0));
-	_S_GL(glEnable(GL_DEPTH_TEST));
-}
-
-void
-S_font_set_camera(Sfont *font,
-                  const Scamera *camera)
-{
-	if (!font || !camera)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_font_set_camera");
-		return;
-	}
-	font->camera = camera;
-}
-
-void
-S_font_set_color(Sfont *font,
-                 Sfloat r,
-                 Sfloat g,
-                 Sfloat b)
-{
-	if (!font)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_font_set_color");
-		return;
-	}
-	r = S_clamp(r, 0.0f, 1.0f);
-	g = S_clamp(g, 0.0f, 1.0f);
-	b = S_clamp(b, 0.0f, 1.0f);
-	_S_CALL("S_vec3_set", S_vec3_set(&font->color, r, g, b));
 }
 

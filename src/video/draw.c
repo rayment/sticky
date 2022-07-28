@@ -24,6 +24,7 @@
 #include "sticky/video/camera.h"
 #include "sticky/video/mesh.h"
 #include "sticky/video/draw.h"
+#include "sticky/video/font.h"
 #include "sticky/video/shader.h"
 
 #define DRAW_VERTEX_SOURCE                                                  \
@@ -88,6 +89,29 @@
 "	o_color = texture(u_tex, g_texcoord) * u_color;                        "\
 "}"
 
+#define FONT_VERTEX_SOURCE                                                  \
+"#version 330\n                                                            "\
+"in vec4 i_vertex;                                                         "\
+"out vec2 g_texcoord;                                                      "\
+"uniform mat4 u_projection;                                                "\
+"void main()                                                               "\
+"{                                                                         "\
+"	g_texcoord = i_vertex.zw;                                              "\
+"	gl_Position = u_projection * vec4(i_vertex.xy, 0.0, 1.0);              "\
+"}"
+
+#define FONT_FRAGMENT_SOURCE                                                \
+"#version 330\n                                                            "\
+"in vec2 g_texcoord;                                                       "\
+"out vec4 o_color;                                                         "\
+"uniform sampler2D u_text;                                                 "\
+"uniform vec4 u_color;                                                     "\
+"void main()                                                               "\
+"{                                                                         "\
+"	vec4 v_sample = vec4(1.0, 1.0, 1.0, texture(u_text, g_texcoord).r);    "\
+"	o_color = u_color * v_sample;                                          "\
+"}"
+
 #define POINT_SIZE 0.005f
 
 static
@@ -119,10 +143,11 @@ Sfloat quad_texcoords[12] =
 	0.0f, 1.0f
 };
 
-static Sshader *shader, *shader2d, *shader2dtex;
+static Sshader *shader, *shader2d, *shader2dtex, *shaderfont;
 static Smesh *line_mesh, *quad_mesh;
 static GLuint vao2d, vbo2d, vbotex2d;
 static Svec2 last2dfrom, last2dto;
+static Sfloat font_buffer[S_GLYPH_BUFFER_SIZE*6*4];
 
 void
 _S_draw_init(Suint8 gl_maj,
@@ -155,6 +180,12 @@ _S_draw_init(Suint8 gl_maj,
 	                              strlen(DRAW_VERTEX_SOURCE),
 	                              DRAW_FRAGMENT_SOURCE,
 	                              strlen(DRAW_FRAGMENT_SOURCE)));
+	_S_GL(glDisable(GL_PROGRAM_POINT_SIZE));
+	_S_CALL("S_shader_new",
+	        shaderfont = S_shader_new(FONT_VERTEX_SOURCE,
+	                                  strlen(FONT_VERTEX_SOURCE),
+	                                  FONT_FRAGMENT_SOURCE,
+	                                  strlen(FONT_FRAGMENT_SOURCE)));
 	/* generate vbos and vaos */
 	//_S_GL(glGenVertexArrays(1, &vao3d));
 	//_S_GL(glGenBuffers(1, &vbo3d));
@@ -186,6 +217,7 @@ _S_draw_free(void)
 		_S_CALL("S_shader_delete", S_shader_delete(shader));
 		_S_CALL("S_shader_delete", S_shader_delete(shader2d));
 		_S_CALL("S_shader_delete", S_shader_delete(shader2dtex));
+		_S_CALL("S_shader_delete", S_shader_delete(shaderfont));
 		_S_CALL("S_mesh_delete", S_mesh_delete(line_mesh));
 		_S_CALL("S_mesh_delete", S_mesh_delete(quad_mesh));
 		_S_GL(glDeleteBuffers(1, &vbo2d));
@@ -368,6 +400,128 @@ S_draw_draw_quad_2d(const Swindow *window,
 	_S_GL(glDisable(GL_DEPTH_TEST));
 	_S_GL(glDrawArrays(GL_TRIANGLES, 0, 6));
 	_S_GL(glBindVertexArray(0));
+	_S_GL(glEnable(GL_DEPTH_TEST));
+}
+
+void
+S_draw_text_2d(const Swindow *window,
+               const Sfont *font,
+               const Schar *text,
+               Ssize_t len,
+               Sfloat x,
+               Sfloat y,
+               Sfloat scale)
+{
+	Schar c;
+	Ssize_t i;
+	const _Sglyph *glyph;
+	Sfloat xp, yp, w, h, offx, offy, offw, offh;
+	Sint32 tris, chars;
+	Smat4 projection;
+
+	if (!window || !font || !text || scale <= 0.0f)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_text_2d");
+		return;
+	}
+
+	if (!window->cam || len == 0)
+		return;
+
+	_S_CALL("_S_shader_attach", _S_shader_attach(shaderfont));
+	_S_CALL("S_shader_set_uniform_vec4",
+	        S_shader_set_uniform_vec4(shaderfont, "u_color", &window->dcolor));
+	/* TODO: Dirty check the camera. */
+	_S_CALL("S_camera_get_orthographic_matrix",
+	        S_camera_get_orthographic_matrix(window->cam, &projection));
+	_S_CALL("S_shader_set_uniform_mat4",
+	        S_shader_set_uniform_mat4(shaderfont, "u_projection",
+	                                  &projection));
+
+	_S_GL(glDisable(GL_DEPTH_TEST));
+	_S_GL(glActiveTexture(GL_TEXTURE0));
+	_S_GL(glBindTexture(GL_TEXTURE_2D, font->texture));
+	_S_GL(glBindVertexArray(font->vao));
+	_S_GL(glBindBuffer(GL_ARRAY_BUFFER, font->vbo));
+
+	tris = 0;
+	chars = 0;
+
+	while (1)
+	{
+		for (i = 0; i < len; ++i)
+		{
+			c = *(text+i);
+			glyph = font->glyphs+c-S_GLYPH_BEGIN;
+			w = glyph->size.x * scale;
+			h = glyph->size.y * scale;
+
+			xp = x + glyph->xbearing * scale;
+			yp = y - (glyph->size.y - glyph->ybearing) * scale;
+
+			x += glyph->xadvance * scale;
+			y += glyph->yadvance * scale;
+
+			if (w == 0 || h == 0)
+				continue; /* skip empty glyphs */
+
+			offx = glyph->offset.x;
+			offy = glyph->offset.y;
+			offw = glyph->size.x / font->width;
+			offh = glyph->size.y / font->height;
+
+			font_buffer[4*(tris+0)+0] = xp;
+			font_buffer[4*(tris+0)+1] = yp + h;
+			font_buffer[4*(tris+0)+2] = offx;
+			font_buffer[4*(tris+0)+3] = offy;
+			font_buffer[4*(tris+1)+0] = xp;
+			font_buffer[4*(tris+1)+1] = yp;
+			font_buffer[4*(tris+1)+2] = offx;
+			font_buffer[4*(tris+1)+3] = offy + offh;
+			font_buffer[4*(tris+2)+0] = xp + w;
+			font_buffer[4*(tris+2)+1] = yp;
+			font_buffer[4*(tris+2)+2] = offx + offw;
+			font_buffer[4*(tris+2)+3] = offy + offh;
+			font_buffer[4*(tris+3)+0] = xp;
+			font_buffer[4*(tris+3)+1] = yp + h;
+			font_buffer[4*(tris+3)+2] = offx;
+			font_buffer[4*(tris+3)+3] = offy;
+			font_buffer[4*(tris+4)+0] = xp + w;
+			font_buffer[4*(tris+4)+1] = yp;
+			font_buffer[4*(tris+4)+2] = offx + offw;
+			font_buffer[4*(tris+4)+3] = offy + offh;
+			font_buffer[4*(tris+5)+0] = xp + w;
+			font_buffer[4*(tris+5)+1] = yp + h;
+			font_buffer[4*(tris+5)+2] = offx + offw;
+			font_buffer[4*(tris+5)+3] = offy;
+
+			tris += 6;
+			++chars;
+
+			if (chars >= S_GLYPH_BUFFER_SIZE)
+			{
+				++i;
+				break;
+			}
+		}
+
+		if (tris > 0)
+		{
+			_S_GL(glBufferSubData(GL_ARRAY_BUFFER, 0,
+			                      tris * 4 * sizeof(Sfloat), font_buffer));
+			_S_GL(glDrawArrays(GL_TRIANGLES, 0, tris));
+		}
+
+		if (i >= len)
+			break;
+
+		tris = 0;
+		chars = 0;
+	}
+
+	_S_GL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	_S_GL(glBindVertexArray(0));
+	_S_GL(glBindTexture(GL_TEXTURE_2D, 0));
 	_S_GL(glEnable(GL_DEPTH_TEST));
 }
 
