@@ -63,9 +63,9 @@
 #include "sticky/util/string.h"
 
 #include "sticky/video/camera.h"
+#include "sticky/video/draw.h"
 #include "sticky/video/font.h"
 #include "sticky/video/mesh.h"
-#include "sticky/video/pencil.h"
 #include "sticky/video/shader.h"
 #include "sticky/video/texture.h"
 #include "sticky/video/window.h"

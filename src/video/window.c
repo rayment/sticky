@@ -25,8 +25,8 @@
 #include "sticky/math/math.h"
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
+#include "sticky/video/draw.h"
 #include "sticky/video/font.h"
-#include "sticky/video/pencil.h"
 #include "sticky/video/texture.h"
 #include "sticky/video/window.h"
 
@@ -82,6 +82,11 @@ S_window_new(void)
 	window->next_tick = 0;
 	window->ticks = 0;
 
+	window->dshader = NULL;
+	window->dtex = NULL;
+	_S_CALL("S_vec4_fill", S_vec4_fill(&window->dcolor, 1.0f));
+	_S_CALL("S_transform_new", window->dtrans = S_transform_new());
+
 	window->on_exit = NULL;
 	window->on_resize = NULL;
 
@@ -102,8 +107,9 @@ S_window_delete(Swindow *window)
 	{
 		_S_CALL("S_camera_attach", S_camera_attach(window->cam, NULL));
 	}
-	_S_pencil_free();
-	_S_font_free();
+	_S_CALL("S_transform_delete", S_transform_delete(window->dtrans));
+	_S_CALL("_S_font_free", _S_font_free());
+	_S_CALL("_S_draw_free", _S_draw_free());
 	SDL_GL_DeleteContext(window->context);
 	SDL_DestroyWindow(window->window);
 	S_memory_delete(window);
@@ -192,10 +198,10 @@ S_window_apply(Swindow *window)
 			_S_error_glew("S_sticky_init", glew);
 		/* other init that requires GL */
 		_S_CALL("_S_texture_init", _S_texture_init());
+		_S_CALL("_S_draw_init",
+		        _S_draw_init(window->gl_major, window->gl_minor));
 		_S_CALL("_S_font_init",
 		        _S_font_init(window->gl_major, window->gl_minor));
-		_S_CALL("_S_pencil_init",
-		        _S_pencil_init(window->gl_major, window->gl_minor));
 		window->running = S_TRUE;
 	}
 	/* general settings that can be applied at any time */

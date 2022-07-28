@@ -50,13 +50,13 @@
  * @defgroup font Fonts
  * @ingroup graphics
  *
- * @brief Font and text drawing.
+ * @brief Font and text processing.
  */
 
 /**
- * @defgroup pencil Drawing primitives
+ * @defgroup draw Drawing tools
  * @ingroup graphics
  *
- * @brief Primitive pencil graphics.
+ * @brief Graphical rendering and drawing.
  */
 

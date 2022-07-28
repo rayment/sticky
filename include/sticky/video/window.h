@@ -25,8 +25,11 @@ extern "C"
 #include "sticky/concurrency/mutex.h"
 #include "sticky/concurrency/thread.h"
 #include "sticky/input/keyboard.h"
+#include "sticky/math/transform.h"
 #include "sticky/math/vec4.h"
 #include "sticky/video/camera.h"
+#include "sticky/video/shader.h"
+#include "sticky/video/texture.h"
 
 /* forward declaration */
 struct Scamera_s;
@@ -161,6 +164,7 @@ struct Scamera_s;
 typedef struct
 Swindow_s
 {
+	/* primary window data */
 	SDL_Window *window;
 	SDL_GLContext *context;
 	SDL_Surface *icon;
@@ -175,7 +179,12 @@ Swindow_s
 	Suint16 ticks, tick_limit, skip_ticks, next_tick;
 	Suint32 delta_time, current_frame, last_frame;
 	struct Scamera_s *cam;
-
+	/* draw data */
+	Sshader *dshader;
+	Svec4 dcolor;
+	Stransform *dtrans;
+	const Stexture *dtex;
+	/* callbacks */
 	void (*on_exit)(struct Swindow_s *);
 	void (*on_resize)(struct Swindow_s *);
 } Swindow;
