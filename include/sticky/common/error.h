@@ -260,17 +260,17 @@ _S_log(const Schar *location,
 	if (err == _S_LOG_ERROR)
 	{
 		out = stderr;
-		fprintf(out, "\n\x1b[1;31m%-5s\x1b[0m: %s:%d: ", type, location, line);
+		fprintf(out, "\n\x1b[1;31m%-8s\x1b[0m: %s:%d: ", type, location, line);
 	}
 	else if (err == _S_LOG_WARN)
 	{
 		out = stderr;
-		fprintf(out, "\x1b[1;33m%-5s\x1b[0m: %s:%d: ", type, location, line);
+		fprintf(out, "\x1b[1;33m%-8s\x1b[0m: %s:%d: ", type, location, line);
 	}
 	else
 	{
 		out = stdout;
-		fprintf(out, "%-5s: %s:%d: ", type, location, line);
+		fprintf(out, "%-8s: %s:%d: ", type, location, line);
 	}
 	vfprintf(out, format, va);
 	va_end(va);
@@ -430,9 +430,9 @@ _S_assert(const Schar *location,
         _S_log_vararg(_S_ERR_LOC, "DR", _S_LOG_ERROR,     \
                       "%s: %s\n", func, msg)
 
-#define _S_error_freetype(msg)                            \
+#define _S_error_freetype(msg,err)                        \
         _S_log_vararg(_S_ERR_LOC, "FT", _S_LOG_ERROR,     \
-                      "%s\n", msg)
+                      "%s (code: %d)\n", msg, err)
 
 #define _S_error_other(category,...)                      \
         _S_log_vararg(_S_ERR_LOC, category, _S_LOG_ERROR, \
@@ -447,7 +447,7 @@ _S_error_gl(const Schar *location,
 	err = glGetError();
 	if (err == GL_NO_ERROR)
 		return;
-	_S_log_vararg(location, line, "GL", _S_LOG_ERROR, "%s",
+	_S_log_vararg(location, line, "GL", _S_LOG_ERROR, "%s\n",
 	              gluErrorString(err));
 }
 
