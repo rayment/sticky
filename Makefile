@@ -66,7 +66,7 @@ SOURCES:=$(wildcard src/*.c) $(wildcard src/*/*.c)
 HEADERS:=$(shell find include/ -name '*.h') \
          $(shell find contrib/include/ -name '*.h')
 
-# OS-dependent variables
+# OS-dependant variables
 ifeq ($(OS),Windows_NT)
 	SOURCES:=$(filter-out $(wildcard src/*/**_posix.c),$(SOURCES))
 	HEADERS:=$(filter-out $(wildcard include/sticky/*/**_posix.h),$(HEADERS))
@@ -152,6 +152,9 @@ all: vardump $(OBJECTS)
 	$(CC) $(OBJECTS) $(LDFLAGS) -shared -o build/$(DYNAMIC_LIB)
 	ln -fs $(DYNAMIC_LIB) build/$(LINK_LIB)
 	echo "$(BUILD_STRING)" > build/buildinfo
+	if [ "$(DEBUG)" = 0 ]; then \
+		strip build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
+	fi
 
 vardump:
 	@echo "CFLAGS   := $(CFLAGS)"
