@@ -82,7 +82,7 @@ typedef struct Sfont_s
  * to the function, or if @p pixel_size is less than or equal to @f$0@f$.
  * @since 1.0.0
  */
-STICKY_API Sfont *S_font_load(const Schar *, float);
+STICKY_API Sfont *S_font_load(const Schar *, Sfloat);
 
 /**
  * @brief Free a font from memory.
