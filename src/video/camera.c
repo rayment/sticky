@@ -43,8 +43,7 @@ _S_camera_resize_hook(Scamera *camera)
 }
 
 Scamera *
-S_camera_new(Suint32 width,
-             Suint32 height)
+S_camera_new(void)
 {
 	Scamera *camera;
 	camera = S_memory_new(sizeof(Scamera));
@@ -52,11 +51,11 @@ S_camera_new(Suint32 width,
 	camera->near_plane = 1.0f;
 	camera->far_plane = 100.0f;
 	camera->fov = 60.0f;
-	camera->aspect = ((Sfloat) width) / ((Sfloat) height);
-	camera->width = width;
-	camera->height = height;
+	camera->aspect = 0;
+	camera->width = 0;
+	camera->height = 0;
 	camera->win = NULL;
-	_S_CALL("_S_camera_set_projection", _S_camera_set_projection(camera));
+	_S_CALL("S_mat4_identity", S_mat4_identity(&camera->perspective));
 	return camera;
 }
 

@@ -56,12 +56,10 @@ Scamera_s
  * near-plane of <c>1.0f</c>, far-plane of <c>100.0f</c> and field-of-view of
  * 60 degrees will be applied to the new camera.
  *
- * @param[in] width The width of the camera frame in pixels.
- * @param[in] height The height of the camera frame in pixels.
  * @return A new camera.
  * @since 1.0.0
  */
-STICKY_API Scamera    *S_camera_new(Suint32, Suint32);
+STICKY_API Scamera    *S_camera_new(void);
 
 /**
  * @brief Free a camera from memory.
