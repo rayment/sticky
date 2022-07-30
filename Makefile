@@ -123,7 +123,7 @@ INCLUDE:=-Iinclude/ -Icontrib/include \
          -DGL_GLEXT_PROTOTYPES
 
 LDFLAGS+=$(shell pkg-config --libs $(LIBRARIES)) -lm
-TEST_LDFLAGS+=-Lbuild/ -lsticky -Wl,-rpath=../build
+TEST_LDFLAGS+=-Lbuild/ -lsticky -Wl,-rpath,../build
 
 TEST_INCLUDE:=-Itest/
 TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
