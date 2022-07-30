@@ -123,7 +123,7 @@ INCLUDE:=-Iinclude/ -Icontrib/include \
          -DGL_GLEXT_PROTOTYPES
 
 LDFLAGS+=$(shell pkg-config --libs $(LIBRARIES)) -lm
-TEST_LDFLAGS+=build/$(STATIC_LIB)
+TEST_LDFLAGS+=-Lbuild/ -lsticky -Wl,--rpath=build
 
 TEST_INCLUDE:=-Itest/
 TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
@@ -193,7 +193,7 @@ test/%.o: test/%.c
 		$(TEST_INCLUDE) $(INCLUDE) -c $< -o $@
 
 test/%: test/%.o
-	$(LD) $< $(TEST_LDFLAGS) $(LDFLAGS) -o $@
+	$(LD) $< $(LDFLAGS) $(TEST_LDFLAGS) -o $@
 
 dist:
 	@echo "Calling \`make clean' functions to delete work prior to archival."
