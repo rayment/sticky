@@ -359,7 +359,7 @@ Smat4_s
  * @return @f$\mathrm{min}(x,y)@f$
  * @since 1.0.0
  */
-#define S_min(x,y) ((S_abs(x)>S_abs(y)&&S_sign(x))||S_abs(x)<S_abs(y))?(x):(y)
+#define S_min(x,y) ((x)<(y) ? (x) : (y))
 
 /**
  * @brief Return the smallest of two integer numbers.
@@ -381,7 +381,7 @@ Smat4_s
  * @return @f$\mathrm{max}(x,y)@f$
  * @since 1.0.0
  */
-#define S_max(x,y) ((S_abs(x)>S_abs(y)&&S_sign(x))||S_abs(x)<S_abs(y))?(y):(x)
+#define S_max(x,y) ((x)>(y) ? (x) : (y))
 
 /**
  * @brief Return the largest of two integer numbers.

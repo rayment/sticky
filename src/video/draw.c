@@ -527,10 +527,10 @@ S_draw_text_2d(const Swindow *window,
 
 void
 S_draw_set_color(Swindow *window,
-                 float r,
-                 float g,
-                 float b,
-                 float a)
+                 Sfloat r,
+                 Sfloat g,
+                 Sfloat b,
+                 Sfloat a)
 {
 	if (!window)
 	{

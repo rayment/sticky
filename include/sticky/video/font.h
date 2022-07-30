@@ -95,7 +95,37 @@ STICKY_API Sfont *S_font_load(const Schar *, Sfloat);
  * the function.
  * @since 1.0.0
  */
-STICKY_API void  S_font_delete(Sfont *);
+STICKY_API void   S_font_delete(Sfont *);
+
+/**
+ * @brief Query for the extents of a given font.
+ *
+ * This function will calculate the total width and height required to draw a
+ * given string at a given size for a given font and then return it to the user.
+ *
+ * This is useful for calculating bounds and positioning text accordingly.
+ * Note that the bounds include the ascender and descender portions of drawn
+ * text.
+ *
+ * If either @p w or @p h is equal to <c>NULL</c>, then that extent will not be
+ * returned.
+ *
+ * @param[in] font The font from which the extents are derived.
+ * @param[in] text The text from which the extents are derived.
+ * @param[in] len The number of chars in @p text.
+ * @param[in] scale The scale of the text.
+ * @param[out] xoff The x-offset extent of the text and font.
+ * @param[out] yoff The y-offset extent of the text and font.
+ * @param[out] w The width extent of the text and font.
+ * @param[out] h The height extent of the text and font.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid font, string is
+ * provided to the function, or if @p pixel_size is less than or equal to
+ * @f$0@f$.
+ * @since 1.0.0
+ */
+STICKY_API void   S_font_get_extents(const Sfont *, const Schar *, Ssize_t,
+                                     Sfloat,
+									 Sfloat *, Sfloat *, Sfloat *, Sfloat *);
 
 void _S_font_init(Suint8, Suint8);
 void _S_font_free(void);

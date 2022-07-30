@@ -420,3 +420,64 @@ S_font_delete(Sfont *font)
 	S_memory_delete(font);
 }
 
+void
+S_font_get_extents(const Sfont *font,
+                   const Schar *text,
+				   Ssize_t len,
+                   Sfloat scale,
+				   Sfloat *xoff,
+				   Sfloat *yoff,
+				   Sfloat *w,
+				   Sfloat *h)
+{
+	Schar c;
+	Ssize_t i;
+	const _Sglyph *glyph;
+	Sfloat x, y, xp, yp, gw, gh, tw, th, ox, oy;
+	Sint32 chars;
+
+	if (!font || !text || scale <= 0.0f)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_font_get_extents");
+		return;
+	}
+
+	chars = 0;
+	x = y = xp = yp = gw = gh = tw = th = 0.0f;
+	ox = oy = 99999.0f; /* big number so S_min works */
+	for (i = 0; i < len; ++i)
+	{
+		c = *(text+i);
+		glyph = font->glyphs+c-S_GLYPH_BEGIN;
+
+		gw = glyph->size.x * scale;
+		gh = S_max(glyph->size.y * scale, gh);
+
+		xp = x + glyph->xbearing * scale;
+		yp = y - (glyph->size.y - glyph->ybearing) * scale;
+
+		x += glyph->xadvance * scale;
+		y += glyph->yadvance * scale;
+
+		if (gw == 0 || gh == 0)
+			continue; /* skip empty glyphs */
+
+		ox = S_min(xp, ox);
+		oy = S_min(yp, oy);
+		tw = S_abs(xp) + S_abs(gw);
+		th = S_abs(oy) + S_abs(gh);
+
+		++chars;
+		if (chars >= S_GLYPH_BUFFER_SIZE)
+			break;
+	}
+	if (xoff)
+		*xoff = ox;
+	if (yoff)
+		*yoff = oy;
+	if (w)
+		*w = tw;
+	if (h)
+		*h = th;
+}
+

@@ -110,7 +110,7 @@ STICKY_API void S_draw_quad_2d(const Swindow *,
  */
 STICKY_API void  S_draw_text_2d(const Swindow *, const Sfont *,
                                 const Schar *, Ssize_t,
-                                float, float, float);
+                                Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Set the colour for future window drawing.
@@ -131,7 +131,7 @@ STICKY_API void  S_draw_text_2d(const Swindow *, const Sfont *,
  * the function.
  * @since 1.0.0
  */
-STICKY_API void S_draw_set_color(Swindow *, float, float, float, float);
+STICKY_API void S_draw_set_color(Swindow *, Sfloat, Sfloat, Sfloat, Sfloat);
 
 /**
  * @brief Set the texture for future window drawing.
