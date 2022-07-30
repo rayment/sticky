@@ -10,6 +10,7 @@
  * Date created : 12/02/2022
  */
 
+#include <stdlib.h>
 #include <time.h>
 
 #include "sticky.h"
@@ -45,6 +46,8 @@ S_sticky_free(void)
 	_S_CALL("_S_socket_free", _S_socket_free());
 #ifdef DEBUG
 	_S_memtrace_free();
+	if (!_S_memtrace_all_free())
+		exit(EXIT_FAILURE);
 #endif /* DEBUG */
 }
 
