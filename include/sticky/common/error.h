@@ -33,8 +33,8 @@ extern "C"
  * @{
  */
 
-extern Senum   _S_error;
-extern Schar  *_S_error_loc;
+STICKY_API extern Senum   _S_error;
+STICKY_API extern Schar  *_S_error_loc;
 /**
  * @brief A global enum that stores the current error number.
  * @hideinitializer
