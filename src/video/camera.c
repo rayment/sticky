@@ -75,7 +75,8 @@ S_camera_delete(Scamera *camera)
 
 void
 S_camera_attach(Scamera *camera,
-                Swindow *window)
+                Swindow *window,
+                Sbool resize)
 {
 	if (!camera)
 	{
@@ -93,8 +94,10 @@ S_camera_attach(Scamera *camera,
 	if (window)
 	{
 		window->cam = camera;
+		window->camresize = resize;
 		/* only call the hook on a dirty camera if the window exists */
-		_S_camera_resize_hook(camera);
+		if (resize)
+			_S_camera_resize_hook(camera);
 	}
 }
 

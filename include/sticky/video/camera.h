@@ -87,11 +87,12 @@ STICKY_API void        S_camera_delete(Scamera *);
  *
  * @param[in,out] camera The camera to attach to the window.
  * @param[in,out] window The window to attach to the camera.
+ * @param[in] resize Whether or not to auto-resize the camera on window resize.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid camera is provided to
  * the function.
  * @since 1.0.0
  */
-STICKY_API void        S_camera_attach(Scamera *, Swindow *);
+STICKY_API void        S_camera_attach(Scamera *, Swindow *, Sbool);
 
 /**
  * @brief Set the near-plane of a camera.

@@ -57,6 +57,7 @@ S_window_new(void)
 	window->context = NULL;
 	window->icon = NULL;
 	window->cam = NULL;
+	window->camresize = S_TRUE;
 	window->display_mode = S_WINDOWED;
 	window->vsync = S_FALSE;
 	window->gl_profile = S_GL_CORE;
@@ -105,7 +106,7 @@ S_window_delete(Swindow *window)
 	}
 	if (window->cam)
 	{
-		_S_CALL("S_camera_attach", S_camera_attach(window->cam, NULL));
+		_S_CALL("S_camera_attach", S_camera_attach(window->cam, NULL, S_FALSE));
 	}
 	_S_CALL("S_transform_delete", S_transform_delete(window->dtrans));
 	_S_CALL("_S_font_free", _S_font_free());
@@ -297,7 +298,7 @@ S_window_poll(Swindow *window)
 					_S_CALL("HOOK (Swindow::on_resize)",
 					        window->on_resize(window));
 				}
-				if (window->cam)
+				if (window->cam && window->camresize)
 				{
 					_S_CALL("_S_camera_resize_hook",
 					        _S_camera_resize_hook(window->cam));
@@ -386,8 +387,8 @@ S_window_set_title(Swindow *window,
 
 void
 S_window_set_size(Swindow *window,
-                 Suint16 width,
-                 Suint16 height)
+                  Suint16 width,
+                  Suint16 height)
 {
 	if (!window)
 	{

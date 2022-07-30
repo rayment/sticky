@@ -179,6 +179,7 @@ Swindow_s
 	Suint16 ticks, tick_limit, skip_ticks, next_tick;
 	Suint32 delta_time, current_frame, last_frame;
 	struct Scamera_s *cam;
+	Sbool camresize;
 	/* draw data */
 	Sshader *dshader;
 	Svec4 dcolor;
