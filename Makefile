@@ -146,76 +146,99 @@ BUILD_STRING+=+openmp
 endif
 
 all: vardump $(OBJECTS)
-	mkdir -p build
-	ar -crv build/$(STATIC_LIB) $(OBJECTS)
-	ranlib build/$(STATIC_LIB)
-	$(CC) $(OBJECTS) $(LDFLAGS) -shared -o build/$(DYNAMIC_LIB)
-	ln -fs $(DYNAMIC_LIB) build/$(LINK_LIB)
-	echo "$(BUILD_STRING)" > build/buildinfo
-	if [ "$(DEBUG)" = 0 ]; then \
+	@mkdir -p build
+	@echo "Packaging objects into static library..."
+	@ar -crv build/$(STATIC_LIB) $(OBJECTS)
+	@ranlib build/$(STATIC_LIB)
+	@echo "Linking objects into dynamic library..."
+	@$(CC) $(OBJECTS) $(LDFLAGS) -shared -o build/$(DYNAMIC_LIB)
+	@ln -fs $(DYNAMIC_LIB) build/$(LINK_LIB)
+	@echo "$(BUILD_STRING)" > build/buildinfo
+	@if [ "$(DEBUG)" = 0 ]; then \
+		echo Stripping symbols from library output... \
 		strip build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
 	fi
+	@echo "Compilation finished. Check build/ for output."
 
 vardump:
-	@echo "CFLAGS   := $(CFLAGS)"
-	@echo "CPPFLAGS := $(CPPFLAGS)"
-	@echo "CXXFLAGS := $(CXXFLAGS)"
-	@echo "INCLUDE  := $(INCLUDE)"
-	@echo "LDFLAGS  := $(LDFLAGS)"
+	@echo "Makefile vars:"
+	@echo "  CFLAGS   := $(CFLAGS)"
+	@echo "  CPPFLAGS := $(CPPFLAGS)"
+	@echo "  CXXFLAGS := $(CXXFLAGS)"
+	@echo "  INCLUDE  := $(INCLUDE)"
+	@echo "  LDFLAGS  := $(LDFLAGS)"
 
 obj/%.o: src/%.c
-	mkdir -p $(shell dirname $@)
-	$(CC) $(CCFLAGS) $(CXXFLAGS) $(MAKE_CXXFLAGS) $(INCLUDE) -c $< -o $@
+	@echo Compiling src/$*.c
+	@mkdir -p $(shell dirname $@)
+	@$(CC) $(CCFLAGS) $(CXXFLAGS) $(MAKE_CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 docs:
-	doxygen Doxyfile
+	@echo "Generating docs..."
+	@doxygen Doxyfile
 
 install:
-	install -d $(PREFIX)/include/sticky
-	cp -R include/* $(PREFIX)/include/
-	find $(PREFIX)/include/sticky -type d -print0 | xargs -0 chmod 755
-	find $(PREFIX)/include/sticky -type f -print0 | xargs -0 chmod 644
-	install -d $(PREFIX)/lib
-	cp -a -f build/$(LINK_LIB) $(PREFIX)/lib
-	install build/$(DYNAMIC_LIB) $(PREFIX)/lib
-	ldconfig || true
+	@echo "Installing $(PREFIX)/include/sticky"
+	@install -d $(PREFIX)/include/sticky
+	@cp -R include/* $(PREFIX)/include/
+	@find $(PREFIX)/include/sticky -type d -print0 | xargs -0 chmod 755
+	@echo "Installing $(PREFIX)/include/sticky.h"
+	@find $(PREFIX)/include/sticky -type f -print0 | xargs -0 chmod 644
+	@install -d $(PREFIX)/lib
+	@echo "Installing $(PREFIX)/lib/$(LINK_LIB)"
+	@cp -a -f build/$(LINK_LIB) $(PREFIX)/lib
+	@echo "Installing $(PREFIX)/lib/$(DYNAMIC_LIB)"
+	@install build/$(DYNAMIC_LIB) $(PREFIX)/lib
+	@echo "Updating ldconfig cache..."
+	@ldconfig || true
 
 uninstall:
-	rm -f $(PREFIX)/lib/$(LINK_LIB)
-	rm -f $(PREFIX)/lib/$(DYNAMIC_LIB)
-	rm -rf $(PREFIX)/include/sticky
-	rm -rf $(PREFIX)/include/sticky.h
+	@echo "Uninstalling $(PREFIX)/lib/$(LINK_LIB)"
+	@rm -f $(PREFIX)/lib/$(LINK_LIB)
+	@echo "Uninstalling $(PREFIX)/lib/$(DYNAMIC_LIB)"
+	@rm -f $(PREFIX)/lib/$(DYNAMIC_LIB)
+	@echo "Uninstalling $(PREFIX)/include/sticky"
+	@rm -rf $(PREFIX)/include/sticky
+	@echo "Uninstalling $(PREFIX)/include/sticky.h"
+	@rm -rf $(PREFIX)/include/sticky.h
 
 test: $(TEST_OBJECTS) $(TEST_BINARIES)
 
 test/%.o: test/%.c
-	$(CC) -g $(CCFLAGS) $(CXXFLAGS) $(TEST_CXXFLAGS) \
+	@echo "Compiling test/$*.c"
+	@$(CC) -g $(CCFLAGS) $(CXXFLAGS) $(TEST_CXXFLAGS) \
 		$(TEST_INCLUDE) $(INCLUDE) -c $< -o $@
 
 test/%: test/%.o
-	$(LD) $< $(LDFLAGS) $(TEST_LDFLAGS) -o $@
+	@echo "Linking test/$*.o"
+	@$(LD) $< $(LDFLAGS) $(TEST_LDFLAGS) -o $@
 
 dist:
 	@echo "Calling \`make clean' functions to delete work prior to archival."
 	@echo "You have 5 seconds to cancel the clean actions with Ctrl+C."
 	@sleep 5
-	cd contrib && $(MAKE) clean && $(MAKE) purge
-	$(MAKE) clean_test
-	$(MAKE) clean_docs
-	rm -rf lib$(LIBNAME)-$(VERSION)
-	mkdir -p lib$(LIBNAME)-$(VERSION)
-	cp -R $(DISTFILES) $(DISTDIRS) lib$(LIBNAME)-$(VERSION)
-	tar -cJf lib$(LIBNAME)-$(VERSION).tar.xz lib$(LIBNAME)-$(VERSION)
-	rm -rf lib$(LIBNAME)-$(VERSION)
+	@$(MAKE) clean
+	@cd contrib && $(MAKE) clean && $(MAKE) purge
+	@$(MAKE) clean_docs
+	@echo "Packing code into archive..."
+	@rm -rf lib$(LIBNAME)-$(VERSION)
+	@mkdir -p lib$(LIBNAME)-$(VERSION)
+	@cp -R $(DISTFILES) $(DISTDIRS) lib$(LIBNAME)-$(VERSION)
+	@tar -cJf lib$(LIBNAME)-$(VERSION).tar.xz lib$(LIBNAME)-$(VERSION)
+	@rm -rf lib$(LIBNAME)-$(VERSION)
+	@echo "Archive 'lib$(LIBNAME)-$(VERSION).tar.xz' was created successfully."
 
 clean:
-	rm -rf build/ obj/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
+	@echo "Cleaning objects and test files..."
+	@rm -rf build/ obj/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
 
 clean_test:
-	rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) || true
+	@echo "Cleaning test files..."
+	@rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) || true
 
 clean_docs:
-	rm -rf docs/html || true
+	@echo "Cleaning doc files..."
+	@rm -rf docs/html || true
 
 .PHONY: all vardump dist docs install uninstall test clean clean_test
 
