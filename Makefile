@@ -76,12 +76,14 @@ ifeq ($(OS),Windows_NT)
 else
 	UNAME_S:=$(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
+		OS:=Linux
 		LIBRARIES+=openal
 		CXXFLAGS+=-Wpedantic -D_POSIX_C_SOURCE=200112L
 		LDFLAGS+=-pthread
 		ifeq ($(ENABLE_OPENMP),1)
 			CXXFLAGS+=-fopenmp -DENABLE_OPENMP=1
 		endif
+		TEST_LDFLAGS+=-Wl,-rpath,../build
 		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
 		HEADERS:=$(filter-out \
 		         $(wildcard include/sticky/*/**_win32.h),$(HEADERS))
@@ -90,6 +92,7 @@ else
 		DYNAMIC_LIB:=$(LINK_LIB).$(VERSION)
 	endif
 	ifeq ($(UNAME_S),Darwin)
+		OS:=Darwin
 		CXXFLAGS+=-Wno-deprecated-declarations -Wno-typedef-redefinition \
 		          -Wno-static-in-inline
 		LDFLAGS+=-framework OpenGL -framework OpenAL -pthread
@@ -123,7 +126,7 @@ INCLUDE:=-Iinclude/ -Icontrib/include \
          -DGL_GLEXT_PROTOTYPES
 
 LDFLAGS+=$(shell pkg-config --libs $(LIBRARIES)) -lm
-TEST_LDFLAGS+=-Lbuild/ -lsticky -Wl,-rpath,../build
+TEST_LDFLAGS+=-Lbuild/ -lsticky
 
 TEST_INCLUDE:=-Itest/
 TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
@@ -155,21 +158,29 @@ all: vardump $(OBJECTS)
 	@ln -fs $(DYNAMIC_LIB) build/$(LINK_LIB)
 	@echo "$(BUILD_STRING)" > build/buildinfo
 	@if [ "$(DEBUG)" = 0 ]; then \
-		echo Stripping symbols from library output... \
+		echo "Stripping symbols from library output..."; \
 		strip build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
 	fi
 	@echo "Compilation finished. Check build/ for output."
 
 vardump:
-	@echo "Makefile vars:"
+	@echo "Makefile vars (build):"
 	@echo "  CFLAGS   := $(CFLAGS)"
-	@echo "  CPPFLAGS := $(CPPFLAGS)"
 	@echo "  CXXFLAGS := $(CXXFLAGS)"
 	@echo "  INCLUDE  := $(INCLUDE)"
 	@echo "  LDFLAGS  := $(LDFLAGS)"
 
+test_vardump:
+	@echo "Makefile vars (test):"
+	@echo "  CFLAGS   := $(CFLAGS)"
+	@echo "  CXXFLAGS := $(CXXFLAGS)"
+	@echo "  INCLUDE  := $(INCLUDE)"
+	@echo "  LDFLAGS  := $(LDFLAGS)"
+	@echo "  TEST_CXXFLAGS := $(TEST_CXXFLAGS)"
+	@echo "  TEST_LDFLAGS  := $(TEST_LDFLAGS)"
+
 obj/%.o: src/%.c
-	@echo Compiling src/$*.c
+	@echo "Compiling src/$*.c"
 	@mkdir -p $(shell dirname $@)
 	@$(CC) $(CCFLAGS) $(CXXFLAGS) $(MAKE_CXXFLAGS) $(INCLUDE) -c $< -o $@
 
@@ -202,7 +213,7 @@ uninstall:
 	@echo "Uninstalling $(PREFIX)/include/sticky.h"
 	@rm -rf $(PREFIX)/include/sticky.h
 
-test: $(TEST_OBJECTS) $(TEST_BINARIES)
+test: test_vardump $(TEST_OBJECTS) $(TEST_BINARIES)
 
 test/%.o: test/%.c
 	@echo "Compiling test/$*.c"
@@ -212,6 +223,11 @@ test/%.o: test/%.c
 test/%: test/%.o
 	@echo "Linking test/$*.o"
 	@$(LD) $< $(LDFLAGS) $(TEST_LDFLAGS) -o $@
+	@# macOS compiler doesn't respect rpath the same way regular *nix does
+	@if [ "$(OS)" == "Darwin" ]; then \
+		install_name_tool \
+			-change build/$(DYNAMIC_LIB) ../build/$(DYNAMIC_LIB) $@; \
+	fi
 
 dist:
 	@echo "Calling \`make clean' functions to delete work prior to archival."
@@ -240,5 +256,10 @@ clean_docs:
 	@echo "Cleaning doc files..."
 	@rm -rf docs/html || true
 
-.PHONY: all vardump dist docs install uninstall test clean clean_test
+.PHONY: all \
+        test_vardump vardump \
+        dist docs \
+        install uninstall \
+        test \
+        clean clean_test clean_docs
 
