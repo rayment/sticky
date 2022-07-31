@@ -39,7 +39,8 @@ Instructions:
     and change the 'CC' variable to the correct command.
 
 Note that if you are installing on a 32-bit operating system, you must change
-the 'ARCH' variable to 32 before compilation.
+the 'ARCH' variable to 32 before compilation. This change may be made in the
+'vars.mk' file.
 
 UNINSTALL
 ---------

@@ -5,7 +5,7 @@
 # Date created : 30/04/2021
 #
 
-include vars.mk
+include ../vars.mk
 
 HERE:=$(shell pwd)
 

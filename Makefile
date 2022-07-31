@@ -5,30 +5,17 @@
 # Date created : 29/03/2021
 #
 
-VERSION:=1.0.0
-PREFIX:=/usr/local
-DEBUG:=0
-# extra debug tracing info if DEBUG=1
-# 0 = tracing off
-# 1 = memory tracing
-# 2 = memory tracing + function calls + errors
-DEBUG_TRACE:=0
+include vars.mk
 
-# optional library-specific functionality
-
-# requires assimp
-ENABLE_ASSIMP:=1
-# requires OpenMP
-ENABLE_OPENMP:=1
-
-# ------
-# set ARCH:=32 for 32-bit builds
-export ARCH:=64
+export PREFIX?=/usr/local
+export VERSION
+export ARCH
+export DEBUG?=0
+export DEBUG_TRACE?=1
 
 export LIBNAME:=sticky
-export VERSION
 
-DISTFILES:=COPYING DOCUMENTATION INSTALL README Doxyfile Makefile \
+DISTFILES:=COPYING DOCUMENTATION INSTALL README Doxyfile Makefile vars.mk \
            sticky.sln sticky.vcxproj sticky.vcxproj.filters sticky.vcxproj.user
 DISTDIRS:=contrib docs src include test tools
 
