@@ -150,7 +150,8 @@ do                                                                             \
 {                                                                              \
 	struct _S_qsort_stack_s _q_stack[CHAR_BIT * sizeof(Ssize_t)];              \
 	struct _S_qsort_stack_s *_q_top;                                           \
-	Schar *_q_carr, *_q_lo, *_q_hi, *a, *b;                                    \
+	Schar *_q_carr, *_q_lo, *_q_hi, *_q_pivot, *_q_i, *_q_j, *a, *b, *mid;     \
+	Ssize_t _q_ls, _q_rs;                                                      \
                                                                                \
 	_q_carr = (Schar *) arr;                                                   \
                                                                                \
@@ -165,7 +166,7 @@ do                                                                             \
 	{                                                                          \
 		_S_QSORT_POP(_q_lo, _q_hi);                                            \
 		/* median code */                                                      \
-		Schar *mid = _q_lo + size*((_q_hi-_q_lo)/size>> 1);                    \
+		mid = _q_lo + size*((_q_hi-_q_lo)/size>> 1);                           \
 		a = mid;                                                               \
 		b = _q_lo;                                                             \
 		if ((cmp) < 0)                                                         \
@@ -176,10 +177,10 @@ do                                                                             \
 		b = mid;                                                               \
 		if ((cmp) >= 0) /* flipped from < to optimise out an assignment */     \
 			_S_QSORT_SWAP(mid, _q_hi, size);                                   \
-		Schar *_q_pivot = _q_hi;                                               \
+		_q_pivot = _q_hi;                                                      \
 		/* partition code */                                                   \
-		Schar *_q_i = _q_lo-size;                                              \
-		for (Schar *_q_j = _q_lo; _q_j <= _q_hi-size; _q_j += size)            \
+		_q_i = _q_lo-size;                                                     \
+		for (_q_j = _q_lo; _q_j <= _q_hi-size; _q_j += size)                   \
 		{                                                                      \
 			a = _q_j;                                                          \
 			b = _q_pivot;                                                      \
@@ -192,13 +193,12 @@ do                                                                             \
 		_q_i += size;                                                          \
 		_S_QSORT_SWAP(_q_i, _q_hi, size);                                      \
 		/* push or insertion sort code */                                      \
-		Ssize_t ls, rs;                                                        \
-		ls = _S_QSORT_PART_SIZE(_q_lo, _q_i-size, size);                       \
-		rs = _S_QSORT_PART_SIZE(_q_i+size, _q_hi, size);                       \
-		if (ls > _S_QSORT_THRESH && rs > _S_QSORT_THRESH)                      \
+		_q_ls = _S_QSORT_PART_SIZE(_q_lo, _q_i-size, size);                    \
+		_q_rs = _S_QSORT_PART_SIZE(_q_i+size, _q_hi, size);                    \
+		if (_q_ls > _S_QSORT_THRESH && _q_rs > _S_QSORT_THRESH)                \
 		{                                                                      \
 			/* store largest partitions first to avoid overflowing the stack */\
-			if (ls >= rs)                                                      \
+			if (_q_ls >= _q_rs)                                                \
 			{                                                                  \
 				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
 				_S_QSORT_PUSH(_q_i+size, _q_hi);                               \
@@ -209,21 +209,21 @@ do                                                                             \
 				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
 			}                                                                  \
 		}                                                                      \
-		else if (ls > 0 || rs > 0)                                             \
+		else if (_q_ls > 0 || _q_rs > 0)                                       \
 		{                                                                      \
-			if (ls > 0 && ls <= _S_QSORT_THRESH)                               \
+			if (_q_ls > 0 && _q_ls <= _S_QSORT_THRESH)                         \
 			{                                                                  \
-				_S_isort_inline_body(_q_lo, ls, size, (cmp));                  \
+				_S_isort_inline_body(_q_lo, _q_ls, size, (cmp));               \
 			}                                                                  \
-			else if (ls > 0)                                                   \
+			else if (_q_ls > 0)                                                \
 			{                                                                  \
 				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
 			}                                                                  \
-			if (rs > 0 && rs <= _S_QSORT_THRESH)                               \
+			if (_q_rs > 0 && _q_rs <= _S_QSORT_THRESH)                         \
 			{                                                                  \
-				_S_isort_inline_body(_q_i+size, rs, size, (cmp));              \
+				_S_isort_inline_body(_q_i+size, _q_rs, size, (cmp));           \
 			}                                                                  \
-			else if (rs > 0)                                                   \
+			else if (_q_rs > 0)                                                \
 			{                                                                  \
 				_S_QSORT_PUSH(_q_i+size, _q_hi);                               \
 			}                                                                  \
