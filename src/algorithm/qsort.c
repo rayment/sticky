@@ -19,6 +19,16 @@ S_qsort(void *arr,
         Ssize_t size,
         Scomparator_func cmp)
 {
+	if (arr == NULL || size <= 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_qsort");
+		return;
+	}
+	else if (elems <= 0)
+	{
+		_S_SET_ERROR(S_INVALID_OPERATION, "S_qsort");
+		return;
+	}
 	_S_qsort_inline_body(arr, elems, size, cmp(a, b));
 }
 

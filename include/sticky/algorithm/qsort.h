@@ -116,6 +116,7 @@ STICKY_API void S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func);
  * algorithm for ordering the elements.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid array or comparator,
  * or an element size of <c>0</c> is provided to the function.
+ * @exception S_INVALID_OPERATION If @p elems is equal to <c>0</c>.
  * @since 1.0.0
  */
 #define S_qsort_inline(arr, elems, size, cmp)                \
