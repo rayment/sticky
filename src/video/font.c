@@ -283,7 +283,8 @@ S_font_load(const Schar *filename,
 		glyph->ytexsize = face->glyph->bitmap.rows;
 		glyph->fail = S_FALSE;
 	}
-	S_qsort(glyphs, S_GLYPH_NUM, sizeof(_Sglyph), _S_font_comparator);
+	_S_CALL("S_qsort",
+	        S_qsort(glyphs, S_GLYPH_NUM, sizeof(_Sglyph), _S_font_comparator));
 
 	width = height = 0;
 	/* pre-pack glyph positions */
