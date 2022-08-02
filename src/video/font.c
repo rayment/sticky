@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "sticky/algorithm/qsort.h"
 #include "sticky/common/error.h"
 #include "sticky/common/includes.h"
 #include "sticky/common/types.h"
@@ -59,6 +60,7 @@ _S_font_free(void)
 }
 
 static
+inline
 int
 _S_font_comparator(const void *p1,
                    const void *p2)
@@ -281,7 +283,7 @@ S_font_load(const Schar *filename,
 		glyph->ytexsize = face->glyph->bitmap.rows;
 		glyph->fail = S_FALSE;
 	}
-	qsort(glyphs, S_GLYPH_NUM, sizeof(_Sglyph), _S_font_comparator);
+	S_qsort(glyphs, S_GLYPH_NUM, sizeof(_Sglyph), _S_font_comparator);
 
 	width = height = 0;
 	/* pre-pack glyph positions */

@@ -108,6 +108,17 @@ typedef intmax_t      Sssize_t;
  */
 typedef int8_t        Scomparator;
 /**
+ * @brief Comparison operation function type.
+ *
+ * The comparison function type takes two pointers to a given block of data and
+ * returns a comparator.
+ *
+ * Supported return values of -1, 0 and 1.
+ *
+ * @since 1.0.0
+ */
+typedef int(*Scomparator_func)(const void*, const void *);
+/**
  * @brief Enum data-type.
  *
  * Enum values in C are implemented as integer constants. This data-type should

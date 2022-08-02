@@ -1,0 +1,13 @@
+/**
+ * @defgroup algorithm Algorithms
+ *
+ * @brief Algorithms for various problems.
+ */
+
+/**
+ * @defgroup qsort Quicksort
+ * @ingroup algorithm
+ *
+ * @brief Quicksort sorting algorithm.
+ */
+
