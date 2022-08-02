@@ -22,6 +22,7 @@ extern "C"
 #include <limits.h>
 #include <stdlib.h>
 
+#include "sticky/algorithm/isort.h"
 #include "sticky/common/defines.h"
 #include "sticky/common/error.h"
 #include "sticky/common/types.h"
@@ -36,6 +37,8 @@ _S_qsort_stack_s
 {
 	void *lo, *hi;
 };
+
+#define _S_QSORT_THRESH 4
 
 #define _S_QSORT_SWAP(x,y,size)  \
 do                               \
@@ -53,14 +56,14 @@ do                               \
 } while (0)
 
 #define _S_QSORT_PUSH(low, high) \
-	top->lo = (low);             \
-	top->hi = (high);            \
-	++top
+	_q_top->lo = (low);             \
+	_q_top->hi = (high);            \
+	++_q_top
 
 #define _S_QSORT_POP(low, high)  \
-	--top;                       \
-	low = top->lo;               \
-	high = top->hi
+	--_q_top;                       \
+	low = _q_top->lo;               \
+	high = _q_top->hi
 
 #define _S_QSORT_PART_SIZE(low, high, size) (((high)-(low)+(size))/(size))
 
@@ -120,97 +123,112 @@ STICKY_API void S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func);
  * @exception S_INVALID_OPERATION If @p elems is equal to <c>0</c>.
  * @since 1.0.0
  */
-#define S_qsort_inline(arr, elems, size, cmp)                \
-do                                                           \
-{                                                            \
-	if (arr == NULL || size <= 0)                            \
-	{                                                        \
-		_S_SET_ERROR(S_INVALID_VALUE, "S_qsort_inline");     \
-		break;                                               \
-	}                                                        \
-	else if (elems <= 0)                                     \
-	{                                                        \
-		_S_SET_ERROR(S_INVALID_OPERATION, "S_qsort_inline"); \
-		break;                                               \
-	}                                                        \
-	_S_qsort_inline_body(arr, elems, size, cmp);             \
+#define S_qsort_inline(arr, elems, size, cmp)                  \
+do                                                             \
+{                                                              \
+	Schar *_q_sarr;                                            \
+	Ssize_t _q_ssize, _q_selems;                               \
+	/* prevent macro expansion more than once */               \
+	_q_sarr = (Schar *) arr;                                   \
+	_q_ssize = (size);                                         \
+	_q_selems = (elems);                                       \
+	if (_q_sarr == NULL || _q_ssize <= 0)                      \
+	{                                                          \
+		_S_SET_ERROR(S_INVALID_VALUE, "S_qsort_inline");       \
+		break;                                                 \
+	}                                                          \
+	else if (_q_selems <= 0)                                   \
+	{                                                          \
+		_S_SET_ERROR(S_INVALID_OPERATION, "S_qsort_inline");   \
+		break;                                                 \
+	}                                                          \
+	_S_qsort_inline_body(_q_sarr, _q_selems, _q_ssize, (cmp)); \
 } while (0)
 
-/*
- * TODO: Use insertion sort when PART_SIZE <= 4.
- */
 #define _S_qsort_inline_body(arr, elems, size, cmp)                            \
 do                                                                             \
 {                                                                              \
-	struct _S_qsort_stack_s stack[CHAR_BIT * sizeof(Ssize_t)];                 \
-	struct _S_qsort_stack_s *top;                                              \
-	Schar *carr, *lo, *hi, *a, *b;                                             \
+	struct _S_qsort_stack_s _q_stack[CHAR_BIT * sizeof(Ssize_t)];              \
+	struct _S_qsort_stack_s *_q_top;                                           \
+	Schar *_q_carr, *_q_lo, *_q_hi, *a, *b;                                    \
                                                                                \
-	if (elems <= 0)                                                            \
+	_q_carr = (Schar *) arr;                                                   \
+                                                                               \
+	if (elems <= 1)                                                            \
 		break;                                                                 \
                                                                                \
-	carr = (Schar *) arr;                                                      \
-	top = stack;                                                               \
-	lo = carr;                                                                 \
-	hi = carr + (elems-1)*size;                                                \
-	_S_QSORT_PUSH(lo, hi); /* OPTIMISE */                                      \
-	do                                                                         \
+	_q_top = _q_stack;                                                         \
+	_q_lo = _q_carr;                                                           \
+	_q_hi = _q_carr + (elems-1)*size;                                          \
+	_S_QSORT_PUSH(_q_lo, _q_hi);                                               \
+	while (_q_top > _q_stack)                                                  \
 	{                                                                          \
-		_S_QSORT_POP(lo, hi); /* OPTIMISE */                                   \
+		_S_QSORT_POP(_q_lo, _q_hi);                                            \
 		/* median code */                                                      \
-		Schar *mid = lo + size*((hi-lo)/size >> 1); /* prevent int overflow */ \
+		Schar *mid = _q_lo + size*((_q_hi-_q_lo)/size>> 1);                    \
 		a = mid;                                                               \
-		b = lo;                                                                \
-		if (cmp < 0)                                                           \
-			_S_QSORT_SWAP(lo, mid, size);                                      \
-		a = hi;                                                                \
-		if (cmp < 0)                                                           \
-			_S_QSORT_SWAP(lo, hi, size);                                       \
+		b = _q_lo;                                                             \
+		if ((cmp) < 0)                                                         \
+			_S_QSORT_SWAP(_q_lo, mid, size);                                   \
+		a = _q_hi;                                                             \
+		if ((cmp) < 0)                                                         \
+			_S_QSORT_SWAP(_q_lo, _q_hi, size);                                 \
 		b = mid;                                                               \
-		if (cmp >= 0) /* flipped from < to optimise out an assignment */       \
-			_S_QSORT_SWAP(mid, hi, size);                                      \
-		Schar *pivot = hi;                                                     \
+		if ((cmp) >= 0) /* flipped from < to optimise out an assignment */     \
+			_S_QSORT_SWAP(mid, _q_hi, size);                                   \
+		Schar *_q_pivot = _q_hi;                                               \
 		/* partition code */                                                   \
-		Schar *i = lo-size;                                                    \
-		for (Schar *j = lo; j <= hi-size; j += size)                           \
+		Schar *_q_i = _q_lo-size;                                              \
+		for (Schar *_q_j = _q_lo; _q_j <= _q_hi-size; _q_j += size)            \
 		{                                                                      \
-			a = j;                                                             \
-			b = pivot;                                                         \
+			a = _q_j;                                                          \
+			b = _q_pivot;                                                      \
 			if (cmp <= 0)                                                      \
 			{                                                                  \
-				i += size;                                                     \
-				_S_QSORT_SWAP(i, j, size);                                     \
+				_q_i += size;                                                  \
+				_S_QSORT_SWAP(_q_i, _q_j, size);                               \
 			}                                                                  \
 		}                                                                      \
-		i += size;                                                             \
-		/* swap code */                                                        \
-		_S_QSORT_SWAP(i, hi, size);                                            \
+		_q_i += size;                                                          \
+		_S_QSORT_SWAP(_q_i, _q_hi, size);                                      \
+		/* push or insertion sort code */                                      \
 		Ssize_t ls, rs;                                                        \
-		ls = _S_QSORT_PART_SIZE(lo, i-size, size);                             \
-		rs = _S_QSORT_PART_SIZE(i+size, hi, size);                             \
-		if (ls > 0 && rs > 0)                                                  \
+		ls = _S_QSORT_PART_SIZE(_q_lo, _q_i-size, size);                       \
+		rs = _S_QSORT_PART_SIZE(_q_i+size, _q_hi, size);                       \
+		if (ls > _S_QSORT_THRESH && rs > _S_QSORT_THRESH)                      \
 		{                                                                      \
 			/* store largest partitions first to avoid overflowing the stack */\
-			if (ls > rs)                                                       \
+			if (ls >= rs)                                                      \
 			{                                                                  \
-				_S_QSORT_PUSH(lo, i-size);                                     \
-				_S_QSORT_PUSH(i+size, hi);                                     \
+				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
+				_S_QSORT_PUSH(_q_i+size, _q_hi);                               \
 			}                                                                  \
 			else                                                               \
 			{                                                                  \
-				_S_QSORT_PUSH(i+size, hi);                                     \
-				_S_QSORT_PUSH(lo, i-size);                                     \
+				_S_QSORT_PUSH(_q_i+size, _q_hi);                               \
+				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
 			}                                                                  \
 		}                                                                      \
-		else if (ls > 0)                                                       \
+		else if (ls > 0 || rs > 0)                                             \
 		{                                                                      \
-			_S_QSORT_PUSH(lo, i-size);                                         \
+			if (ls > 0 && ls <= _S_QSORT_THRESH)                               \
+			{                                                                  \
+				_S_isort_inline_body(_q_lo, ls, size, (cmp));                  \
+			}                                                                  \
+			else if (ls > 0)                                                   \
+			{                                                                  \
+				_S_QSORT_PUSH(_q_lo, _q_i-size);                               \
+			}                                                                  \
+			if (rs > 0 && rs <= _S_QSORT_THRESH)                               \
+			{                                                                  \
+				_S_isort_inline_body(_q_i+size, rs, size, (cmp));              \
+			}                                                                  \
+			else if (rs > 0)                                                   \
+			{                                                                  \
+				_S_QSORT_PUSH(_q_i+size, _q_hi);                               \
+			}                                                                  \
 		}                                                                      \
-		else if (rs > 0)                                                       \
-		{                                                                      \
-			_S_QSORT_PUSH(i+size, hi);                                         \
-		}                                                                      \
-	} while (top > stack);                                                     \
+	}                                                                          \
 } while (0)
 
 /**

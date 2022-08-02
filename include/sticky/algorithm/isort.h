@@ -102,43 +102,53 @@ STICKY_API void S_isort(void *, Ssize_t, Ssize_t, Scomparator_func);
  * @exception S_INVALID_OPERATION If @p elems is equal to <c>0</c>.
  * @since 1.0.0
  */
-#define S_isort_inline(arr, elems, size, cmp)                \
-do                                                           \
-{                                                            \
-	if (arr == NULL || size <= 0)                            \
-	{                                                        \
-		_S_SET_ERROR(S_INVALID_VALUE, "S_isort_inline");     \
-		break;                                               \
-	}                                                        \
-	else if (elems <= 0)                                     \
-	{                                                        \
-		_S_SET_ERROR(S_INVALID_OPERATION, "S_isort_inline"); \
-		break;                                               \
-	}                                                        \
-	_S_isort_inline_body(arr, elems, size, cmp);             \
+#define S_isort_inline(arr, elems, size, cmp)                  \
+do                                                             \
+{                                                              \
+	Schar *_i_sarr;                                            \
+	Ssize_t _i_ssize, _i_selems;                               \
+	_i_sarr = (Schar *) arr;                                   \
+	_i_ssize = (size);                                         \
+	_i_selems = (elems);                                       \
+	if (_i_sarr == NULL || _i_ssize <= 0)                      \
+	{                                                          \
+		_S_SET_ERROR(S_INVALID_VALUE, "S_isort_inline");       \
+		break;                                                 \
+	}                                                          \
+	else if (_i_selems <= 0)                                   \
+	{                                                          \
+		_S_SET_ERROR(S_INVALID_OPERATION, "S_isort_inline");   \
+		break;                                                 \
+	}                                                          \
+	_S_isort_inline_body(_i_sarr, _i_selems, _i_ssize, (cmp)); \
 } while (0)
 
-#define _S_isort_inline_body(arr, elems, size, cmp)                            \
-do                                                                             \
-{                                                                              \
-	Ssize_t i, j; \
-	Schar *a, *b, *carr;  \
-	i = 1; \
-	carr = (Schar *) arr; \
-	while (i < elems) \
-	{ \
-		j = i; \
-		a = carr + (j-1)*size; \
-		b = carr + j*size; \
-		while (j > 0 && cmp > 0) \
-		{ \
-			_S_ISORT_SWAP(a, b, size); \
-			--j; \
-			a = carr + (j-1)*size; \
-			b = carr + j*size; \
-		} \
-		++i; \
-	} \
+#define _S_isort_inline_body(arr, elems, size, cmp)  \
+do                                                   \
+{                                                    \
+	Ssize_t _i_i, _i_j;                              \
+	Schar *a, *b, *_i_carr;                          \
+	                                                 \
+	_i_carr = (Schar *) arr;                         \
+	                                                 \
+	if (elems <= 1)                                  \
+		break;                                       \
+	                                                 \
+	_i_i = 1;                                        \
+	while (_i_i < elems)                             \
+	{                                                \
+		_i_j = _i_i;                                 \
+		a = _i_carr + (_i_j-1)*size;                 \
+		b = _i_carr + _i_j*size;                     \
+		while (_i_j > 0 && (cmp) > 0)                \
+		{                                            \
+			_S_ISORT_SWAP(a, b, size);               \
+			--_i_j;                                  \
+			a = _i_carr + (_i_j-1)*size;             \
+			b = _i_carr + _i_j*size;                 \
+		}                                            \
+		++_i_i;                                      \
+	}                                                \
 } while (0)
 
 /**

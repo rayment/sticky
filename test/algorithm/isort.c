@@ -13,15 +13,14 @@
 
 #include "test_common.h"
 
-/*#define NUM_INTS 1048576*/
-#define NUM_INTS 10
+#define NUM_INTS 4096
 
 void
 num_gen(Sint32 *arr)
 {
 	Sint32 i;
 	for (i = 0; i < NUM_INTS; ++i)
-		*(arr+i) = S_random_range_int32(0, 20);
+		*(arr+i) = S_random_next_int32();
 }
 
 Sbool
