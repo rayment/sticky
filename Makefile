@@ -98,6 +98,7 @@ else
 		DYNAMIC_LIB:=lib$(LIBNAME)-$(VERSION).dylib
 	endif
 endif
+export OS
 
 ifeq ($(ENABLE_ASSIMP),1)
 LIBRARIES+=assimp
@@ -150,7 +151,11 @@ all: vardump $(OBJECTS)
 	@echo "$(BUILD_STRING)" > build/buildinfo
 	@if [ "$(DEBUG)" = 0 ]; then \
 		echo "Stripping symbols from library output..."; \
-		strip --strip-unneeded build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
+		if [ "$(OS)" == "Darwin" ]; then \
+			strip -u -r -x build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
+		else \
+			strip --strip-unneeded build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
+		fi \
 	fi
 	@echo "Compilation finished. Check build/ for output."
 
