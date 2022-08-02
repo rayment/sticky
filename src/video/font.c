@@ -61,7 +61,7 @@ _S_font_free(void)
 
 static
 inline
-int
+Scomparator
 _S_font_comparator(const void *p1,
                    const void *p2)
 {
