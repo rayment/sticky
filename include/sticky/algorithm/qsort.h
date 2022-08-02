@@ -88,6 +88,7 @@ STICKY_API void S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func);
 /**
  * @brief Sort an array in sequential order using the Quicksort algorithm with
  * an inline comparator.
+ * @hideinitializer
  *
  * This macro will sort an array sequentially using a comparator that is
  * provided in place of the last argument @p cmp. Note that the entire sorting
