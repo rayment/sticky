@@ -150,7 +150,7 @@ all: vardump $(OBJECTS)
 	@echo "$(BUILD_STRING)" > build/buildinfo
 	@if [ "$(DEBUG)" = 0 ]; then \
 		echo "Stripping symbols from library output..."; \
-		strip build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
+		strip --strip-unneeded build/$(STATIC_LIB) build/$(DYNAMIC_LIB); \
 	fi
 	@echo "Compilation finished. Check build/ for output."
 
