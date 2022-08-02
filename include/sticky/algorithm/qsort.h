@@ -27,7 +27,7 @@ extern "C"
 #include "sticky/common/types.h"
 
 /**
- * @addtogroup qsort
+ * @addtogroup sort
  * @{
  */
 
@@ -68,8 +68,8 @@ do                               \
  * @brief Sort an array in sequential order using the Quicksort algorithm.
  *
  * The contents of the given array are sorted in ascending order according to
- * the output of a cmparison function <c>cmp</c> which takes in arguments two
- * <c>void *</c>, referring to two of any element in the array. The cmparison
+ * the output of a comparison function <c>cmp</c> which takes in arguments two
+ * <c>void *</c>, referring to two of any element in the array. The comparison
  * function must return <c>-1</c> if the first of two elements belongs before
  * the second element in the sequence, <c>1</c> if the second of two elements
  * belongs after the first element in the sequence, or <c>0</c> if the two
@@ -82,7 +82,7 @@ do                               \
  * @param[in,out] arr The array to sort.
  * @param[in] elems The number of elements in the array.
  * @param[in] size The size in bytes of each element in the array.
- * @param[in] cmp The cmparison function to use for ordering the elements.
+ * @param[in] cmp The comparison function to use for ordering the elements.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid array or comparator,
  * or an element size of <c>0</c> is provided to the function.
  * @exception S_INVALID_OPERATION If @p elems is equal to <c>0</c>.
@@ -104,7 +104,8 @@ STICKY_API void S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func);
  * The inline comparator must be an expression that results in either <c>-1</c>,
  * <c>0</c> or <c>1</c> by making use of the two <c>void *</c> arguments
  * <c>a</c> and <c>b</c> where <c>a</c> must come before <c>b</c> in the
- * ordered sequence.
+ * ordered sequence. It is undefined behaviour if either of the two pointers or
+ * their contents are modified.
  *
  * See {@link S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func)} for more
  * information.
@@ -112,7 +113,7 @@ STICKY_API void S_qsort(void *, Ssize_t, Ssize_t, Scomparator_func);
  * @param[in,out] arr The array to sort.
  * @param[in] elems The number of elements in the array.
  * @param[in] size The size in bytes of each element in the array.
- * @param[in] cmp The inline cmparison code to be inserted into the sorting
+ * @param[in] cmp The inline comparison code to be inserted into the sorting
  * algorithm for ordering the elements.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid array or comparator,
  * or an element size of <c>0</c> is provided to the function.
@@ -163,12 +164,10 @@ do                                                                             \
 		if (cmp < 0)                                                           \
 			_S_QSORT_SWAP(lo, mid, size);                                      \
 		a = hi;                                                                \
-		b = lo;                                                                \
 		if (cmp < 0)                                                           \
 			_S_QSORT_SWAP(lo, hi, size);                                       \
-		a = mid;                                                               \
-		b = hi;                                                                \
-		if (cmp < 0)                                                           \
+		b = mid;                                                               \
+		if (cmp >= 0) /* flipped from < to optimise out an assignment */       \
 			_S_QSORT_SWAP(mid, hi, size);                                      \
 		Schar *pivot = hi;                                                     \
 		/* partition code */                                                   \

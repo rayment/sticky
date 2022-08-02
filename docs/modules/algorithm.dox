@@ -5,9 +5,9 @@
  */
 
 /**
- * @defgroup qsort Quicksort
+ * @defgroup sort Sorting algorithms
  * @ingroup algorithm
  *
- * @brief Quicksort sorting algorithm.
+ * @brief An assortment of sorting algorithms of various uses and performance.
  */
 

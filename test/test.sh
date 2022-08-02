@@ -26,6 +26,8 @@ assert_pass() {
 	fi
 }
 
+assert_pass algorithm/isort
+assert_pass algorithm/qsort
 assert_pass collections/linkedlist
 assert_pass concurrency/mutex
 assert_pass concurrency/thread

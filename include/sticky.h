@@ -27,6 +27,7 @@
 #include "sticky/common/defines.h"
 #include "sticky/common/includes.h"
 
+#include "sticky/algorithm/isort.h"
 #include "sticky/algorithm/qsort.h"
 
 #include "sticky/audio/listener.h"
