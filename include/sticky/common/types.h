@@ -117,7 +117,7 @@ typedef int8_t        Scomparator;
  *
  * @since 1.0.0
  */
-typedef int(*Scomparator_func)(const void*, const void *);
+typedef Scomparator(*Scomparator_func)(const void*, const void *);
 /**
  * @brief Enum data-type.
  *
