@@ -24,6 +24,7 @@ extern "C"
 #include "sticky/math/transform.h"
 #include "sticky/math/vec3.h"
 #include "sticky/math/vec4.h"
+#include "sticky/util/string.h"
 #include "sticky/video/font.h"
 #include "sticky/video/window.h"
 
@@ -90,7 +91,30 @@ STICKY_API void S_draw_quad_2d(const Swindow *,
 
 /* TODO: Should this be changed to Svec2 like the others or use raw floats? */
 /**
- * @brief Draws a text string in 2D space.
+ * @brief Draws a string in 2D space.
+ *
+ * Using a given font and its generated texture atlas, one quad (two triangles)
+ * per character of the font will be drawn to the screen in 2D space at a given
+ * position and at a given scale. Note that the 2D space is defined by the
+ * camera currently attached to the window.
+ *
+ * @param[in] window The window to draw to.
+ * @param[in] font The font to draw.
+ * @param[in] str The string to be drawn.
+ * @param[in] x The @f$x@f$ position on the window at which to draw the string.
+ * @param[in] y The @f$y@f$ position on the window at which to draw the string.
+ * @param[in] scale The scale of the drawn text.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window, font or string
+ * is provided to the function.
+ * @since 1.0.0
+ */
+STICKY_API void  S_draw_string_2d(const Swindow *, const Sfont *,
+                                  const Sstring *,
+                                  Sfloat, Sfloat, Sfloat);
+
+/* TODO: Should this be changed to Svec2 like the others or use raw floats? */
+/**
+ * @brief Draws raw text in 2D space.
  *
  * Using a given font and its generated texture atlas, one quad (two triangles)
  * per character of the font will be drawn to the screen in 2D space at a given

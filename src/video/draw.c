@@ -21,6 +21,7 @@
 #include "sticky/math/vec3.h"
 #include "sticky/math/vec4.h"
 #include "sticky/memory/allocator.h"
+#include "sticky/util/string.h"
 #include "sticky/video/camera.h"
 #include "sticky/video/mesh.h"
 #include "sticky/video/draw.h"
@@ -401,6 +402,27 @@ S_draw_quad_2d(const Swindow *window,
 	_S_GL(glDrawArrays(GL_TRIANGLES, 0, 6));
 	_S_GL(glBindVertexArray(0));
 	_S_GL(glEnable(GL_DEPTH_TEST));
+}
+
+void
+S_draw_string_2d(const Swindow *window,
+                 const Sfont *font,
+				 const Sstring *str,
+                 Sfloat x,
+                 Sfloat y,
+                 Sfloat scale)
+{
+	Ssize_t len;
+	const Schar *chr;
+	if (!window || !font || !str || scale <= 0.0f)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_string_2d");
+		return;
+	}
+	_S_CALL("S_string_length", len = S_string_length(str));
+	_S_CALL("S_string_ptr", chr = S_string_ptr(str));
+	_S_CALL("S_draw_text_2d",
+	        S_draw_text_2d(window, font, chr, len, x, y, scale));
 }
 
 void
