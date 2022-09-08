@@ -548,6 +548,24 @@ S_draw_text_2d(const Swindow *window,
 }
 
 void
+S_draw_model(const Swindow *window,
+             const Smodel *model)
+{
+	if (!window || !model)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_draw_model");
+		return;
+	}
+	if (model->mesh && model->mat && model->shader && model->mat->assigned > 0)
+	{
+		/* TODO: Implement batch calls for shader, texture and mesh. */
+		_S_shader_attach(model->shader);
+		_S_material_attach(model->mat); /* TODO: Texture order. */
+		_S_mesh_draw(model->mesh, S_MESH_TRIANGLES);
+	}
+}
+
+void
 S_draw_set_color(Swindow *window,
                  Sfloat r,
                  Sfloat g,

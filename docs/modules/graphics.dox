@@ -40,10 +40,24 @@
  */
 
 /**
+ * @defgroup material Materials
+ * @ingroup graphics
+ *
+ * @brief Texture groups.
+ */
+
+/**
  * @defgroup mesh Meshes
  * @ingroup graphics
  *
- * @brief Model meshes.
+ * @brief Vertex meshes.
+ */
+
+/**
+ * @defgroup model Models
+ * @ingroup graphics
+ *
+ * @brief Hierarchical mesh, texture and shader triad.
  */
 
 /**

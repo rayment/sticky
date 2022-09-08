@@ -26,6 +26,7 @@ extern "C"
 #include "sticky/math/vec4.h"
 #include "sticky/util/string.h"
 #include "sticky/video/font.h"
+#include "sticky/video/model.h"
 #include "sticky/video/window.h"
 
 /**
@@ -135,6 +136,22 @@ STICKY_API void  S_draw_string_2d(const Swindow *, const Sfont *,
 STICKY_API void  S_draw_text_2d(const Swindow *, const Sfont *,
                                 const Schar *, Ssize_t,
                                 Sfloat, Sfloat, Sfloat);
+
+/**
+ * @brief Draws a model in 3D space.
+ *
+ * Draws a model in 3D space at its current position, rotation and scale.
+ * This will automatically make use of the combined mesh, texture and shader
+ * that are stored within the model, as well as automatically draw the child
+ * hierarchy of the model.
+ *
+ * @param[in] window The window to draw to.
+ * @param[in] model The model to draw.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid window or model is
+ * provided to the function.
+ * @since 1.0.0
+ */
+STICKY_API void  S_draw_model(const Swindow *, const Smodel *);
 
 /**
  * @brief Set the colour for future window drawing.

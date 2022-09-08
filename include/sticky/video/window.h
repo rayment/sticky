@@ -11,8 +11,8 @@
  * Date created : 11/04/2021
  */
 
-#ifndef FR_RAYMENT_WINDOW_WINDOW_H
-#define FR_RAYMENT_WINDOW_WINDOW_H 1
+#ifndef FR_RAYMENT_STICKY_WINDOW_H
+#define FR_RAYMENT_STICKY_WINDOW_H 1
 
 #ifdef __cplusplus
 extern "C"
@@ -810,5 +810,5 @@ Sbool _S_window_is_init(void);
 }
 #endif /* __cplusplus */
 
-#endif /* FR_RAYMENT_WINDOW_WINDOW_H */
+#endif /* FR_RAYMENT_STICKY_WINDOW_H */
 
