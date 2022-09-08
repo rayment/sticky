@@ -51,7 +51,7 @@ TEST_CXXFLAGS:=
 
 LIBRARIES:=glew sdl2 freetype2
 LDFLAGS:=
-TEST_LDFLAGS:=-Wl,-rpath=../build
+TEST_LDFLAGS:=
 
 SOURCES:=$(wildcard src/*.c) $(wildcard src/*/*.c)
 HEADERS:=$(shell find include/ -name '*.h') \
