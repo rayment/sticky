@@ -16,8 +16,8 @@
 #include "sticky.h"
 
 /* single definitions */
-Senum  _S_error;
-Schar *_S_error_loc;
+THREAD_LOCAL Senum  _S_error;
+THREAD_LOCAL Schar *_S_error_loc;
 
 void
 S_sticky_init(void)
@@ -25,6 +25,7 @@ S_sticky_init(void)
 	/* error handler init */
 	SERRNO = S_NO_ERROR;
 	SERRLOC = "null";
+	_S_CALL("_S_exception_env_init", _S_exception_env_init());
 	/* random number generator init */
 	_S_CALL("S_random_set_seed", S_random_set_seed(time(NULL)));
 	/* network stack */
@@ -44,6 +45,7 @@ S_sticky_free(void)
 		_S_CALL("_S_sound_free", _S_sound_free());
 	}
 	_S_CALL("_S_socket_free", _S_socket_free());
+	_S_CALL("_S_exception_env_free", _S_exception_env_free());
 #ifdef DEBUG
 	_S_memtrace_free();
 	if (!_S_memtrace_all_free())

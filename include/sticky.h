@@ -57,11 +57,13 @@
 #include "sticky/math/vec4.h"
 
 #include "sticky/memory/allocator.h"
+#include "sticky/memory/exception.h"
 #include "sticky/memory/memtrace.h"
 
 #include "sticky/net/socket.h"
 #include "sticky/net/tcp.h"
 
+#include "sticky/util/fileio.h"
 #include "sticky/util/random.h"
 #include "sticky/util/string.h"
 
