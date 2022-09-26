@@ -19,59 +19,10 @@
 #include "sticky/math/mat3.h"
 #include "sticky/math/mat4.h"
 #include "sticky/memory/allocator.h"
+#include "sticky/util/fileio.h"
 #include "sticky/video/shader.h"
 
 #define ERR_BUF_LEN 512
-
-static
-char *
-_S_shader_read_file(const Schar *filename,
-                    Sint64 *len)
-{
-	FILE *fp;
-	Sbool fail;
-	Sint64 size;
-	Schar *buf;
-
-	fail = 0;
-	size = 0;
-	buf = NULL;
-
-	if (!(fp = fopen(filename, "rb")))
-	{
-		perror("fopen");
-		return NULL; /* file is not yet open, so return immediatel y*/
-	}
-	if (fseek(fp, 0, SEEK_END) != 0)
-	{
-		perror("fseek");
-		fail = 1;
-		goto l_call_fclose;
-	}
-	if ((size = ftell(fp)) == -1L)
-	{
-		perror("ftell");
-		fail = 1;
-		goto l_call_fclose;
-	}
-	rewind(fp);
-	buf = (Schar *) S_memory_new(size + 1);
-	if (fread(buf, size, 1, fp) != 1)
-	{
-		perror("fread");
-		fail = 1;
-		goto l_call_fclose;
-	}
-l_call_fclose:
-	if (fclose(fp) == EOF)
-		perror("fclose");
-	if (!fail)
-	{
-		*len = size;
-		return buf;
-	}
-	return NULL;
-}
 
 Sshader *
 S_shader_new(const Schar *vertex_source,
@@ -150,15 +101,15 @@ S_shader_load(const Schar *vertex_file,
 		return NULL;
 	}
 
-	_S_CALL("_S_shader_read_file",
-	        vbuf = _S_shader_read_file(vertex_file, &vlen));
+	_S_CALL("S_file_read_all",
+	        vbuf = S_file_read_all(vertex_file, &vlen));
 	if (!vbuf)
 	{
 		_S_SET_ERROR(S_IO_ERROR, "S_shader_load");
 		return NULL;
 	}
-	_S_CALL("_S_shader_read_file",
-	        fbuf = _S_shader_read_file(fragment_file, &flen));
+	_S_CALL("S_file_read_all",
+	        fbuf = S_file_read_all(fragment_file, &flen));
 	if (!fbuf)
 	{
 		_S_SET_ERROR(S_IO_ERROR, "S_shader_load");

@@ -5,6 +5,13 @@
  */
 
 /**
+ * @defgroup fileio File I/O
+ * @ingroup util
+ *
+ * @brief File-based input/output operations.
+ */
+
+/**
  * @defgroup random Random numbers
  * @ingroup util
  *
