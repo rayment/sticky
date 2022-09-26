@@ -31,7 +31,7 @@ CXXFLAGS:=-Wall -Wextra -Werror --pedantic-errors \
           -fPIC -m$(ARCH) -O3 -DVERSION=\"${VERSION}\" \
           -fvisibility=hidden
 ifeq ($(DEBUG),1)
-CXXFLAGS+=-g -DDEBUG=1
+CXXFLAGS+=-fanalyzer -g -DDEBUG=1
 ifneq ($(DEBUG_TRACE),0)
 CXXFLAGS+= -DDEBUG_TRACE=$(DEBUG_TRACE)
 endif
