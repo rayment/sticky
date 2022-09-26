@@ -71,7 +71,7 @@ _S_tcp_open(Senum family)
 		_S_SET_ERROR(S_IO_ERROR, "_S_tcp_open");
 		return NULL;
 	}
-#endif
+#endif /* SO_REUSEPORT*/
 	sock = (Ssocket *) S_memory_new(sizeof(Ssocket));
 	sock->type = _S_SOCK_UNDEFINED;
 	sock->family = domain;
@@ -164,6 +164,8 @@ _S_tcp_bind(Senum family,
 		return NULL;
 	}
 	_S_CALL("_S_tcp_open", sock = _S_tcp_open(family));
+	if (!sock)
+		return NULL; /* error set in _S_tcp_open */
 	if (family == S_FAMILY_IPV4)
 	{
 		memset(&saddr4, 0, sizeof(struct sockaddr_in));
@@ -437,6 +439,8 @@ S_tcp_connect(Senum family,
 		return NULL;
 	}
 	_S_CALL("_S_tcp_open", sock = _S_tcp_open(resfamily));
+	if (!sock)
+		return NULL; /* error set in _S_tcp_open */
 	if (connect(sock->fd, resinfo->ai_addr, resinfo->ai_addrlen) == -1)
 	{
 		if (errno == ECONNREFUSED)
