@@ -66,6 +66,8 @@ ifeq ($(OS),Windows_NT)
 	DYNAMIC_LIB:=$(LIBNAME)-$(VERSION).dll
 else
 	UNAME_S:=$(shell uname -s)
+	SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
+	HEADERS:=$(filter-out $(wildcard include/sticky/*/**_win32.h),$(HEADERS))
 	ifeq ($(UNAME_S),Linux)
 		OS:=Linux
 		LIBRARIES+=openal
@@ -75,9 +77,6 @@ else
 			CXXFLAGS+=-fopenmp -DENABLE_OPENMP=1
 		endif
 		TEST_LDFLAGS+=-Wl,-rpath,../build
-		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
-		HEADERS:=$(filter-out \
-		         $(wildcard include/sticky/*/**_win32.h),$(HEADERS))
 		STATIC_LIB:=lib$(LIBNAME).a.$(VERSION)
 		LINK_LIB=lib$(LIBNAME).so
 		DYNAMIC_LIB:=$(LINK_LIB).$(VERSION)
@@ -91,8 +90,6 @@ else
 			CXXFLAGS+=-Xpreprocessor -fopenmp -DENABLE_OPENMP=1
 			LDFLAGS+=-lomp
 		endif
-		SOURCES:=$(filter-out $(wildcard src/*/**_win32.c),$(SOURCES))
-		HEADERS:=$(filter-out $(wildcard src/*/**_win32.h),$(HEADERS))
 		STATIC_LIB:=lib$(LIBNAME)-$(VERSION).a
 		LINK_LIB=lib$(LIBNAME).dylib
 		DYNAMIC_LIB:=lib$(LIBNAME)-$(VERSION).dylib
