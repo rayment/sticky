@@ -29,35 +29,48 @@ _S_shader_read_file(const Schar *filename,
                     Sint64 *len)
 {
 	FILE *fp;
+	Sbool fail;
 	Sint64 size;
 	Schar *buf;
+
+	fail = 0;
+	size = 0;
+	buf = NULL;
 
 	if (!(fp = fopen(filename, "rb")))
 	{
 		perror("fopen");
-		return NULL;
+		return NULL; /* file is not yet open, so return immediatel y*/
 	}
 	if (fseek(fp, 0, SEEK_END) != 0)
 	{
 		perror("fseek");
-		return NULL;
+		fail = 1;
+		goto l_call_fclose;
 	}
 	if ((size = ftell(fp)) == -1L)
 	{
 		perror("ftell");
-		return NULL;
+		fail = 1;
+		goto l_call_fclose;
 	}
 	rewind(fp);
 	buf = (Schar *) S_memory_new(size + 1);
 	if (fread(buf, size, 1, fp) != 1)
 	{
 		perror("fread");
-		return NULL;
+		fail = 1;
+		goto l_call_fclose;
 	}
+l_call_fclose:
 	if (fclose(fp) == EOF)
 		perror("fclose");
-	*len = size;
-	return buf;
+	if (!fail)
+	{
+		*len = size;
+		return buf;
+	}
+	return NULL;
 }
 
 Sshader *
