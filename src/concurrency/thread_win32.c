@@ -14,7 +14,6 @@
 #include "sticky/common/error.h"
 #include "sticky/concurrency/thread.h"
 #include "sticky/memory/allocator.h"
-#include "sticky/memory/exception.h"
 
 #ifndef STICKY_WINDOWS
 #error This source file cannot be compiled on non-Windows systems.
@@ -29,10 +28,7 @@ _S_thread_func_wrapper(LPVOID *arg)
 {
 	Sthread thread;
 	thread = (Sthread) arg;
-	/* create new environment for the thread */
-	_S_CALL("_S_exception_env_init", _S_exception_env_init());
 	thread->ret = thread->func(thread->arg);
-	_S_CALL("_S_exception_env_free", _S_exception_env_free());
 	return 0;
 }
 
@@ -49,8 +45,7 @@ S_thread_new(Sthread_func func,
 	thread = S_memory_new(sizeof(_Sthread_raw));
 	thread->func = func;
 	thread->arg = arg;
-	if (!(thread->handle =
-	    CreateThread(NULL, 0, _S_thread_func_wrapper, thread, 0, NULL)))
+	if (!(thread->handle = CreateThread(NULL, 0, _S_thread_func_wrapper, thread, 0, NULL)))
 	{
 		/* TODO: GetLastError */
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_new");

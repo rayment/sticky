@@ -14,7 +14,6 @@
 #include "sticky/common/error.h"
 #include "sticky/concurrency/thread.h"
 #include "sticky/memory/allocator.h"
-#include "sticky/memory/exception.h"
 
 #ifndef STICKY_POSIX
 #error This source file cannot be compiled on non-POSIX systems.
@@ -22,20 +21,6 @@
 
 #include <pthread.h>
 #include <time.h>
-
-static
-void *
-_S_thread_func_wrapper(void *arg)
-{
-	void *ret;
-	Sthread thread;
-	thread = (Sthread) arg;
-	/* create new environment for the thread */
-	_S_CALL("_S_exception_env_init", _S_exception_env_init());
-	ret = thread->func(thread->arg);
-	_S_CALL("_S_exception_env_free", _S_exception_env_free());
-	return ret;
-}
 
 Sthread
 S_thread_new(Sthread_func func,
@@ -48,10 +33,7 @@ S_thread_new(Sthread_func func,
 		return NULL;
 	}
 	thread = S_memory_new(sizeof(_Sthread_raw));
-	thread->func = func;
-	thread->arg = arg;
-	if (pthread_create(&thread->handle, NULL, _S_thread_func_wrapper, thread)
-	    != 0)
+	if (pthread_create(thread, NULL, func, arg) != 0)
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_new");
 		return NULL;
@@ -86,7 +68,7 @@ S_thread_join(Sthread thread)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_thread_join");
 		return NULL;
 	}
-	else if (pthread_join(thread->handle, &ptr) != 0)
+	else if (pthread_join(*thread, &ptr) != 0)
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_join");
 		return NULL;

@@ -35,13 +35,7 @@ _Sthread_raw_s
 #elif defined(STICKY_POSIX)
 #include <pthread.h>
 typedef void *(*Sthread_func)(void *);
-typedef struct
-_Sthread_raw_s
-{
-	pthread_t handle;
-	Sthread_func func;
-	void *arg;
-} _Sthread_raw;
+typedef pthread_t _Sthread_raw;
 #elif defined(DOXYGEN)
 /**
  * @addtogroup thread

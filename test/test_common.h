@@ -49,26 +49,26 @@ double tmptime, totaltime, besttime, worsttime, avgtime;
 	S_mutex_unlock(print_mutex)
 
 #define FAIL(x,y) if (!(x) || SERRNO != S_NO_ERROR) {                        \
-                      ATOMIC_PRINT("\r" RED "FAILURE : " RESET "%s\n", y);   \
+                      ATOMIC_PRINT("\r" RED "FAILURE: " RESET "%s\n", y);    \
                       if (SERRNO != S_NO_ERROR) {                            \
-                          ATOMIC_PRINT("\r" RED "SERRNO  : %s\n" RESET,      \
+                          ATOMIC_PRINT("\r" RED "SERRNO : %s\n" RESET,       \
                                        S_error_string());                    \
                       }                                                      \
                       exit(EXIT_FAILURE);                                    \
                   } else {                                                   \
-                      ATOMIC_PRINT("\r" GREEN "SUCCESS : " RESET "%s\n", y); \
+                      ATOMIC_PRINT("\r" GREEN "SUCCESS: " RESET "%s\n", y);  \
                   }
-#define TEST(x,y,z) ATOMIC_PRINT("TEST    : %s", z); x FAIL(y,z)
+#define TEST(x,y,z) ATOMIC_PRINT("TEST: %s", z); x FAIL(y,z)
 
 #define FAIL_RAW(x,y) if (!(x) || SERRNO != S_NO_ERROR) {                    \
-                      printf("\r" RED "FAILURE : " RESET "%s\n", y);         \
+                      printf("\r" RED "FAILURE: " RESET "%s\n", y);          \
                       if (SERRNO != S_NO_ERROR) {                            \
-                          printf("\r" RED "SERRNO  : %s\n" RESET,            \
+                          printf("\r" RED "SERRNO : %s\n" RESET,             \
                                  S_error_string());                          \
                       }                                                      \
                       exit(EXIT_FAILURE);                                    \
                   } else {                                                   \
-                      printf("\r" GREEN "SUCCESS : " RESET "%s\n", y);       \
+                      printf("\r" GREEN "SUCCESS: " RESET "%s\n", y);        \
                   }
 #define TEST_RAW(x,y,z) printf("TEST: %s", z); x FAIL_RAW(y,z)
 

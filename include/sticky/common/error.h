@@ -33,9 +33,8 @@ extern "C"
  * @{
  */
 
-STICKY_API extern THREAD_LOCAL Senum   _S_error;
-STICKY_API extern THREAD_LOCAL Schar  *_S_error_loc;
-
+STICKY_API extern Senum   _S_error;
+STICKY_API extern Schar  *_S_error_loc;
 /**
  * @brief A global enum that stores the current error number.
  * @hideinitializer
@@ -80,7 +79,6 @@ STICKY_API extern THREAD_LOCAL Schar  *_S_error_loc;
 
 #define _S_ERR_LOC __FILE__, __LINE__
 #if defined(DEBUG_TRACE) && DEBUG_TRACE > 1
-/* TODO: Dump stack trace on error. */
 #define _S_SET_ERROR(x, y)  \
 	SERRNO   = x;           \
 	SERRLOC  = y;           \
