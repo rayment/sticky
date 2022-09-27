@@ -45,10 +45,9 @@ _S_memtrace_stack_frame_s
 	Suint32 line;
 };
 
-void    _S_memtrace_push_stack(const Schar *, const Schar *, Suint32);
-struct  _S_memtrace_stack_frame_s *
-        _S_memtrace_pop_stack(void);
-void    _S_memtrace_stack_trace(void);
+STICKY_API void    _S_memtrace_push_stack(const Schar *, const Schar *, Suint32);
+STICKY_API struct  _S_memtrace_stack_frame_s *_S_memtrace_pop_stack(void);
+STICKY_API void    _S_memtrace_stack_trace(void);
 
 #define _S_CALL(name, call) \
 	_S_memtrace_push_stack(name, __FILE__, __LINE__); \

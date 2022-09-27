@@ -22,6 +22,15 @@
 #include <pthread.h>
 #include <time.h>
 
+static
+void *
+_S_thread_func_wrapper(void *arg)
+{
+	Sthread thread;
+	thread = (Sthread) arg;
+	return thread->func(thread->arg);
+}
+
 Sthread
 S_thread_new(Sthread_func func,
              void *arg)
@@ -33,7 +42,10 @@ S_thread_new(Sthread_func func,
 		return NULL;
 	}
 	thread = S_memory_new(sizeof(_Sthread_raw));
-	if (pthread_create(thread, NULL, func, arg) != 0)
+	thread->func = func;
+	thread->arg = arg;
+	if (pthread_create(&thread->handle, NULL, _S_thread_func_wrapper, thread)
+	    != 0)
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_new");
 		return NULL;
@@ -68,7 +80,7 @@ S_thread_join(Sthread thread)
 		_S_SET_ERROR(S_INVALID_VALUE, "S_thread_join");
 		return NULL;
 	}
-	else if (pthread_join(*thread, &ptr) != 0)
+	else if (pthread_join(thread->handle, &ptr) != 0)
 	{
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_join");
 		return NULL;

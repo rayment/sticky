@@ -45,7 +45,8 @@ S_thread_new(Sthread_func func,
 	thread = S_memory_new(sizeof(_Sthread_raw));
 	thread->func = func;
 	thread->arg = arg;
-	if (!(thread->handle = CreateThread(NULL, 0, _S_thread_func_wrapper, thread, 0, NULL)))
+	if (!(thread->handle =
+	    CreateThread(NULL, 0, _S_thread_func_wrapper, thread, 0, NULL)))
 	{
 		/* TODO: GetLastError */
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_thread_new");
