@@ -2,10 +2,13 @@ sticky - 3D OpenGL engine for C
 
 ---------------------------------------------------
 
-sticky is a simple 3D OpenGL engine written in C intended to reduce the
-boilerplate OpenGL code that is needed for different projects. The video,
-shader, texture, audio and models among other things are all handled by the
-engine which allows for much more rapid prototyping and program development.
+sticky is a multifaceted C library intended to reduce boilerplate code that is
+needed for different projects. sticky may also act as an OpenGL engine for 3D
+applications thanks to various video, shader, texture, audio, modelling and
+networking systems.
+
+The project is split into different modules which allows for much more rapid
+prototyping and program development.
 
 To build the documentation, read the DOCS file.
 To install sticky on a machine, read the INSTALL file.
