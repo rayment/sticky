@@ -445,6 +445,15 @@ S_font_get_extents(const Sfont *font,
 		return;
 	}
 
+	if (len == 0)
+	{
+		ox = 0.0f;
+		oy = 0.0f;
+		tw = 0.0f;
+		th = 0.0f;
+		goto l_return_values;
+	}
+
 	chars = 0;
 	x = y = xp = yp = gw = gh = tw = th = 0.0f;
 	ox = oy = 99999.0f; /* big number so S_min works */
@@ -474,6 +483,7 @@ S_font_get_extents(const Sfont *font,
 		if (chars >= S_GLYPH_BUFFER_SIZE)
 			break;
 	}
+l_return_values:
 	if (xoff)
 		*xoff = ox;
 	if (yoff)
