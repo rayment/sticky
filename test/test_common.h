@@ -36,7 +36,8 @@ double tmptime, totaltime, besttime, worsttime, avgtime;
 	(void) tmptime; (void) totaltime; (void) besttime;       \
 	(void) worsttime; (void) avgtime; (void) print_mutex;    \
 	S_sticky_init();                                         \
-	print_mutex = S_mutex_new()
+	print_mutex = S_mutex_new();                             \
+	S_debug("Seed set to: %d\n", S_random_get_seed())
 
 #define FREE()                                               \
 	S_mutex_delete(print_mutex);                             \
