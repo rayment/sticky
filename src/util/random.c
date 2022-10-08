@@ -13,7 +13,9 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "sticky/common/error.h"
 #include "sticky/common/types.h"
 #include "sticky/util/random.h"
 
@@ -108,5 +110,36 @@ S_random_next_int64(void)
 	lo = (Sint32) rand();
 	hi = (Sint32) rand();
 	return lo | ((Suint64) hi << 32);
+}
+
+/* Fisher-Yates shuffle algorithm. */
+void
+S_random_shuffle_array(void *ptr,
+                       Ssize_t nmemb,
+					   Ssize_t size)
+{
+	Ssize_t idx, i;
+	char *charptr;
+	if (!ptr || nmemb == 0 || size == 0)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_random_shuffle_array");
+		return;
+	}
+	char tmp[size];
+	charptr = (char *) ptr;
+	for (i = nmemb - 1; i > 0; --i)
+	{
+#ifdef STICKY_64BIT
+		_S_CALL("S_random_range_int64", idx = S_random_range_int64(0, i+1));
+#else /* STICKY_64BIT */
+		_S_CALL("S_random_range_int32", idx = S_random_range_int32(0, i+1));
+#endif /* STICKY_64BIT */
+		if (i != idx)
+		{
+			memcpy(tmp, charptr+(idx*size), size);
+			memcpy(charptr+(idx*size), charptr+(i*size), size);
+			memcpy(charptr+(i*size), tmp, size);
+		}
+	}
 }
 

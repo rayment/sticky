@@ -340,6 +340,20 @@ STICKY_API Sint64  S_random_next_int64(void);
 	(S_random_next_int64()%((max)-(min))+(min))
 
 /**
+ * @brief Randomly shuffle the contents of an array.
+ *
+ * Randomly shuffle the order of elements of an array.
+ *
+ * @param[in][out] ptr The array to shuffle.
+ * @param[in] nmemb The number of elements in the array to shuffle.
+ * @param[in] size The size of each element in the array in bytes.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid array is provided to
+ * the function, or if @p nmemb or @p size is equal to <c>0</c>.
+ * @since 1.0.0
+ */
+STICKY_API void    S_random_shuffle_array(void *, Ssize_t, Ssize_t);
+
+/**
  * @}
  */
 
