@@ -32,6 +32,8 @@ extern "C"
  * @return A pointer to the beginning of the text contained within the file.
  * @param[in] filename The file path to read from.
  * @param[out] len The length in bytes of the read file.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid filename string or
+ * length pointer is provided to the function.
  * @exception S_IO_ERROR If an I/O error occurs while reading the file.
  * @since 1.0.0
  */

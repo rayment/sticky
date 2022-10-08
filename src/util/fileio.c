@@ -22,6 +22,12 @@ S_file_read_all(const Schar *filename,
 	Sint64 size;
 	Schar *buf;
 
+	if (!filename || !len)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_file_read_all");
+		return NULL;
+	}
+
 	fail = 0;
 	size = 0;
 	buf = NULL;
