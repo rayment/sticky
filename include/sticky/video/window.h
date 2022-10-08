@@ -702,6 +702,8 @@ STICKY_API void     S_window_set_callback_on_resize(Swindow *,
  * that was specifically requested via.
  * {@link S_window_set_size(Swindow *, Suint16, Suint16)}.
  *
+ * If a <c>NULL</c> value is given, that field will not be filled.
+ *
  * @param[in] window The window.
  * @param[out] width The width of a given window in pixels.
  * @param[out] height The height of a given window in pixels.

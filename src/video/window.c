@@ -594,8 +594,10 @@ S_window_get_size(const Swindow *window,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_window_get_size");
 		return;
 	}
-	*width = window->width;
-	*height = window->height;
+	if (width)
+		*width = window->width;
+	if (height)
+		*height = window->height;
 }
 
 Sfloat
