@@ -64,7 +64,10 @@ jobs:
         id: cache-contrib
         uses: actions/cache@v3
         with:
-          path: ./contrib/include/ ./contrib/lib32 ./contrib/lib64
+          path: |
+            ./contrib/include/
+            ./contrib/lib32
+            ./contrib/lib64
           key: ${{ runner.os }}-contrib
       - name: Compile contrib dependencies
         if: steps.cache-contrib.outputs.cache-hit != 'true'
