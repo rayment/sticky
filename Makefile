@@ -46,7 +46,7 @@ ifneq ($(DEBUG_ANALYZE),0)
 CXXFLAGS+=-fanalyzer
 endif
 else
-CXXFLAGS+=-DNDEBUG
+CXXFLAGS+=-DNDEBUG -fomit-frame-pointer
 endif
 
 ifeq ($(SAVE_TEMPS),1)
