@@ -199,12 +199,14 @@ _S_draw_init(Suint8 gl_maj,
 
 	/* generate meshes */
 	_S_CALL("S_mesh_new",
-	        line_mesh = S_mesh_new(line_vertices, 6,
+	        line_mesh = S_mesh_new(line_vertices,
+	                               sizeof(line_vertices)/sizeof(*line_vertices),
 	                               NULL, 0,
 	                               NULL, 0,
 	                               NULL, 0));
 	_S_CALL("S_mesh_new",
-	        quad_mesh = S_mesh_new(quad_vertices, 18,
+	        quad_mesh = S_mesh_new(quad_vertices,
+	                               sizeof(quad_vertices)/sizeof(*quad_vertices),
 	                               NULL, 0,
 	                               NULL, 0,
 	                               quad_texcoords, 12));
