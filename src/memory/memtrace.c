@@ -19,7 +19,7 @@
 
 #ifdef DEBUG_TRACE
 THREAD_LOCAL struct _S_memtrace_stack_frame_s *stack_frames;
-THREAD_LOCAL struct _S_memtrace_memory_frame_s *mem_frames;
+struct _S_memtrace_memory_frame_s *mem_frames;
 static THREAD_LOCAL Ssize_t stack_depth;
 #endif /* DEBUG_TRACE */
 
