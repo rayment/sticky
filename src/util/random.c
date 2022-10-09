@@ -12,6 +12,9 @@
  */
 
 #include <limits.h>
+#ifdef STICKY_WINDOWS
+#include <malloc.h>
+#endif /* STICKY_WINDOWS */
 #include <stdlib.h>
 #include <string.h>
 
@@ -125,7 +128,14 @@ S_random_shuffle_array(void *ptr,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_random_shuffle_array");
 		return;
 	}
+#ifdef STICKY_WINDOWS
+	/* MSVC does not support VLA but we can manually use their stack allocator,
+	   which will automatically use the heap if it exceeds a certain size. */
+	char *tmp = (char *) _malloca(size);
+#else
+	/* UNIX supports VLA in C99 */
 	char tmp[size];
+#endif /* STICKY_WINDOWS */
 	charptr = (char *) ptr;
 	for (i = nmemb - 1; i > 0; --i)
 	{
@@ -141,5 +151,9 @@ S_random_shuffle_array(void *ptr,
 			memcpy(charptr+(i*size), tmp, size);
 		}
 	}
+#ifdef STICKY_WINDOWS
+	/* _malloca needs to be followed by a _freea call. */
+	_freea(tmp);
+#endif /* STICKY_WINDOWS */
 }
 

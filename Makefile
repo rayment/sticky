@@ -222,7 +222,7 @@ test/%: test/%.o
 	@echo "Linking test/$*.o"
 	@$(LD) $< $(LDFLAGS) $(TEST_LDFLAGS) -o $@
 	@# macOS compiler doesn't respect rpath the same way regular *nix does
-	@if [ "$(OS)" == "Darwin" ]; then \
+	@if [ "$(OS)" = "Darwin" ]; then \
 		install_name_tool \
 			-change build/$(DYNAMIC_LIB) ../build/$(DYNAMIC_LIB) $@; \
 	fi
