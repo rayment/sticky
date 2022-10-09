@@ -77,4 +77,31 @@ jobs:
           cd ..
       - name: Compile source
         run: msbuild /p:"Platform=Win32;Configuration=Release" sticky.vcxproj
+  build-windows-x64:
+    name: Windows build (x64)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Add nmake to PATH
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Cache contrib dependencies
+        id: cache-contrib
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./contrib/include/
+            ./contrib/lib32
+            ./contrib/lib64
+          key: ${{ runner.os }}-contrib-${{ hashFiles('vars.mk') }}
+      - name: Compile contrib dependencies
+        if: steps.cache-contrib.outputs.cache-hit != 'true'
+        run: |
+          cd contrib
+          nmake /f Makefile.win
+          cd ..
+      - name: Compile source
+        run: msbuild /p:"Platform=x64;Configuration=Release" sticky.vcxproj
 
