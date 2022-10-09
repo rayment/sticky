@@ -65,7 +65,6 @@ S_tree_clear(Stree *t)
 	t->min = NULL;
 	t->max = NULL;
 	t->len = 0;
-	/* TODO: IMPLEMENT */
 }
 
 static

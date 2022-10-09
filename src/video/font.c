@@ -252,7 +252,7 @@ S_font_load(const Schar *filename,
 		_S_error_freetype("Failed to set font size.", i);
 
 	font = (Sfont *) S_memory_new(sizeof(Sfont));
-	//memset(font->glyphs, 0, S_GLYPH_NUM * sizeof(_Sglyph));
+	/*memset(font->glyphs, 0, S_GLYPH_NUM * sizeof(_Sglyph));*/
 
 	root = (_Stexture_node *) S_memory_new(sizeof(_Stexture_node));
 	root->left = NULL;
