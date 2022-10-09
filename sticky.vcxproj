@@ -174,7 +174,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;contrib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>;VERSION="1.0.0";DEBUG=1;STICKY_64BIT=1;STICKY_ISMAKELIB=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VERSION="1.0.0";DEBUG=1;STICKY_64BIT=1;STICKY_ISMAKELIB=1</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>contrib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -185,7 +185,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Trace)|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>include;contrib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>;VERSION="1.0.0";DEBUG=1;STICKY_64BIT=1;STICKY_ISMAKELIB=1;DEBUG_TRACE=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VERSION="1.0.0";DEBUG=1;STICKY_64BIT=1;STICKY_ISMAKELIB=1;DEBUG_TRACE=1</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>contrib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

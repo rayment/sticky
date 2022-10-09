@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Change the libary version.
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 09/10/2022
+
+if [ -z "$1" ];
+then
+	echo "Usage: $0 <version>"
+	exit 1
+fi
+
+# User-defined build file.
+sed -i "s/^VERSION=.*$/VERSION=$1/g" vars.mk
+# Visual Studio project number.
+sed -i "s/ons>VERSION=\".*\";/ons>VERSION=\"$1\";/g" sticky.vcxproj
+
