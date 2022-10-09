@@ -13,4 +13,5 @@ obj
 *.out
 *.app
 *.dSYM/
+*.i
 *.o
