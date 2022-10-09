@@ -57,7 +57,11 @@
 #define PACK(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
 #define ALIGN(x,...) __VA_ARGS__ __declspec(align(x))
 #define THREAD_LOCAL __declspec(thread)
+#ifdef STICKY_ISMAKELIB /* STICKY_ISMAKELIB */
 #define STICKY_API __declspec(dllexport)
+#else /* STICKY_ISMAKELIB */
+#define STICKY_API __declspec(dllimport)
+#endif /* STICKY_ISMAKELIB */
 #else /* __GNUC__ and _MSC_VER */
 #error Unsupported compiler! Please use a GCC or MSVC compatible compiler.
 #endif /* __GNUC__ and _MSC_VER */
