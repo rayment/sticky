@@ -50,8 +50,8 @@ jobs:
       - name: Execute test suite
         run: |
           cd test && sh test.sh && cd .. && sh tools/stats
-  build-windows-x86:
-    name: Windows build (x86)
+  build-windows-win32:
+    name: Windows build (Win32)
     runs-on: windows-latest
     steps:
       - name: Checkout code
