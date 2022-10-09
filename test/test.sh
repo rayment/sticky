@@ -29,6 +29,7 @@ assert_pass() {
 assert_pass algorithm/isort
 assert_pass algorithm/qsort
 assert_pass collections/linkedlist
+assert_pass collections/tree
 assert_pass concurrency/mutex
 assert_pass concurrency/thread
 assert_pass math/math
