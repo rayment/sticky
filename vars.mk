@@ -23,6 +23,14 @@ DEBUG=0
 # 1 = memory tracing
 # 2 = memory tracing + function calls + errors
 DEBUG_TRACE=1
+# address sanitisation
+# 0 = off
+# 1 = on
+DEBUG_ASAN=1
+# static analyzer
+# 0 = off
+# 1 = on
+DEBUG_ANALYZE=1
 
 # code and library toggles - 0 = off, 1 = on
 ENABLE_ASSIMP=1
@@ -53,4 +61,5 @@ SDL2_VER=2.0.22
 OPENAL_VER=1.22.0
 GLEW_VER=2.2.0
 FREETYPE2_VER=2.12.1
+ASSIMP_VER=5.2.4
 

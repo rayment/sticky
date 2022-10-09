@@ -31,10 +31,19 @@ CCFLAGS:=--std=c99
 CXXFLAGS:=-Wall -Wextra -Werror --pedantic-errors \
           -fPIC -m$(ARCH) -O3 -DVERSION=\"${VERSION}\" \
           -fvisibility=hidden
+LDFLAGS:=
+
 ifeq ($(DEBUG),1)
-CXXFLAGS+=-fanalyzer -g -DDEBUG=1
+CXXFLAGS+=-g -DDEBUG=1
 ifneq ($(DEBUG_TRACE),0)
-CXXFLAGS+= -DDEBUG_TRACE=$(DEBUG_TRACE)
+CXXFLAGS+=-DDEBUG_TRACE=$(DEBUG_TRACE)
+endif
+ifneq ($(DEBUG_ASAN),0)
+CXXFLAGS+=-fsanitize=address
+LDFLAGS+=-fsanitize=address
+endif
+ifneq ($(DEBUG_ANALYZE),0)
+CXXFLAGS+=-fanalyzer
 endif
 else
 CXXFLAGS+=-DNDEBUG
@@ -53,10 +62,9 @@ endif
 
 MAKE_CXXFLAGS:=-DSTICKY_ISMAKELIB=1
 TEST_CXXFLAGS:=
+TEST_LDFLAGS:=
 
 LIBRARIES:=glew sdl2 freetype2
-LDFLAGS:=
-TEST_LDFLAGS:=
 
 SOURCES:=$(wildcard src/*.c) $(wildcard src/*/*.c)
 HEADERS:=$(shell find include/ -name '*.h') \
