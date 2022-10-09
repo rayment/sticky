@@ -11,3 +11,10 @@
  * @brief Doubley linked-lists with iterators.
  */
 
+/**
+ * @defgroup tree Trees
+ * @ingroup collections
+ *
+ * @brief Self-balancing binary trees with iterators.
+ */
+

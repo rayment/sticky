@@ -1,5 +1,11 @@
 /*
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
  * tree.c
+ * Self-balancing binary tree implementation.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 16/04/2022
@@ -17,6 +23,11 @@ Stree *
 S_tree_new(Stree_comparator comparator)
 {
 	Stree *t;
+	if (!comparator)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_tree_new");
+		return NULL;
+	}
 	t = (Stree *) S_memory_new(sizeof(Stree));
 	t->root = NULL;
 	t->min = NULL;
@@ -36,18 +47,6 @@ S_tree_delete(Stree *t)
 	}
 	_S_CALL("S_tree_clear", S_tree_clear(t));
 	S_memory_delete(t);
-}
-
-void
-S_tree_set_comparator(Stree *t,
-                      Stree_comparator comparator)
-{
-	if (!t || !comparator)
-	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_tree_set_comparator");
-		return;
-	}
-	t->comparator = comparator;
 }
 
 void

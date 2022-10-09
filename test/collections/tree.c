@@ -5,7 +5,7 @@
 
 /*
  * tree.c
- * Binary search tree test suite.
+ * Self-balancing binary tree test suite.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 16/04/2022
