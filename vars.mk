@@ -44,6 +44,9 @@ ENABLE_OPENMP=1
 # OTHER BUILD VARIABLES
 #
 
+# compiler and bug analysis
+SAVE_TEMPS=0
+
 # library versions to use for contrib building
 # DO NOT CHANGE IF YOU DO NOT KNOW WHAT YOU ARE DOING
 SDL2_VER=2.0.22

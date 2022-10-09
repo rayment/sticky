@@ -16,6 +16,7 @@ export VERSION
 export ARCH
 export DEBUG?=0
 export DEBUG_TRACE?=1
+export SAVE_TEMPS?=0
 
 export LIBNAME:=sticky
 
@@ -37,6 +38,10 @@ CXXFLAGS+= -DDEBUG_TRACE=$(DEBUG_TRACE)
 endif
 else
 CXXFLAGS+=-DNDEBUG
+endif
+
+ifeq ($(SAVE_TEMPS),1)
+CXXFLAGS+=-save-temps
 endif
 
 ifeq ($(ARCH),64)
