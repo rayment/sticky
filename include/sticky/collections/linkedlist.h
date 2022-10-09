@@ -309,15 +309,16 @@ STICKY_API void   *S_linkedlist_get_tail(const Slinkedlist *);
  *
  * @param[in] l The linked-list from which the search is conducted.
  * @param[in] val The element to search for within the linked-list.
- * @param[out] i A pointer within which to store the resulting index if the element
- * is found. This parameter may be <c>NULL</c>, in which case no index shall be
- * stored.
+ * @param[out] i A pointer within which to store the resulting index if the
+ * element is found. This parameter may be <c>NULL</c>, in which case no index
+ * shall be stored.
  * @return {@link S_TRUE} if the element is found, else {@link S_FALSE}.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
  * @since 1.0.0
  */
-STICKY_API Sbool   S_linkedlist_search(const Slinkedlist *, const void *, Ssize_t *);
+STICKY_API Sbool   S_linkedlist_search(const Slinkedlist *, const void *,
+                                       Ssize_t *);
 
 /**
  * @brief Get the size of a linked-list.
