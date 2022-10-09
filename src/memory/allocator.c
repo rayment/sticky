@@ -33,7 +33,7 @@ _S_memory_new(Ssize_t size,
 		return NULL;
 	}
 #ifdef DEBUG
-	/* GCC 11 complains because the meomry pointer has not been zero'ed.
+	/* GCC 11 complains because the memory pointer has not been zero'ed.
 	   Given the onus is on the user to initialize the allocated block, we can
 	   safely ignore the error and trace the new pointer. */
 #pragma GCC diagnostic push
@@ -79,10 +79,10 @@ _S_memory_delete(void *ptr,
 {
 	if (ptr)
 	{
-		free(ptr);
 #ifdef DEBUG
 		_S_memtrace_remove_frame(ptr, location, line);
 #endif /* DEBUG */
+		free(ptr);
 	}
 	else
 	{
