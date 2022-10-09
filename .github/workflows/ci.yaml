@@ -60,7 +60,14 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
       - name: Add nmake to PATH
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Cache contrib dependencies
+        id: cache-contrib
+        uses: actions/cache@v3
+        with:
+          path: contrib/include contrib/build
+          key: ${{ runner.os }}-contrib
       - name: Compile contrib dependencies
+        if: steps.cache-contrib.outputs.cache-hit != 'true'
         run: |
           cd contrib
           nmake /f Makefile.win
