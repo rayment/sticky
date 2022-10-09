@@ -18,9 +18,9 @@
 #define MEMTRACE S_COLOR_BOLD S_COLOR_YELLOW "memtrace" S_COLOR_RESET ": "
 
 #ifdef DEBUG_TRACE
-struct _S_memtrace_stack_frame_s *stack_frames;
-struct _S_memtrace_memory_frame_s *mem_frames;
-static Ssize_t stack_depth;
+THREAD_LOCAL struct _S_memtrace_stack_frame_s *stack_frames;
+THREAD_LOCAL struct _S_memtrace_memory_frame_s *mem_frames;
+static THREAD_LOCAL Ssize_t stack_depth;
 #endif /* DEBUG_TRACE */
 
 static Ssize_t num_allocated_bytes, num_allocations, num_resizes, num_frees;
