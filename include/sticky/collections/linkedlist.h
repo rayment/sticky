@@ -126,7 +126,7 @@ STICKY_API void    S_linkedlist_delete(Slinkedlist *);
  * occupying the same index will be shifted forwards by one position.
  *
  * @param[in,out] l The linked-list to which the element should be added.
- * @param[in] val The element to add to the linked-list
+ * @param[in] val The element to add to the linked-list.
  * @param[in] i The index within the linked-list that the element should be
  * added to.
  * @return @p val if the addition was successful, or <c>NULL</c> otherwise.
@@ -149,7 +149,7 @@ STICKY_API void   *S_linkedlist_add(Slinkedlist *, void *, Ssize_t);
  * value.
  *
  * @param[in,out] l The linked-list to which the element should be added.
- * @param[in] val The element to add to the linked-list
+ * @param[in] val The element to add to the linked-list.
  * @return @p val if the addition was successful, or <c>NULL</c> otherwise.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
@@ -161,7 +161,7 @@ STICKY_API void   *S_linkedlist_add_head(Slinkedlist *, void *);
  * @brief Add an element to the end of a linked-list.
  *
  * @param[in,out] l The linked-list to which the element should be added.
- * @param[in] val The element to add to the linked-list
+ * @param[in] val The element to add to the linked-list.
  * @return @p val if the addition was successful, or <c>NULL</c> otherwise.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
@@ -269,7 +269,7 @@ STICKY_API void    S_linkedlist_clear(Slinkedlist *);
  * @param[in,out] l The linked-list from which the element should be retrieved.
  * @param[in] i The index within the linked-list that the element should be
  * retrieved from.
- * @return @p The requested element if the retrieval was successful, or
+ * @return The requested element if the retrieval was successful, or
  * <c>NULL</c> otherwise.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
@@ -282,8 +282,10 @@ STICKY_API void   *S_linkedlist_get(Slinkedlist *, Ssize_t);
 /**
  * @brief Get the first element from a linked-list and return it.
  *
+ * If the linked-list is empty, <c>NULL</c> is returned.
+ *
  * @param[in,out] l The linked-list from which the element should be retrieved.
- * @return @p The requested element if the retrieval was successful, or
+ * @return The requested element if the retrieval was successful, or
  * <c>NULL</c> otherwise.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
@@ -294,8 +296,10 @@ STICKY_API void   *S_linkedlist_get_head(const Slinkedlist *);
 /**
  * @brief Get the last element from a linked-list and return it.
  *
+ * If the linked-list is empty, <c>NULL</c> is returned.
+ *
  * @param[in,out] l The linked-list from which the element should be retrieved.
- * @return @p The requested element if the retrieval was successful, or
+ * @return The requested element if the retrieval was successful, or
  * <c>NULL</c> otherwise.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid linked-list is
  * provided to the function.
@@ -307,7 +311,10 @@ STICKY_API void   *S_linkedlist_get_tail(const Slinkedlist *);
  * @brief Search a linked-list for an element and store the index it is found
  * in.
  *
- * @param[in] l The linked-list from which the search is conducted.
+ * Searches within a linked-list for a given element, and if found, the index of
+ * the element within the list may be set.
+ *
+ * @param[in] l The linked-list in which the search is conducted.
  * @param[in] val The element to search for within the linked-list.
  * @param[out] i A pointer within which to store the resulting index if the
  * element is found. This parameter may be <c>NULL</c>, in which case no index
@@ -402,7 +409,7 @@ STICKY_API void   *S_linkedlist_iter_prev(Slinkedlist_iter **);
  * @brief Check whether or not a list iterator has a following element or not.
  *
  * @param[in] i The iterator to check
- * @return {@link S_TRUE} if an iterator has more elements in front of it, or
+ * @return {@link S_TRUE} if an iterator has more elements ahead of it, or
  * {@link S_FALSE} otherwise.
  * @since 1.0.0
  */

@@ -344,7 +344,7 @@ STICKY_API Sint64  S_random_next_int64(void);
  *
  * Randomly shuffle the order of elements of an array.
  *
- * @param[in][out] ptr The array to shuffle.
+ * @param[in,out] ptr The array to shuffle.
  * @param[in] nmemb The number of elements in the array to shuffle.
  * @param[in] size The size of each element in the array in bytes.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid array is provided to
