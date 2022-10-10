@@ -18,9 +18,12 @@
 #define MEMTRACE S_COLOR_BOLD S_COLOR_YELLOW "memtrace" S_COLOR_RESET ": "
 
 #ifdef DEBUG_TRACE
-THREAD_LOCAL struct _S_memtrace_stack_frame_s *stack_frames;
+#include "sticky/concurrency/mutex.h"
+
+struct _S_memtrace_stack_frame_s *stack_frames;
 struct _S_memtrace_memory_frame_s *mem_frames;
-static THREAD_LOCAL Ssize_t stack_depth;
+static Ssize_t stack_depth;
+static Smutex trace_lock;
 #endif /* DEBUG_TRACE */
 
 static Ssize_t num_allocated_bytes, num_allocations, num_resizes, num_frees;
@@ -36,6 +39,7 @@ _S_memtrace_init(void)
 	stack_depth = 0;
 	stack_frames = NULL;
 	mem_frames = NULL;
+	trace_lock = _S_mutex_new(S_FALSE);
 #endif /* DEBUG_TRACE */
 }
 
@@ -47,7 +51,8 @@ _S_memtrace_push_stack(const Schar *callee,
 {
 	struct _S_memtrace_stack_frame_s *frame;
 
-#if defined(DEBUG_TRACE) && DEBUG_TRACE > 1
+	S_mutex_lock(trace_lock);
+#if DEBUG_TRACE > 1
 	fprintf(stderr, MEMTRACE "%s called at %s:%d\n",
 	        callee, location, line);
 #endif /* DEBUG_TRACE > 1 */
@@ -69,6 +74,7 @@ _S_memtrace_push_stack(const Schar *callee,
 		frame->next = stack_frames;
 		stack_frames = frame;
 	}
+	S_mutex_unlock(trace_lock);
 }
 
 struct
@@ -77,8 +83,13 @@ _S_memtrace_pop_stack(void)
 {
 	struct _S_memtrace_stack_frame_s *frame;
 
+	S_mutex_lock(trace_lock);
+
 	if (stack_depth == 0)
+	{
+		S_mutex_unlock(trace_lock);
 		return NULL;
+	}
 
 	frame = stack_frames;
 	if (frame)
@@ -87,6 +98,7 @@ _S_memtrace_pop_stack(void)
 	        frame->callee, frame->location, frame->line);*/
 
 	--stack_depth;
+	S_mutex_unlock(trace_lock);
 	return frame; /* WARNING: NOT DEALLOCATED, DO IT YOURSELF */
 }
 
@@ -94,6 +106,8 @@ void
 _S_memtrace_stack_trace(void)
 {
 	struct _S_memtrace_stack_frame_s *frame;
+
+	S_mutex_lock(trace_lock);
 
 	if (stack_depth == 0)
 	{
@@ -110,6 +124,8 @@ _S_memtrace_stack_trace(void)
 		        frame->callee, frame->location, frame->line);
 		free(frame);
 	}
+
+	S_mutex_unlock(trace_lock);
 }
 #endif /* DEBUG_TRACE */
 
@@ -121,6 +137,8 @@ _S_memtrace_add_frame(const void *ptr,
 {
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame;
+
+	S_mutex_lock(trace_lock);
 
 	frame = (struct _S_memtrace_memory_frame_s *)
 		malloc(sizeof(struct _S_memtrace_memory_frame_s));
@@ -142,6 +160,8 @@ _S_memtrace_add_frame(const void *ptr,
 		frame->next = mem_frames;
 		mem_frames = frame;
 	}
+
+	S_mutex_unlock(trace_lock);
 #else /* DEBUG_TRACE */
 	++num_allocations;
 	num_allocated_bytes += size;
@@ -161,6 +181,8 @@ _S_memtrace_resize_frame(const void *ptrold,
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame;
 
+	S_mutex_lock(trace_lock);
+
 	frame = mem_frames;
 	while (frame)
 	{
@@ -172,6 +194,7 @@ _S_memtrace_resize_frame(const void *ptrold,
 			frame->ptr = ptrnew;
 			frame->size = size;
 			++num_resizes;
+			S_mutex_unlock(trace_lock);
 			return;
 		}
 		frame = frame->next;
@@ -201,6 +224,8 @@ _S_memtrace_remove_frame(const void *ptr,
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame, *tmpframe;
 
+	S_mutex_lock(trace_lock);
+
 	frame = mem_frames;
 	tmpframe = NULL;
 	while (frame)
@@ -215,6 +240,7 @@ _S_memtrace_remove_frame(const void *ptr,
 			        ptr, frame->size, location, line);
 			++num_frees;
 			free(frame);
+			S_mutex_unlock(trace_lock);
 			return;
 		}
 		tmpframe = frame;
@@ -246,6 +272,10 @@ _S_memtrace_free(void)
 {
 #ifdef DEBUG_TRACE
 	struct _S_memtrace_memory_frame_s *frame, *tmpframe;
+	/* wait until we can acquire a lock, then release it for disposal */
+	S_mutex_lock(trace_lock);
+	S_mutex_unlock(trace_lock);
+	_S_mutex_delete(trace_lock, S_FALSE);
 #endif /* DEBUG_TRACE */
 
 	fprintf(stdout,

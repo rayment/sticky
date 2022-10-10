@@ -23,11 +23,12 @@
 #include <pthread.h>
 
 Smutex
-S_mutex_new(void)
+_S_mutex_new(Sbool report)
 {
 	Smutex lock;
 
-	lock = (Smutex) S_memory_new(sizeof(_Smutex_raw));
+	lock = (Smutex) _S_memory_new(sizeof(_Smutex_raw),
+	                              __FILE__, __LINE__, report);
 	if (pthread_mutex_init(lock, NULL) != 0)
 	{
 		if (errno == ENOMEM)
@@ -38,14 +39,23 @@ S_mutex_new(void)
 		{
 			_S_SET_ERROR(S_UNKNOWN_ERROR, "S_mutex_new");
 		}
-		S_memory_delete(lock);
+		_S_memory_delete(lock, __FILE__, __LINE__, report);
 		return NULL;
 	}
 	return lock;
 }
 
+Smutex
+S_mutex_new(void)
+{
+	Smutex lock;
+	_S_CALL("_S_mutex_new", lock = _S_mutex_new(S_TRUE));
+	return lock;
+}
+
 void
-S_mutex_delete(Smutex lock)
+_S_mutex_delete(Smutex lock,
+                Sbool report)
 {
 	if (!lock)
 	{
@@ -57,7 +67,13 @@ S_mutex_delete(Smutex lock)
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_mutex_delete");
 		return;
 	}
-	S_memory_delete(lock);
+	_S_memory_delete(lock, __FILE__, __LINE__, report);
+}
+
+void
+S_mutex_delete(Smutex lock)
+{
+	_S_CALL("_S_mutex_delete", _S_mutex_delete(lock, S_TRUE));
 }
 
 void

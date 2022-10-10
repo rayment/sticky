@@ -18,7 +18,8 @@
 void *
 _S_memory_new(Ssize_t size,
               const Schar *location,
-              Suint32 line)
+              Suint32 line,
+              Sbool report)
 {
 	void *ptr;
 	if (size == 0)
@@ -38,7 +39,8 @@ _S_memory_new(Ssize_t size,
 	   safely ignore the error and trace the new pointer. */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-	_S_memtrace_add_frame(ptr, size, location, line);
+	if (report)
+		_S_memtrace_add_frame(ptr, size, location, line);
 #pragma GCC diagnostic pop
 #endif /* DEBUG */
 	return ptr;
@@ -75,12 +77,14 @@ _S_memory_resize(void *ptr,
 void
 _S_memory_delete(void *ptr,
                  const Schar *location,
-                 Suint32 line)
+                 Suint32 line,
+				 Sbool report)
 {
 	if (ptr)
 	{
 #ifdef DEBUG
-		_S_memtrace_remove_frame(ptr, location, line);
+		if (report)
+			_S_memtrace_remove_frame(ptr, location, line);
 #endif /* DEBUG */
 		free(ptr);
 	}

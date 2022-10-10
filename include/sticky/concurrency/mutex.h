@@ -130,6 +130,9 @@ STICKY_API Sbool  S_mutex_trylock(Smutex);
  */
 STICKY_API void   S_mutex_unlock(Smutex);
 
+Smutex _S_mutex_new(Sbool);
+void   _S_mutex_delete(Smutex, Sbool);
+
 /**
  * @}
  */

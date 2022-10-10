@@ -25,19 +25,22 @@ S_sticky_init(void)
 	/* error handler init */
 	SERRNO = S_NO_ERROR;
 	SERRLOC = "null";
+#ifdef DEBUG
+	/* this must come before other _S_CALL calls! */
+	_S_memtrace_init();
+#endif /* DEBUG */
 	/* random number generator init */
 	_S_CALL("S_random_set_seed", S_random_set_seed(time(NULL)));
 	/* network stack */
 	_S_CALL("_S_socket_init", _S_socket_init());
-#ifdef DEBUG
-	_S_memtrace_init();
-#endif /* DEBUG */
 }
 
 void
 S_sticky_free(void)
 {
-	if (_S_window_is_init())
+	Sbool init;
+	_S_CALL("_S_window_is_init", init = _S_window_is_init());
+	if (init)
 	{
 		/* free audio-visual stuff */
 		SDL_Quit();

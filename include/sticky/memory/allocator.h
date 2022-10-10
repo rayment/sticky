@@ -27,9 +27,9 @@ extern "C"
  * @{
  */
 
-STICKY_API void  *_S_memory_new(Ssize_t, const Schar *, Suint32);
+STICKY_API void  *_S_memory_new(Ssize_t, const Schar *, Suint32, Sbool);
 STICKY_API void  *_S_memory_resize(void *, Ssize_t, const Schar *, Suint32);
-STICKY_API void   _S_memory_delete(void *, const Schar *, Suint32);
+STICKY_API void   _S_memory_delete(void *, const Schar *, Suint32, Sbool);
 void   _S_out_of_memory(const Schar *, Suint32);
 
 /**
@@ -46,7 +46,7 @@ void   _S_out_of_memory(const Schar *, Suint32);
  * @exception S_INVALID_VALUE If 0 bytes are to be allocated.
  * @since 1.0.0
  */
-#define S_memory_new(x)    _S_memory_new(x, __FILE__, __LINE__)
+#define S_memory_new(x)    _S_memory_new(x, __FILE__, __LINE__, S_TRUE)
 
 /**
  * @brief Resize an allocated block of memory on the heap.
@@ -86,7 +86,7 @@ void   _S_out_of_memory(const Schar *, Suint32);
  * @exception S_INVALID_VALUE If a <c>NULL</c> pointer is provided.
  * @since 1.0.0
  */
-#define S_memory_delete(x) _S_memory_delete(x, __FILE__, __LINE__)
+#define S_memory_delete(x) _S_memory_delete(x, __FILE__, __LINE__, S_TRUE)
 
 /**
  * @}
