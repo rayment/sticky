@@ -11,7 +11,8 @@ The project is split into different modules which allows for much more rapid
 prototyping and program development.
 
 To build the documentation, read the DOCS file.
-To install sticky on a machine, read the INSTALL file.
+To install sticky on a Unix-like machine, read the INSTALL file.
+To install sticky on a Windows machine, read the INSTALL.win file.
 
 sticky is licensed under BSD 3-Clause.
 All license information is available in the included COPYING file.

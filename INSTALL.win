@@ -1,0 +1,60 @@
+INSTALL
+-------
+
+The following build requirements must be met to compile and install sticky:
+  - A Visual Studio installation capable of compiling legacy MSVC code.
+  - NMake (bundled with Visual Studio)
+  - CMake (for contrib if assimp is enabled)
+  - Git (for contrib)
+
+The following libraries and headers are also dependencies to install sticky, and
+are automatically fetched by the contrib resolving script:
+  - freetype2
+  - GL
+  - GLEW
+  - OpenAL
+  - SDL2
+
+The following libraries are optional and not required to install sticky but will
+limit the functionality of the library if not used:
+  - Assimp
+
+The contrib folder contains an NMake readable build script (Makefile.win) which
+fetches the required libraries and some extra external dependencies. These
+dependencies are built into the engine automatically and are not included in the
+above list.
+
+Toggling optional libraries:
+  - Go to the project root directory and edit the ENABLE_XXX variables in
+    Makefile where XXX corresponds to an optional library.
+  - Follow the below instructions and compile as normal.
+
+Caveats:
+  - assimp does not provide a 32-bit Visual Studio solution for Windows.
+	To build the library in 32-bit mode, you must use MinGW as given by the
+	assimp library.
+
+Instructions:
+  - Go to the contrib folder and run `nmake /f Makefile.win' to download,
+	compile and prepare the extra external dependencies. This step may take a
+	while to complete.
+  - Open the solution `sticky.sln' in Visual Studio.
+  - Choose a build target. The project can be built for Release, Debug or Debug
+	with memtrace built in, and for 32-bit or 64-bit builds.
+  - Compile the project. The resulting library will be placed in the `build'
+	folder.
+  - The resulting .lib or .dll files can be copied to wherever you wish.
+
+UNINSTALL
+---------
+
+The library does not install to a specific location on Windows computers.
+If you have copied the build files to a different location, you must remove them
+manually.
+
+To wipe the build tree, delete the following folders:
+	- `build'
+	- `contrib/build'
+	- `contrib/lib32'
+	- `contrib/lib64'
+
