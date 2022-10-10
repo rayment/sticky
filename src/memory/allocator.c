@@ -42,6 +42,8 @@ _S_memory_new(Ssize_t size,
 	if (report)
 		_S_memtrace_add_frame(ptr, size, location, line);
 #pragma GCC diagnostic pop
+#else /* DEBUG */
+	(void) report;
 #endif /* DEBUG */
 	return ptr;
 }
@@ -80,6 +82,9 @@ _S_memory_delete(void *ptr,
                  Suint32 line,
 				 Sbool report)
 {
+#ifndef DEBUG
+	(void) report;
+#endif /* !DEBUG */
 	if (ptr)
 	{
 #ifdef DEBUG
