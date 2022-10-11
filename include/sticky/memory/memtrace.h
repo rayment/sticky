@@ -27,16 +27,6 @@ extern "C"
 
 #ifdef DEBUG_TRACE
 struct
-_S_memtrace_memory_frame_s
-{
-	struct _S_memtrace_memory_frame_s *next;
-	const void *ptr;
-	const Schar *location;
-	Ssize_t size;
-	Suint32 line;
-};
-
-struct
 _S_memtrace_stack_frame_s
 {
 	struct _S_memtrace_stack_frame_s *next;
@@ -45,20 +35,34 @@ _S_memtrace_stack_frame_s
 	Suint32 line;
 };
 
-STICKY_API void    _S_memtrace_push_stack(const Schar *, const Schar *, Suint32);
-STICKY_API struct  _S_memtrace_stack_frame_s *_S_memtrace_pop_stack(void);
-STICKY_API void    _S_memtrace_stack_trace(void);
+struct
+_S_memtrace_memory_frame_s
+{
+	struct _S_memtrace_memory_frame_s *next;
+	struct _S_memtrace_stack_frame_s *call;
+	const void *ptr;
+	const Schar *location;
+	Ssize_t size;
+	Suint32 line;
+};
+
+STICKY_API void _S_memtrace_push_stack_local(const Schar *, const Schar *,
+                                             Suint32);
+STICKY_API void _S_memtrace_pop_stack_local(void);
+STICKY_API void _S_memtrace_stack_trace_local(Sbool);
 
 #define _S_CALL(name, call) \
-	_S_memtrace_push_stack(name, __FILE__, __LINE__); \
-	call;                                             \
-	free(_S_memtrace_pop_stack())
+	_S_memtrace_push_stack_local(name, __FILE__, __LINE__); \
+	call;                                                   \
+	_S_memtrace_pop_stack_local()
 #else /* DEBUG_TRACE */
 #define _S_CALL(name, call) call
 #endif /* DEBUG_TRACE */
 
 void    _S_memtrace_init(void);
+void    _S_memtrace_init_thread(void);
 void    _S_memtrace_free(void);
+void    _S_memtrace_free_thread(void);
 Sbool   _S_memtrace_all_free(void);
 
 void    _S_memtrace_add_frame(const void *, Ssize_t,

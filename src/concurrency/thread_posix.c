@@ -14,6 +14,9 @@
 #include "sticky/common/error.h"
 #include "sticky/concurrency/thread.h"
 #include "sticky/memory/allocator.h"
+#ifdef DEBUG_TRACE
+#include "sticky/memory/memtrace.h"
+#endif /* DEBUG_TRACE */
 
 #ifndef STICKY_POSIX
 #error This source file cannot be compiled on non-POSIX systems.
@@ -27,8 +30,16 @@ void *
 _S_thread_func_wrapper(void *arg)
 {
 	Sthread thread;
+	void *ret;
 	thread = (Sthread) arg;
-	return thread->func(thread->arg);
+#ifdef DEBUG_TRACE
+	_S_memtrace_init_thread();
+#endif /* DEBUG_TRACE */
+	ret = thread->func(thread->arg);
+#ifdef DEBUG_TRACE
+	_S_memtrace_free_thread();
+#endif /*DEBUG_TRACE */
+	return ret;
 }
 
 Sthread

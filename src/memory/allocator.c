@@ -1,9 +1,18 @@
 /*
+ * This file is licensed under BSD 3-Clause.
+ * All license information is available in the included COPYING file.
+ */
+
+/*
  * allocator.c
  * Custom memory allocator source.
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 05/09/2021
+ */
+
+/*
+ * WARNING: THIS IS TRUSTED CODE. AS SUCH, _S_CALL IS NOT TO BE USED.
  */
 
 #include <errno.h>

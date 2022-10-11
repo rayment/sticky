@@ -277,7 +277,7 @@ _S_log(const Schar *location,
 	if (err == _S_LOG_ERROR)
 	{
 #ifdef DEBUG_TRACE
-		_S_memtrace_stack_trace();
+		_S_memtrace_stack_trace_local(S_TRUE);
 #endif /* DEBUG_TRACE */
 		exit(EXIT_FAILURE);
 	}

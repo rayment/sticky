@@ -28,7 +28,13 @@ _S_thread_func_wrapper(LPVOID *arg)
 {
 	Sthread thread;
 	thread = (Sthread) arg;
+#ifdef DEBUG_TRACE
+	_S_memtrace_init_thread();
+#endif /* DEBUG_TRACE */
 	thread->ret = thread->func(thread->arg);
+#ifdef DEBUG_TRACE
+	_S_memtrace_free_thread();
+#endif /*DEBUG_TRACE */
 	return 0;
 }
 

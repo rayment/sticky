@@ -22,13 +22,13 @@ Schar *_S_error_loc;
 void
 S_sticky_init(void)
 {
-	/* error handler init */
-	SERRNO = S_NO_ERROR;
-	SERRLOC = "null";
 #ifdef DEBUG
 	/* this must come before other _S_CALL calls! */
 	_S_memtrace_init();
 #endif /* DEBUG */
+	/* error handler init */
+	SERRNO = S_NO_ERROR;
+	SERRLOC = "null";
 	/* random number generator init */
 	_S_CALL("S_random_set_seed", S_random_set_seed(time(NULL)));
 	/* network stack */
