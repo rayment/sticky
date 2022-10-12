@@ -139,6 +139,21 @@ STICKY_API Sbool S_frustum_intersects_point(const Sfrustum *, const Svec3 *);
 STICKY_API Sbool S_frustum_intersects_sphere(const Sfrustum *,
                                              const Svec3 *, Sfloat);
 
+/**
+ * @brief Check if a set of cube bounds lie within a frustum.
+ *
+ * Note that the bounding box defined by @p min and @p max is calculated from
+ * world space, and not any location space of, say, a transform.
+ *
+ * @param[in] frustum The frustum.
+ * @param[in] min The minimum @f$XYZ@f$ coordinates of the bounding box.
+ * @param[in] max The maximum @f$XYZ@f$ coordinates of the bounding box.
+ * @return {@link S_TRUE} If a given bounding box lies within a frustum,
+ * otherwise {@link S_FALSE}.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid frustum or bounds
+ * coordinate is provided to the function.
+ * @since 1.0.0
+ */
 STICKY_API Sbool S_frustum_intersects_bounds(const Sfrustum *,
                                              const Svec3 *, const Svec3 *);
 

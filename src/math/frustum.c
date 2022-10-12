@@ -96,12 +96,18 @@ S_frustum_load(Sfrustum *frustum,
 	_S_CALL("S_vec4_add",
 		S_vec4_add(     frustum->p+S_FRUSTUM_NEAR,   &r2));
 
-	_S_frustum_normalize(frustum, S_FRUSTUM_RIGHT);
-	_S_frustum_normalize(frustum, S_FRUSTUM_LEFT);
-	_S_frustum_normalize(frustum, S_FRUSTUM_TOP);
-	_S_frustum_normalize(frustum, S_FRUSTUM_BOTTOM);
-	_S_frustum_normalize(frustum, S_FRUSTUM_FAR);
-	_S_frustum_normalize(frustum, S_FRUSTUM_NEAR);
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_RIGHT));
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_LEFT));
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_TOP));
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_BOTTOM));
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_FAR));
+	_S_CALL("_S_frustum_normalize",
+	        _S_frustum_normalize(frustum, S_FRUSTUM_NEAR));
 }
 
 Sbool
