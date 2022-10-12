@@ -122,6 +122,11 @@ STICKY_API void      S_speaker_delete(Sspeaker *);
  * chunks of audio into small buffers, queue them and play the sound they
  * contain dynamically.
  *
+ * @warning Playing a stereo sound with two channels will result in the sound
+ * playing as if directly in front of the listener. In order for 3D
+ * spatialisation to work correctly, the sound must be in mono with a single
+ * channel.
+ *
  * @param[in,out] speaker The speaker to play the sound through.
  * @param[in,out] sound The sound to be played.
  * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid speaker or sound is
