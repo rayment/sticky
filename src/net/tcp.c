@@ -35,8 +35,6 @@
 #include "sticky/common/types.h"
 #include "sticky/memory/allocator.h"
 
-#define TCP_BACKLOG_SIZE 5
-
 static
 Ssocket *
 _S_tcp_open(Senum family)
@@ -265,7 +263,7 @@ S_tcp_listen(Ssocket *sock,
 		_S_SET_ERROR(S_INVALID_OPERATION, "S_tcp_listen");
 		return;
 	}
-	else if (listen(sock->fd, TCP_BACKLOG_SIZE) == -1)
+	else if (listen(sock->fd, backlog) == -1)
 	{
 #if defined(STICKY_POSIX)
 		if (errno == EADDRINUSE)
