@@ -34,6 +34,7 @@ DEBUG_ANALYZE=1
 
 # code and library toggles - 0 = off, 1 = on
 ENABLE_ASSIMP=1
+# openmp is always enabled on Windows and always disabled on macOS
 ENABLE_OPENMP=1
 
 # -----------------------------------------------------
