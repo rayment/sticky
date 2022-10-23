@@ -254,6 +254,29 @@ _S_texture_init(void)
 }
 
 void
+_S_texture_attach_raw(GLuint tex,
+                      Suint32 idx,
+					  Sbool cubemap)
+{
+	if (idx >= (Suint32) max_units)
+	{
+		_S_SET_ERROR(S_INVALID_INDEX, "_S_texture_attach_raw");
+		return;
+	}
+	_S_GL(glActiveTexture(GL_TEXTURE0 + idx));
+	/* TODO: Optimise by storing GL enum in texture struct and referencing via.
+	         argument to reduce branching. */
+	if (cubemap)
+	{
+		_S_GL(glBindTexture(GL_TEXTURE_CUBE_MAP, tex));
+	}
+	else
+	{
+		_S_GL(glBindTexture(GL_TEXTURE_2D, tex));
+	}
+}
+
+void
 _S_texture_attach(const Stexture *texture,
                   Suint32 idx)
 {
@@ -262,19 +285,7 @@ _S_texture_attach(const Stexture *texture,
 		_S_SET_ERROR(S_INVALID_VALUE, "_S_texture_attach");
 		return;
 	}
-	if (idx >= (Suint32) max_units)
-	{
-		_S_SET_ERROR(S_INVALID_INDEX, "_S_texture_attach");
-		return;
-	}
-	_S_GL(glActiveTexture(GL_TEXTURE0 + idx));
-	if (texture->cubemap)
-	{
-		_S_GL(glBindTexture(GL_TEXTURE_CUBE_MAP, texture->tex));
-	}
-	else
-	{
-		_S_GL(glBindTexture(GL_TEXTURE_2D, texture->tex));
-	}
+	_S_CALL("_S_texture_attach_raw",
+	        _S_texture_attach_raw(texture->tex, idx, texture->cubemap));
 }
 

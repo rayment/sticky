@@ -15,6 +15,7 @@ extern "C"
 
 #include "sticky/common/defines.h"
 #include "sticky/common/types.h"
+#include "sticky/video/framebuffer.h"
 #include "sticky/video/texture.h"
 
 /**
@@ -47,7 +48,12 @@ typedef struct
 Smaterial_s
 {
 	Suint8 assigned;
-	const Stexture *tex[S_MATERIAL_LIMIT];
+	Sbool bitfb[S_MATERIAL_LIMIT];
+	union
+	{
+		const Stexture *tex;
+		const Sframebuffer *fb;
+	} tex[S_MATERIAL_LIMIT];
 } Smaterial;
 
 /**
@@ -93,6 +99,26 @@ STICKY_API void       S_material_delete(Smaterial *);
  */
 STICKY_API void       S_material_set_texture(Smaterial *,
                                              Suint8, const Stexture *);
+
+/**
+ * @brief Assign a framebuffer as a texture to a given material index.
+ *
+ * Takes the colour texture from a framebuffer and assigns it to a specific
+ * position in a material. The possible indices are from @f$0@f$ to
+ * {@link S_MATERIAL_LIMIT}@f$-1@f$.
+ *
+ * If a <c>NULL</c> framebuffer is given, any assigned texture is unlinked from
+ * the material in the given index.
+ *
+ * @param[in,out] mat The material to store the texture in.
+ * @param[in] idx The index of the texture within the material.
+ * @param[in] buf The framebuffer which contains the colour texture to store.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid material or
+ * framebuffer is provided to the function.
+ * @since 1.0.0
+ */
+STICKY_API void       S_material_set_framebuffer(Smaterial *,
+                                                 Suint8, const Sframebuffer *);
 
 void _S_material_attach(Smaterial *);
 

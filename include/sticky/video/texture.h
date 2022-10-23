@@ -184,6 +184,7 @@ STICKY_API void      S_texture_set_filter(Stexture *, Senum);
 STICKY_API void      S_texture_set_wrap(Stexture *, Senum);
 
 void _S_texture_init(void);
+void _S_texture_attach_raw(GLuint, Suint32, Sbool);
 void _S_texture_attach(const Stexture *, Suint32);
 
 /**

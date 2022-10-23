@@ -18,7 +18,10 @@ S_material_new(void)
 	mat = (Smaterial *) S_memory_new(sizeof(Smaterial));
 	mat->assigned = 0;
 	for (i = 0; i < S_MATERIAL_LIMIT; ++i)
-		*(mat->tex+i) = NULL;
+	{
+		*(mat->bitfb+i) = S_FALSE;
+		(mat->tex+i)->tex = NULL;
+	}
 	return mat;
 }
 
@@ -43,11 +46,30 @@ S_material_set_texture(Smaterial *mat,
 		_S_SET_ERROR(S_INVALID_VALUE, "S_material_set_texture");
 		return;
 	}
-	if (tex && !*(mat->tex+idx))
+	if (tex && !(mat->tex+idx)->tex)
 		++mat->assigned;
-	else if (!tex && *(mat->tex+idx))
+	else if (!tex && (mat->tex+idx)->tex)
 		--mat->assigned;
-	*(mat->tex+idx) = tex;
+	*(mat->bitfb+idx) = S_FALSE;
+	(mat->tex+idx)->tex = tex;
+}
+
+void
+S_material_set_framebuffer(Smaterial *mat,
+                           Suint8 idx,
+						   const Sframebuffer *buf)
+{
+	if (!mat || idx >= S_MATERIAL_LIMIT)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_material_set_framebuffer");
+		return;
+	}
+	if (buf && !(mat->tex+idx)->fb)
+		++mat->assigned;
+	else if (!buf && (mat->tex+idx)->fb)
+		--mat->assigned;
+	*(mat->bitfb+idx) = S_TRUE;
+	(mat->tex+idx)->fb = buf;
 }
 
 void
@@ -63,8 +85,17 @@ _S_material_attach(Smaterial *mat)
 		return;
 	for (i = 0; i < S_MATERIAL_LIMIT; ++i)
 	{
-		if (*(mat->tex+i))
-			_S_texture_attach(*(mat->tex+i), i);
+		if (!*(mat->bitfb+i) && (mat->tex+i)->tex)
+		{
+			_S_CALL("_S_texture_attach",
+			        _S_texture_attach((mat->tex+i)->tex, i));
+		}
+		else if (*(mat->bitfb+i) && (mat->tex+i)->fb)
+		{
+			_S_CALL("_S_texture_attach_raw",
+			        _S_texture_attach_raw((mat->tex+i)->fb->tex_color,
+					                      i, S_FALSE));
+		}
 	}
 }
 
