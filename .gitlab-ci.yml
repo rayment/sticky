@@ -1,0 +1,26 @@
+image: ubuntu:latest
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  before_script:
+    - sudo apt-get update
+    - sudo apt-get install -y libglew-dev libsdl2-dev libopenal-dev \
+                              libfreetype6-dev libopengl-deev \
+                              make gcc lcov gcov git
+  script:
+    - cd contrib && make && cd ..
+    - make
+  artifacts:
+    paths:
+      - build
+
+test:
+  stage: test
+  script:
+    - make test
+    - cd test && sh test.sh && .. && sh tools/stats
+
