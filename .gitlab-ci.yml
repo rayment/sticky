@@ -8,9 +8,7 @@ build:
   stage: build
   before_script:
     - apt-get update
-    - apt-get install -y libglew-dev libsdl2-dev libopenal-dev \
-                         libfreetype6-dev libopengl-deev \
-                         make gcc lcov gcov git
+    - apt-get install -y libglew-dev libsdl2-dev libopenal-dev libfreetype6-dev libopengl-dev make gcc lcov git
   script:
     - cd contrib && make && cd ..
     - make
