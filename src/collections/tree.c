@@ -696,17 +696,29 @@ S_tree_get_max(const Stree *t)
 		return t->max->ptr;
 	return NULL;
 }
-
-Sbool
-S_tree_search(const Stree *t,
-              const void *ptr)
+/**
+ * @brief Get an element from a tree.
+ *
+ * Searches within a tree for a given element, and returns a pointer to an
+ * element if an element of equivalent value can be found.
+ *
+ * @param[in] t The tree in which the search is conducted.
+ * @param[in] ptr The element to search for within the tree.
+ * @return A pointer to an element if the element is found, else <c>NULL</c>.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid tree is provided to
+ * the function.
+ * @since 1.0.0
+ */
+void *
+S_tree_get(const Stree * t,
+           const void *ptr)
 {
 	_Stree_node *n;
 	Scomparator comp;
 	if (!t || !ptr)
 	{
-		_S_SET_ERROR(S_INVALID_VALUE, "S_tree_search");
-		return S_FALSE;
+		_S_SET_ERROR(S_INVALID_VALUE, "S_tree_get");
+		return NULL;
 	}
 	n = t->root;
 	while (n)
@@ -716,9 +728,23 @@ S_tree_search(const Stree *t,
 		else if (comp > 0)
 			n = n->right;
 		else
-			return S_TRUE;
+			return n->ptr;
 	}
-	return S_FALSE;
+	return NULL;
+}
+
+Sbool
+S_tree_search(const Stree *t,
+              const void *ptr)
+{
+	void *match;
+	if (!t || !ptr)
+	{
+		_S_SET_ERROR(S_INVALID_VALUE, "S_tree_search");
+		return S_FALSE;
+	}
+	_S_CALL("S_tree_get", match = S_tree_get(t, ptr));
+	return match != NULL;
 }
 
 Ssize_t

@@ -56,7 +56,7 @@ main(void)
 	Stree_iter *iter;
 	Sint32 numbers[NUM_INTS], i, j;
 	Sbool b;
-	void *ptr;
+	void *ptr, *ptr2;
 
 	INIT();
 
@@ -181,6 +181,13 @@ main(void)
 	, "S_tree_remove (ordered)");
 
 	TEST(
+		ptr = S_tree_get_max(tree);
+		ptr2 = S_tree_get(tree, ptr);
+	, ptr == ptr2
+	, "S_tree_get"
+	);
+
+	TEST(
 		ptr = S_tree_get_min(tree);
 		b = S_tree_search(tree, ptr);
 	, b
@@ -195,6 +202,11 @@ main(void)
 		S_tree_clear(tree);
 	, S_tree_size(tree) == 0
 	, "S_tree_clear");
+
+	TEST(
+		ptr = S_tree_get(tree, numbers);
+	, !ptr
+	, "S_tree_get (empty)");
 
 	TEST(
 		ptr = S_tree_get_min(tree);

@@ -309,6 +309,21 @@ STICKY_API void       *S_tree_get_min(const Stree *);
 STICKY_API void       *S_tree_get_max(const Stree *);
 
 /**
+ * @brief Get an element from a tree.
+ *
+ * Searches within a tree for a given element, and returns a pointer to an
+ * element if an element of equivalent value can be found.
+ *
+ * @param[in] t The tree in which the search is conducted.
+ * @param[in] ptr The element to search for within the tree.
+ * @return A pointer to an element if the element is found, else <c>NULL</c>.
+ * @exception S_INVALID_VALUE If a <c>NULL</c> or invalid tree is provided to
+ * the function.
+ * @since 1.0.0
+ */
+STICKY_API void       *S_tree_get(const Stree *, const void *);
+
+/**
  * @brief Search a tree for an element.
  *
  * Searches within a tree for a given element, and returns {@link S_TRUE} if an
