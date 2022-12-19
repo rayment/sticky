@@ -15,7 +15,6 @@ The following libraries and headers are also dependencies to install sticky:
 
 The following libraries are optional and not required to install sticky but will
 limit the functionality of the library if not enabled:
-  - Assimp
   - OpenMP
 
 Note that the contrib folder contains a build script for some extra external

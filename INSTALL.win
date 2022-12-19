@@ -4,7 +4,7 @@ INSTALL
 The following build requirements must be met to compile and install sticky:
   - A Visual Studio installation capable of compiling legacy MSVC code.
   - NMake (bundled with Visual Studio)
-  - CMake (for contrib if assimp is enabled)
+  - CMake (for contrib)
   - Git (for contrib)
 
 The following libraries and headers are also dependencies to install sticky, and
@@ -17,7 +17,7 @@ are automatically fetched by the contrib resolving script:
 
 The following libraries are optional and not required to install sticky but will
 limit the functionality of the library if not used:
-  - Assimp
+  - None for the moment.
 
 The contrib folder contains an NMake readable build script (Makefile.win) which
 fetches the required libraries and some extra external dependencies. These
@@ -28,11 +28,6 @@ Toggling optional libraries:
   - Go to the project root directory and edit the ENABLE_XXX variables in
     Makefile where XXX corresponds to an optional library.
   - Follow the below instructions and compile as normal.
-
-Caveats:
-  - assimp does not provide a 32-bit Visual Studio solution for Windows.
-	To build the library in 32-bit mode, you must use MinGW as given by the
-	assimp library.
 
 Instructions:
   - Go to the contrib folder and run `nmake /f Makefile.win' to download,

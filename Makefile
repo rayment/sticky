@@ -112,11 +112,6 @@ else
 endif
 export OS
 
-ifeq ($(ENABLE_ASSIMP),1)
-LIBRARIES+=assimp
-CXXFLAGS+=-DENABLE_ASSIMP=1
-endif
-
 # remove memtrace utility if not debugging
 ifneq ($(DEBUG),1)
 SOURCES:=$(filter-out src/memory/memtrace.c,$(SOURCES))
@@ -136,7 +131,7 @@ TEST_INCLUDE:=-Itest/
 TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
 TEST_COVERAGE:=$(wildcard test/*.gcno) $(wildcard test/*/*.gcno) \
                $(wildcard test/*.gcda) $(wildcard test/*/*.gcda) \
-			   coverage.info coverage.gcov
+			   coverage/ coverage.info coverage.gcov
 TEST_OBJECTS:=$(patsubst %.c,%.o,$(TEST_SOURCES))
 TEST_BINARIES:=$(patsubst %.c,%,$(TEST_SOURCES))
 
@@ -147,9 +142,6 @@ BUILD_STRING+=+debug
 endif
 ifneq ($(DEBUG_TRACE),0)
 BUILD_STRING+=+trace($(DEBUG_TRACE))
-endif
-ifeq ($(ENABLE_ASSIMP),1)
-BUILD_STRING+=+assimp
 endif
 ifeq ($(ENABLE_OPENMP),1)
 BUILD_STRING+=+openmp
@@ -274,6 +266,10 @@ clean:
 clean_test:
 	@echo "Cleaning test files..."
 	@rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) $(TEST_COVERAGE) || true
+
+clean_coverage:
+	@echo "Cleaning coverage files..."
+	@rm -rf $(TEST_COVERAGE) || true
 
 clean_docs:
 	@echo "Cleaning doc files..."
