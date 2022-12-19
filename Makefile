@@ -17,6 +17,7 @@ export ARCH
 export DEBUG?=0
 export DEBUG_TRACE?=1
 export SAVE_TEMPS?=0
+export COVERAGE?=0
 
 export LIBNAME:=sticky
 
@@ -47,6 +48,11 @@ CXXFLAGS+=-fanalyzer
 endif
 else
 CXXFLAGS+=-DNDEBUG -fomit-frame-pointer
+endif
+
+ifeq ($(COVERAGE),1)
+CXXFLAGS+=-fprofile-arcs -ftest-coverage
+LDFLAGS+=-lgcov --coverage
 endif
 
 ifeq ($(SAVE_TEMPS),1)
@@ -128,6 +134,9 @@ TEST_LDFLAGS+=-Lbuild/ -lsticky
 
 TEST_INCLUDE:=-Itest/
 TEST_SOURCES:=$(wildcard test/*.c) $(wildcard test/*/*.c)
+TEST_COVERAGE:=$(wildcard test/*.gcno) $(wildcard test/*/*.gcno) \
+               $(wildcard test/*.gcda) $(wildcard test/*/*.gcda) \
+			   coverage.info coverage.gcov
 TEST_OBJECTS:=$(patsubst %.c,%.o,$(TEST_SOURCES))
 TEST_BINARIES:=$(patsubst %.c,%,$(TEST_SOURCES))
 
@@ -231,6 +240,17 @@ test/%: test/%.o
 			-change build/$(DYNAMIC_LIB) ../build/$(DYNAMIC_LIB) $@; \
 	fi
 
+coverage:
+	@COVERAGE=1 $(MAKE) clean all test
+	@cd test && sh test.sh
+	@gcov -p obj/**/*.o test/*/*.o -t > coverage.gcov
+	@lcov -c --directory . -o coverage.info
+	@lcov -r coverage.info "/usr*" -o coverage.info
+	@lcov -r coverage.info "*test/*" -o coverage.info
+	@lcov -r coverage.info "*include/*" -o coverage.info
+	@lcov -r coverage.info "*contrib/*" -o coverage.info
+	@genhtml coverage.info -o coverage
+
 dist:
 	@echo "Calling \`make clean' functions to delete work prior to archival."
 	@echo "You have 5 seconds to cancel the clean actions with Ctrl+C."
@@ -248,11 +268,12 @@ dist:
 
 clean:
 	@echo "Cleaning objects and test files..."
-	@rm -rf build/ obj/ $(BINARY) $(TEST_OBJECTS) $(TEST_BINARIES) || true
+	@rm -rf build/ obj/ $(BINARY) \
+	        $(TEST_OBJECTS) $(TEST_BINARIES) $(TEST_COVERAGE) || true
 
 clean_test:
 	@echo "Cleaning test files..."
-	@rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) || true
+	@rm -rf $(TEST_OBJECTS) $(TEST_BINARIES) $(TEST_COVERAGE) || true
 
 clean_docs:
 	@echo "Cleaning doc files..."

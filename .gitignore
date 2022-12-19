@@ -15,3 +15,6 @@ obj
 *.dSYM/
 *.i
 *.o
+*.gcno
+*.gcov
+*.gcda
