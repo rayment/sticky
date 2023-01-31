@@ -18,7 +18,7 @@ test:
   stage: test
   script:
     - make test
-    - cd test && sh test.sh && .. && sh tools/stats
+    - cd test && sh test.sh && cd .. && sh tools/stats
 
 coverage:
   stage: coverage
