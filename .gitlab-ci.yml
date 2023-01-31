@@ -25,5 +25,5 @@ coverage:
   script:
     - make coverage
     - lcov --list coverage.info
-  coverage: Total:\|(\d+\.?\d+\%)
+  coverage: /Total:\|(\d+\.?\d+\%)/
 
