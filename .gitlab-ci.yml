@@ -3,6 +3,7 @@ image: git.rayment.fr:5050/docker/docker-opengl:latest
 stages:
   - build
   - test
+  - coverage
 
 build:
   stage: build
@@ -18,4 +19,11 @@ test:
   script:
     - make test
     - cd test && sh test.sh && .. && sh tools/stats
+
+coverage:
+  stage: coverage
+  script:
+    - make coverage
+    - lcov --list coverage.info
+  coverage: Total:\|(\d+\.?\d+\%)
 
