@@ -13,6 +13,7 @@ build:
   artifacts:
     paths:
       - build
+      - contrib
 
 test:
   stage: test
