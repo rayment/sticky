@@ -54,8 +54,10 @@ function(target_populate_compiler_features TARGET)
         -Wformat=2           # aggressively check format strings
         -Wnull-dereference   # warn on obvious null pointer usage
         -Wdouble-promotion   # warn on implicit float to double conversion
-        -Wstrict-prototypes  # warn on functions without explicit parameters
-        -Wmissing-prototypes # enforce prototypes for every function
+        $<$<COMPILE_LANGUAGE:C>:
+            -Wstrict-prototypes  # warn on functions without explicit parameters
+            -Wmissing-prototypes # enforce prototypes for every function
+        >
         -Wundef              # warn on undefined macro checks without defined(...) wrapping
         -Werror              # TURN ALL WARNINGS INTO ERRORS
         # Security/hardening
