@@ -8,6 +8,8 @@
 #ifndef STICKY_TYPE_STRING_H
 #define STICKY_TYPE_STRING_H
 
+#include <string.h>
+
 #include "st_macros.h"
 #include "st_primitives.h"
 
@@ -65,6 +67,24 @@ extern "C" {
 #else
 #define ST_STRING_EMPTY ST_PRIV_STRING_LIT(nullptr, 0)
 #endif
+
+#define ST_STRING_SAFE_CSTR(str, varname) \
+    st_char varname[(str).len + 1]; \
+    memcpy(varname, (str).data, (str).len); \
+    varname[(str).len] = '\0';
+
+#define ST_STRING_SAFE_CONCAT(a, b, varname) \
+    st_char st_string_intermediate_##varname[(a).len + (b).len + 1]; \
+    memcpy(st_string_intermediate_##varname, (a).data, (a).len); \
+    memcpy(st_string_intermediate_##varname + (a).len, (b).data, (b).len); \
+    st_string_intermediate_##varname[(a).len + (b).len] = '\0'; \
+    st_string_t varname = ST_STRING(st_string_intermediate_##varname);
+
+#define ST_STRING_SAFE_CONCAT_CSTR(a, b, varname) \
+    st_char varname[(a).len + (b).len + 1]; \
+    memcpy(varname, (a).data, (a).len); \
+    memcpy(varname + (a).len, (b).data, (b).len); \
+    varname[(a).len + (b).len] = '\0';
 
 typedef struct st_string
 {

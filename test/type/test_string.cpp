@@ -307,4 +307,31 @@ TEST_SUITE("type::string")
             CHECK(st_string_equal(ST_STRING("\0 null \0 terminators"),        st_string_trim_right(ST_STRING("\0 null \0 terminators \0"))));
         }
     }
+    TEST_CASE("safety macros")
+    {
+        SUBCASE("safe convert to cstr")
+        {
+            st_string_t _ = ST_STRING("abcdefg");
+            ST_STRING_SAFE_CSTR(_, safe1);
+            CHECK_EQ(7, strnlen(safe1, 8));
+            CHECK_EQ(strncmp("abcdefg", safe1, 7), 0);
+
+            _ = ST_STRING("");
+            ST_STRING_SAFE_CSTR(_, safe2);
+            CHECK_EQ(0, strnlen(safe2, 2));
+            CHECK_EQ(strncmp("", safe2, 0), 0);
+        }
+        SUBCASE("safe concatenate to cstr")
+        {
+            ST_STRING_SAFE_CONCAT_CSTR(ST_STRING("abc"), ST_STRING("def"), safe1);
+            CHECK_EQ(6, strnlen(safe1, 7));
+            CHECK_EQ(strncmp("abcdef", safe1, 6), 0);
+        }
+        SUBCASE("safe concatenate to st_string_t")
+        {
+            ST_STRING_SAFE_CONCAT(ST_STRING("abc"), ST_STRING("def"), safe1);
+            CHECK_EQ(6, safe1.len);
+            CHECK(st_string_equal(safe1, ST_STRING("abcdef")));
+        }
+    }
 }
