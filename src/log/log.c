@@ -108,8 +108,6 @@ log_write(st_log_level_t level,
 st_bool
 st_log_init(void)
 {
-    if (log_state.initialised)
-        return false;
     log_state.file = nullptr;
     log_state.initialised = true;
     return true;
