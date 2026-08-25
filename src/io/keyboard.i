@@ -4,6 +4,21 @@
 
 %nspace io::keyboard;
 
+%ignore SDL_SCANCODE_COUNT;
+%include <SDL3/SDL_scancode.h>
+
+%luacode {
+    -- Move all SDL_SCANCODE_* constants into sticky.io.keyboard as KEYCODE_*.
+    local m = sticky
+    for k, v in pairs(m) do
+        local suffix = k:match("^SDL_SCANCODE_(.+)$")
+        if suffix then
+            m.io.keyboard["KEYCODE_" .. suffix] = v
+            m[k] = nil
+        end
+    end
+}
+
 typedef st_int32 st_keycode;
 
 %inline %{
