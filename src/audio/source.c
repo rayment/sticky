@@ -21,15 +21,12 @@ st_audio_source_create(st_audio_source_t *src)
     st_audio_source_set_pitch(src, 1.0f);
     st_audio_source_set_gain(src, 1.0f);
     st_audio_source_set_loop(src, false);
+    st_audio_source_set_spatial(src, true);
     alSourcei(src->source, AL_SOURCE_RELATIVE, AL_FALSE);
     // TODO: Allow configuration of distance and rolloff.
     alSourcef(src->source, AL_REFERENCE_DISTANCE, 1.0f);
     alSourcef(src->source, AL_MAX_DISTANCE, 1000.0f);
     alSourcef(src->source, AL_ROLLOFF_FACTOR, 1.0f);
-    // TODO: This forces stereo sounds to work. OpenAL does not spatialise stereo by default.
-    // Need to instead allow both spatialised and non-spatialised stereo (by loading as mono instead, not using this line)
-    //   and also spatialised mono. This line eventually thus needs to be removed.
-    alSourcei(src->source, AL_SOURCE_SPATIALIZE_SOFT, AL_TRUE);
     return true;
 }
 
@@ -82,6 +79,18 @@ st_audio_source_set_loop(st_audio_source_t *src,
 {
     src->loop = loop;
     alSourcei(src->source, AL_LOOPING, src->loop ? AL_TRUE : AL_FALSE);
+    return true;
+}
+
+st_bool
+st_audio_source_set_spatial(st_audio_source_t *src,
+                            st_bool spatial)
+{
+    // TODO: This forces stereo sounds to work. OpenAL does not spatialise stereo by default.
+    // Need to instead allow both spatialised and non-spatialised stereo (by loading as mono instead, not using this line)
+    //   and also spatialised mono. This line eventually thus needs to be removed.
+    src->spatial = spatial;
+    alSourcei(src->source, AL_SOURCE_SPATIALIZE_SOFT, spatial ? AL_TRUE : AL_FALSE);
     return true;
 }
 

@@ -49,6 +49,11 @@ public:
         return st_audio_source_set_loop(&this->m_source, loop);
     }
 
+    bool set_spatial(bool spatial)
+    {
+        return st_audio_source_set_spatial(&this->m_source, spatial);
+    }
+
     bool set_position(math::vec3 &pos)
     {
         return st_audio_source_set_position(&this->m_source, {(*pos.get()).x, (*pos.get()).y, (*pos.get()).z});

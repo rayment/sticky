@@ -23,6 +23,7 @@ typedef struct st_audio_source
     st_float32 pitch;
     st_float32 gain;
     st_bool loop;
+    st_bool spatial;
 
     ALuint source;
 } st_audio_source_t;
@@ -35,6 +36,7 @@ st_bool st_audio_source_set_velocity(st_audio_source_t *src, st_vec3_float64_t v
 st_bool st_audio_source_set_pitch   (st_audio_source_t *src, st_float32        pitch);
 st_bool st_audio_source_set_gain    (st_audio_source_t *src, st_float32        gain);
 st_bool st_audio_source_set_loop    (st_audio_source_t *src, st_bool           loop);
+st_bool st_audio_source_set_spatial (st_audio_source_t *src, st_bool           spatial);
 st_bool st_audio_source_play        (st_audio_source_t  src);
 st_bool st_audio_source_pause       (st_audio_source_t  src);
 st_bool st_audio_source_resume      (st_audio_source_t  src);
