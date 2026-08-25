@@ -5,6 +5,7 @@ set(ST_LUA_INTERFACES
     audio/sound.i
     audio/source.i
     io/keyboard.i
+    log/log.i
     math/vec3.i
 )
 
