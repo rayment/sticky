@@ -10,27 +10,27 @@ class log
 public:
     static void trace(const std::string &msg)
     {
-        st_log_trace("%s", msg.data());
+        st_log_trace("%.*s", msg.length(), msg.data());
     }
 
     static void debug(const std::string &msg)
     {
-        st_log_debug("%s", msg.data());
+        st_log_debug("%.*s", msg.length(), msg.data());
     }
 
     static void info(const std::string &msg)
     {
-        st_log_info("%s", msg.data());
+        st_log_info("%.*s", msg.length(), msg.data());
     }
 
     static void warn(const std::string &msg)
     {
-        st_log_warn("%s", msg.data());
+        st_log_warn("%.*s", msg.length(), msg.data());
     }
 
     static void error(const std::string &msg)
     {
-        st_log_error("%s", msg.data());
+        st_log_error("%.*s", msg.length(), msg.data());
     }
 
 private:
