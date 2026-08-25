@@ -320,18 +320,56 @@ TEST_SUITE("type::string")
             ST_STRING_SAFE_CSTR(_, safe2);
             CHECK_EQ(0, strnlen(safe2, 2));
             CHECK_EQ(strncmp("", safe2, 0), 0);
+
+            _ = ST_STRING_EMPTY;
+            ST_STRING_SAFE_CSTR(_, safe3);
+            CHECK_EQ(0, strnlen(safe3, 1));
+            CHECK_EQ(strncmp("", safe3, 0), 0);
+
+            _ = ST_STRING("a");
+            ST_STRING_SAFE_CSTR(_, safe4);
+            CHECK_EQ(1, strnlen(safe4, 2));
+            CHECK_EQ(strncmp("a", safe4, 1), 0);
+
+            _ = ST_STRING("Hello, World! This is a longer string for testing purposes.");
+            ST_STRING_SAFE_CSTR(_, safe5);
+            CHECK_EQ(59, strnlen(safe5, 60));
+            CHECK_EQ(strncmp("Hello, World! This is a longer string for testing purposes.", safe5, 60), 0);
         }
         SUBCASE("safe concatenate to cstr")
         {
             ST_STRING_SAFE_CONCAT_CSTR(ST_STRING("abc"), ST_STRING("def"), safe1);
             CHECK_EQ(6, strnlen(safe1, 7));
             CHECK_EQ(strncmp("abcdef", safe1, 6), 0);
+
+            ST_STRING_SAFE_CONCAT_CSTR(ST_STRING("Hello, "), ST_STRING("World!"), safe5);
+            CHECK_EQ(13, strnlen(safe5, 14));
+            CHECK_EQ(strncmp("Hello, World!", safe5, 13), 0);
+
+            ST_STRING_SAFE_CONCAT_CSTR(ST_STRING("First part with some text "),
+                                       ST_STRING("and second part with more text"), safe6);
+            CHECK_EQ(56, strnlen(safe6, 57));
+            CHECK_EQ(strncmp("First part with some text and second part with more text", safe6, 58), 0);
         }
+
         SUBCASE("safe concatenate to st_string_t")
         {
             ST_STRING_SAFE_CONCAT(ST_STRING("abc"), ST_STRING("def"), safe1);
             CHECK_EQ(6, safe1.len);
             CHECK(st_string_equal(safe1, ST_STRING("abcdef")));
+
+            ST_STRING_SAFE_CONCAT(ST_STRING("Hello, "), ST_STRING("World!"), safe5);
+            CHECK_EQ(13, safe5.len);
+            CHECK(st_string_equal(safe5, ST_STRING("Hello, World!")));
+
+            ST_STRING_SAFE_CONCAT(ST_STRING("First part with some text "), ST_STRING("and second part with more text"),
+                                  safe6);
+            CHECK_EQ(56, safe6.len);
+            CHECK(st_string_equal(safe6, ST_STRING("First part with some text and second part with more text")));
+
+            ST_STRING_SAFE_CONCAT(ST_STRING("a"), ST_STRING("b"), safe7);
+            CHECK_EQ(2, safe7.len);
+            CHECK(st_string_equal(safe7, ST_STRING("ab")));
         }
     }
 }
