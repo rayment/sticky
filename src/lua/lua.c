@@ -19,6 +19,8 @@ st_lua_create(st_lua_t *L)
     if (!*L)
         return false;
     luaL_openlibs(*L);
+    lua_pushnil(*L);
+    lua_setglobal(*L, "print");
     luaL_requiref(*L, "sticky", luaopen_sticky, 1);
     luaL_loadstring(*L, "st = require('sticky')");
     lua_pcallk(*L, 0, -1, 0, 0, (st_voidptr)0);
