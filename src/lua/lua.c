@@ -38,9 +38,7 @@ st_bool
 st_lua_exec_file(st_lua_t L,
                  st_string_t path)
 {
-    st_char safe_path[path.len + 1];
-    memcpy(safe_path, path.data, path.len);
-    safe_path[path.len] = '\0';
+    ST_STRING_SAFE_CSTR(path, safe_path);
     if (luaL_loadfile(L, safe_path) != LUA_OK)
         return false;
     if (lua_pcallk(L, 0, -1, 0, 0, (st_voidptr)0) != LUA_OK)
@@ -63,9 +61,7 @@ st_lua_call_function(
     size_t argc,
     const st_lua_arg_t *argv)
 {
-    st_char safe_name[name.len + 1];
-    memcpy(safe_name, name.data, name.len);
-    safe_name[name.len] = '\0';
+    ST_STRING_SAFE_CSTR(name, safe_name);
 
     lua_getglobal(lua, safe_name);
 

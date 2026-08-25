@@ -251,9 +251,7 @@ st_window_swap_frame(void)
 st_bool
 st_window_set_title(st_string_t title)
 {
-    char safe_title[title.len + 1];
-    strncpy(safe_title, title.data, title.len);
-    safe_title[title.len] = '\0';
+    ST_STRING_SAFE_CSTR(title, safe_title);
     ST_SAFE_CALL(SDL_SetWindowTitle(win.sdl_win, safe_title), false, "SDL_SetWindowTitle()");
     return true;
 }

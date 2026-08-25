@@ -144,9 +144,7 @@ st_bool
 st_audio_sound_load_file(st_audio_sound_t *sound,
                         st_string_t path)
 {
-    st_char safe_path[path.len + 1];
-    memcpy(safe_path, path.data, path.len);
-    safe_path[path.len] = '\0';
+    ST_STRING_SAFE_CSTR(path, safe_path);
 
     sound->valid = false;
     if (load_mod_to_openal_buffer(safe_path, &sound->buffer))
