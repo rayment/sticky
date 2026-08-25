@@ -58,6 +58,9 @@ function(target_populate_compiler_features TARGET)
             -Wstrict-prototypes  # warn on functions without explicit parameters
             -Wmissing-prototypes # enforce prototypes for every function
         >
+        $<$<COMPILE_LANGUAGE:CXX>:
+            -Wno-vla         # allow VLAs in C++ (contrary to ISO C++)
+        >
         -Wundef              # warn on undefined macro checks without defined(...) wrapping
         -Werror              # TURN ALL WARNINGS INTO ERRORS
         # Security/hardening
