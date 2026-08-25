@@ -7,7 +7,6 @@
 
 #include "st_includes.h"
 #include "lua/lua.h"
-
 #include "log/log.h"
 
 extern int luaopen_sticky(lua_State *L);

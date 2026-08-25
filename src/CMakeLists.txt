@@ -73,6 +73,7 @@ target_sources(libsticky PRIVATE
     io/mouse.c
     log/log.c
     lua/lua.c
+    lua/modloader.c
     #log/rotate.c
     os/popup.c
     type/string.c

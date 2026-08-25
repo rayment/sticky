@@ -8,6 +8,8 @@
 #include "io/mouse.h"
 #include "log/log.h"
 #include "lua/lua.h"
+#include "lua/modloader.h"
+#include "os/popup.h"
 #include "video/window.h"
 
 int
@@ -34,9 +36,12 @@ main(void)
 
     st_window_show();
 
-    st_lua_exec_file(L, ST_STRING("mod/core/init.lua"));
-    st_lua_exec_file(L, ST_STRING("mod/core/runtime.lua"));
-
+    // TODO: Split thread and make separate states for each mod.
+    if (!st_lua_modloader_load_all(L, ST_STRING("mod")))
+    {
+        st_popup_error(ST_STRING("st_lua_modloader_load_all"), ST_STRING("Failed to load Lua mods!"));
+        return EXIT_FAILURE;
+    }
     st_lua_call_function(L, ST_STRING("on_start"), 0, nullptr);
 
     st_window_set_fixed_step_rate(3);
@@ -79,5 +84,5 @@ main(void)
     st_log_info("%s", "Goodbye.");
     st_log_free();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
