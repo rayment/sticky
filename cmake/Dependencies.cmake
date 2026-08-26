@@ -18,14 +18,3 @@ include(contrib/libxmp.cmake)
 include(contrib/sdl3_mixer.cmake)
 include(contrib/glm.cmake)
 include(contrib/zlib.cmake)
-
-#if(MINGW)
-#    get_filename_component(MINGW_BIN_DIRECTORY "${CMAKE_CXX_COMPILER}" DIRECTORY)
-#
-#    set(LIBGCC_DLL    "${MINGW_BIN_DIRECTORY}/libgcc_s_seh-1.dll")
-#    set(LIBSTDCPP_DLL "${MINGW_BIN_DIRECTORY}/libstdc++-6.dll")
-#
-#    file(COPY ${LIBGCC_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#    file(COPY ${LIBSTDCPP_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#    install(FILES ${LIBGCC_DLL} ${LIBSTDCPP_DLL} DESTINATION . COMPONENT core)
-#endif()
