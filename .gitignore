@@ -1,0 +1,16 @@
+**
+
+!cmake
+!cmake/**
+!contrib
+!contrib/**
+!lib
+!lib/**
+!src
+!src/**
+!test
+!test/**
+!.clang-format
+!.gitignore
+!CMakeLists.txt
+!COPYING
