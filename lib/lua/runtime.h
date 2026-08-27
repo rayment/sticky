@@ -30,8 +30,8 @@ namespace st::lua
         ST_DELETE_COPY_CTORS(runtime);
         ST_DELETE_MOVE_CTORS(runtime);
 
-        [[nodiscard]] st::bool_t execute_file  (const std::filesystem::path &path) noexcept;
-        [[nodiscard]] st::bool_t execute_string(std::string_view code) noexcept;
+        st::bool_t execute_file  (const std::filesystem::path &path) noexcept;
+        st::bool_t execute_string(std::string_view code) noexcept;
 
     private:
         struct runtime_impl;
