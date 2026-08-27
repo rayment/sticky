@@ -8,6 +8,8 @@ set(ST_LIB_SOURCES
     io/keyboard.cpp
     io/log.cpp
     io/mouse.cpp
+    lua/log_bindings.cpp
+    lua/runtime.cpp
     os/popup.cpp
     $<$<PLATFORM_ID:Linux>:
         os/popup_linux.c
