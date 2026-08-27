@@ -9,13 +9,12 @@
 #include <SDL3/SDL.h>
 
 #include "st_macros.h"
-
 #include "io/mouse.h"
 
 glm::f32vec2
 st::io::mouse::delta_pos() noexcept
 {
-    st_float32 x, y;
+    st::float32 x, y;
     SDL_GetRelativeMouseState(&x, &y);
     return {x, y};
 }
@@ -23,7 +22,7 @@ st::io::mouse::delta_pos() noexcept
 glm::f32vec2
 st::io::mouse::global_pos() noexcept
 {
-    st_float32 x, y;
+    st::float32 x, y;
     SDL_GetGlobalMouseState(&x, &y);
     return {x, y};
 }
@@ -31,37 +30,30 @@ st::io::mouse::global_pos() noexcept
 glm::f32vec2
 st::io::mouse::window_pos() noexcept
 {
-    st_float32 x, y;
+    st::float32 x, y;
     SDL_GetMouseState(&x, &y);
     return {x, y};
 }
 
-namespace
+st::bool_t
+st::io::mouse::button_down(st::io::mouse::button b) noexcept
 {
-    template <st_uint8 Enum>
-    st_bool
-    button_down() noexcept
+    st::uint8 mask;
+    switch (b)
     {
-        SDL_MouseButtonFlags flags = SDL_GetMouseState(nullptr, nullptr);
-        return (flags & SDL_BUTTON_MASK(Enum)) != 0;
+    case Left:   mask = SDL_BUTTON_LEFT;   break;
+    case Right:  mask = SDL_BUTTON_RIGHT;  break;
+    case Middle: mask = SDL_BUTTON_MIDDLE; break;
+    case X1:     mask = SDL_BUTTON_X1;     break;
+    case X2:     mask = SDL_BUTTON_X2;     break;
+    default: ST_ASSERT(false);             break;
     }
-
-    template <st_uint8 Enum>
-    st_bool
-    button_up() noexcept
-    {
-        return !button_down<Enum>();
-    }
+    SDL_MouseButtonFlags flags = SDL_GetMouseState(nullptr, nullptr);
+    return (flags & SDL_BUTTON_MASK(mask)) != 0;
 }
 
-st_bool st::io::mouse::left_button_down  () noexcept { return button_down<SDL_BUTTON_LEFT>(); }
-st_bool st::io::mouse::right_button_down () noexcept { return button_down<SDL_BUTTON_RIGHT>(); }
-st_bool st::io::mouse::middle_button_down() noexcept { return button_down<SDL_BUTTON_MIDDLE>(); }
-st_bool st::io::mouse::x1_button_down    () noexcept { return button_down<SDL_BUTTON_X1>(); }
-st_bool st::io::mouse::x2_button_down    () noexcept { return button_down<SDL_BUTTON_X2>(); }
-
-st_bool st::io::mouse::left_button_up  () noexcept { return button_up<SDL_BUTTON_LEFT>(); }
-st_bool st::io::mouse::right_button_up () noexcept { return button_up<SDL_BUTTON_RIGHT>(); }
-st_bool st::io::mouse::middle_button_up() noexcept { return button_up<SDL_BUTTON_MIDDLE>(); }
-st_bool st::io::mouse::x1_button_up    () noexcept { return button_up<SDL_BUTTON_X1>(); }
-st_bool st::io::mouse::x2_button_up    () noexcept { return button_up<SDL_BUTTON_X2>(); }
+st::bool_t
+st::io::mouse::button_up(st::io::mouse::button b) noexcept
+{
+    return !button_down(b);
+}

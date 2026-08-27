@@ -18,22 +18,17 @@
 
 namespace st::io::mouse
 {
+    enum button
+    {
+        Left, Right, Middle, X1, X2
+    };
 
     [[nodiscard]] glm::f32vec2 delta_pos    () noexcept;
     [[nodiscard]] glm::f32vec2 global_pos   () noexcept;
     [[nodiscard]] glm::f32vec2 window_pos   () noexcept;
 
-    [[nodiscard]] st_bool left_button_down  () noexcept;
-    [[nodiscard]] st_bool right_button_down () noexcept;
-    [[nodiscard]] st_bool middle_button_down() noexcept;
-    [[nodiscard]] st_bool x1_button_down    () noexcept;
-    [[nodiscard]] st_bool x2_button_down    () noexcept;
-
-    [[nodiscard]] st_bool left_button_up    () noexcept;
-    [[nodiscard]] st_bool right_button_up   () noexcept;
-    [[nodiscard]] st_bool middle_button_up  () noexcept;
-    [[nodiscard]] st_bool x1_button_up      () noexcept;
-    [[nodiscard]] st_bool x2_button_up      () noexcept;
+    [[nodiscard]] st::bool_t button_down(button b) noexcept;
+    [[nodiscard]] st::bool_t button_up  (button b) noexcept;
 
 }
 
