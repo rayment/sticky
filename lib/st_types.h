@@ -37,6 +37,8 @@ typedef size_t   st_enum;
 typedef _Bool    st_bool;
 
 #define nullptr ((void*)0)
+#else // __cplusplus
+typedef bool     st_bool;
 #endif // __cplusplus
 
 #ifdef __cplusplus
