@@ -1,6 +1,8 @@
 set(ST_LIB_SOURCES
     st_static_init.cpp
+    io/keyboard.cpp
     io/log.cpp
+    io/mouse.cpp
     os/popup.cpp
     $<$<PLATFORM_ID:Linux>:
         os/popup_linux.c
