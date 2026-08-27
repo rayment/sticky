@@ -5,9 +5,11 @@
  * Date created : 27/08/2026
  */
 
+#include <fmt/format.h>
 #include <SDL3/SDL.h>
 
 #include "io/gamepad.h"
+#include "io/log.h"
 
 #include <limits>
 
@@ -28,31 +30,23 @@ std::unordered_map<st::size, std::shared_ptr<st::io::gamepad>> st::io::gamepad::
 st::io::gamepad::gamepad(st::size id) noexcept
     : m_impl(std::make_unique<gamepad_impl>(id))
 {
-    SDL_Gamepad *pad= SDL_OpenGamepad(static_cast<SDL_JoystickID>(id));
+    SDL_Gamepad *pad = SDL_OpenGamepad(static_cast<SDL_JoystickID>(id));
     ST_ASSERT(pad);
     m_impl->handle = pad;
-    m_impl->pad_id = id;
     m_impl->connected = true;
 }
 
-st::io::gamepad::~gamepad() noexcept {}
+st::io::gamepad::~gamepad() noexcept = default;
 
 std::shared_ptr<st::io::gamepad>
 st::io::gamepad::connect(st::size id) noexcept
 {
-    if (ST_UNLIKELY(gamepads.find(id) != gamepads.end()))
-    {
-        std::shared_ptr<gamepad> pad = gamepads[id];
-        pad->m_impl->connected = true;
-        return pad;
-    }
-    else
-    {
-        std::shared_ptr<gamepad> pad = std::shared_ptr<gamepad>(new gamepad(id));
-        pad->m_impl->connected = true;
-        gamepads[id] = pad;
-        return pad;
-    }
+    auto [iter, inserted] = gamepads.try_emplace(id);
+    if (inserted)
+        iter->second = std::shared_ptr<gamepad>(new gamepad(id));
+    iter->second->m_impl->connected = true;
+    st::io::log::debug(fmt::format("Gamepad {} connected.", id));
+    return iter->second;
 }
 
 void
@@ -60,9 +54,25 @@ st::io::gamepad::disconnect(st::size id) noexcept
 {
     auto iter = gamepads.find(id);
     ST_ASSERT(iter != gamepads.end());
+    // close here and not in ~gamepad() as it may still be owned after free
+    SDL_CloseGamepad(iter->second->m_impl->handle);
     iter->second->m_impl->handle = nullptr;
     iter->second->m_impl->connected = false;
     gamepads.erase(iter);
+    st::io::log::debug(fmt::format("Gamepad {} disconnected.", id));
+}
+
+void
+st::io::gamepad::disconnect_all() noexcept
+{
+    for (auto &[id, pad] : gamepads)
+    {
+        SDL_CloseGamepad(pad->m_impl->handle);
+        pad->m_impl->handle = nullptr;
+        pad->m_impl->connected = false;
+        st::io::log::debug(fmt::format("Gamepad {} disconnected.", pad->m_impl->pad_id));
+    }
+    gamepads.clear();
 }
 
 st::size
@@ -71,23 +81,23 @@ st::io::gamepad::id() const noexcept
     return m_impl->pad_id;
 }
 
-st_int16
+st::int16
 st::io::gamepad::axis_value(axis a) const noexcept
 {
     if (!m_impl->connected)
         return 0;
-    st_uint8 mask;
+    SDL_GamepadAxis mask;
     switch (a)
     {
-    case LeftX:        mask = SDL_BUTTON_LEFT;  break;
-    case LeftY:        mask = SDL_BUTTON_LEFT;  break;
-    case RightX:       mask = SDL_BUTTON_RIGHT; break;
-    case RightY:       mask = SDL_BUTTON_RIGHT; break;
-    case TriggerLeft:  mask = SDL_BUTTON_X1;    break;
-    case TriggerRight: mask = SDL_BUTTON_X2;    break;
-    default: ST_ASSERT(false);                  break;
+    case LeftX:        mask = SDL_GAMEPAD_AXIS_LEFTX;         break;
+    case LeftY:        mask = SDL_GAMEPAD_AXIS_LEFTY;         break;
+    case RightX:       mask = SDL_GAMEPAD_AXIS_RIGHTX;        break;
+    case RightY:       mask = SDL_GAMEPAD_AXIS_RIGHTY;        break;
+    case TriggerLeft:  mask = SDL_GAMEPAD_AXIS_LEFT_TRIGGER;  break;
+    case TriggerRight: mask = SDL_GAMEPAD_AXIS_RIGHT_TRIGGER; break;
+    default: ST_ASSERT(false); ST_UNREACHABLE();
     }
-    return SDL_GetGamepadAxis(m_impl->handle, static_cast<SDL_GamepadAxis>(mask));
+    return SDL_GetGamepadAxis(m_impl->handle, mask);
 }
 
 st::bool_t
@@ -95,7 +105,7 @@ st::io::gamepad::button_down(button b) const noexcept
 {
     if (!m_impl->connected)
         return false;
-    st_uint8 mask;
+    SDL_GamepadButton mask;
     switch (b)
     {
     case North:         mask = SDL_GAMEPAD_BUTTON_NORTH;          break;
@@ -124,9 +134,9 @@ st::io::gamepad::button_down(button b) const noexcept
     case Misc4:         mask = SDL_GAMEPAD_BUTTON_MISC4;          break;
     case Misc5:         mask = SDL_GAMEPAD_BUTTON_MISC5;          break;
     case Misc6:         mask = SDL_GAMEPAD_BUTTON_MISC6;          break;
-    default: ST_ASSERT(false);                   break;
+    default: ST_ASSERT(false); ST_UNREACHABLE();
     }
-    return SDL_GetGamepadButton(m_impl->handle, static_cast<SDL_GamepadButton>(mask));
+    return SDL_GetGamepadButton(m_impl->handle, mask);
 }
 
 st::bool_t

@@ -44,8 +44,9 @@ namespace st::io
 
         static std::unordered_map<st::size, std::shared_ptr<gamepad>> gamepads;
 
-        static std::shared_ptr<gamepad> connect   (st::size id) noexcept;
-        static void                     disconnect(st::size id) noexcept;
+        static std::shared_ptr<gamepad> connect       (st::size id) noexcept;
+        static void                     disconnect    (st::size id) noexcept;
+        static void                     disconnect_all()            noexcept;
 
         ~gamepad() noexcept;
 
