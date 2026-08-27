@@ -37,5 +37,6 @@ include(cmake/Compiler.cmake)
 include(cmake/Linker.cmake)
 include(cmake/Dependencies.cmake)
 
+add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)

@@ -1,8 +1,10 @@
-#include <iostream>
+#include <cstdlib>
+
+#include "os/popup.h"
 
 int
 main()
 {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    st::os::popup::info("Hello, World!");
+    return EXIT_SUCCESS;
 }
