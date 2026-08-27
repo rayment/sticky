@@ -33,12 +33,35 @@ typedef double   st_float64;
 typedef size_t   st_size;
 typedef size_t   st_enum;
 
-#ifdef __cplusplus
-typedef bool     st_bool;
-#else // __cplusplus
-#define nullptr ((void*)0)
-
+#ifndef __cplusplus
 typedef _Bool    st_bool;
-#endif
+
+#define nullptr ((void*)0)
+#endif // __cplusplus
+
+#ifdef __cplusplus
+namespace st
+{
+    typedef st_int8    int8;
+    typedef st_int16   int16;
+    typedef st_int32   int32;
+    typedef st_int64   int64;
+
+    typedef st_uint8   uint8;
+    typedef st_uint16  uint16;
+    typedef st_uint32  uint32;
+    typedef st_uint64  uint64;
+
+    typedef st_char    char_t;
+
+    typedef st_float32 float32;
+    typedef st_float64 float64;
+
+    typedef st_size    size;
+    typedef st_size    enum_t;
+
+    typedef bool       bool_t;
+}
+#endif // __cplusplus
 
 #endif // STICKY_ST_TYPES_H
