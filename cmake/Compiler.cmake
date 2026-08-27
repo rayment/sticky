@@ -146,7 +146,6 @@ function(target_populate_compiler_warnings TARGET)
             -Wold-style-cast         # warn on C-style casts (use static_cast/reinterpret_cast etc.)
             -Wzero-as-null-pointer-constant  # warn on using 0 instead of nullptr
             -Wextra-semi             # warn on redundant semicolons (Clang only, GCC ignores it)
-            -Wuseless-cast           # warn on casts to the same type (GCC only)
             -Wsuggest-override       # warn on overriding virtual functions without the override specifier
         >
         -Wundef              # warn on undefined macro checks without defined(...) wrapping
