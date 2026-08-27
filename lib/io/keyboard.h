@@ -16,10 +16,10 @@
 
 namespace st::io::keyboard
 {
-    typedef st_int32 st_keycode;
+    typedef st::int32 keycode;
 
-    [[nodiscard]] st_bool key_down(st_keycode code) noexcept;
-    [[nodiscard]] st_bool key_up  (st_keycode code) noexcept;
+    [[nodiscard]] st::bool_t key_down(keycode code) noexcept;
+    [[nodiscard]] st::bool_t key_up  (keycode code) noexcept;
 }
 
 #endif // STICKY_IO_KEYBOARD_H

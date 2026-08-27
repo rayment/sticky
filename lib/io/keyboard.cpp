@@ -10,17 +10,17 @@
 #include "st_macros.h"
 #include "io/keyboard.h"
 
-st_bool
-st::io::keyboard::key_down(st_keycode code) noexcept
+st::bool_t
+st::io::keyboard::key_down(st::io::keyboard::keycode code) noexcept
 {
-    st_int32 len;
-    const st_bool *states = SDL_GetKeyboardState(&len);
+    st::int32 len;
+    const st::bool_t *states = SDL_GetKeyboardState(&len);
     ST_ASSERT(code < len);
     return states[code];
 }
 
-st_bool
-st::io::keyboard::key_up(st_keycode code) noexcept
+st::bool_t
+st::io::keyboard::key_up(st::io::keyboard::keycode code) noexcept
 {
     return !key_down(code);
 }
