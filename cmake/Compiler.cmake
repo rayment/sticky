@@ -1,6 +1,7 @@
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 include(CheckIPOSupported)
+include(CheckPIESupported)
 
 if(WIN32)
     if(NOT MINGW)
@@ -11,6 +12,8 @@ endif()
 if(CMAKE_SIZEOF_VOID_P LESS 8)
     message(FATAL_ERROR "Only 64-bit builds are supported!")
 endif()
+
+check_pie_supported()
 
 check_c_compiler_flag("-fno-omit-frame-pointer"         HAVE_FNO_OMIT_FRAME_POINTER)
 check_c_compiler_flag("-fstack-clash-protection"        HAVE_FSTACK_CLASH_PROTECTION)
@@ -109,8 +112,9 @@ function(target_populate_compiler_features TARGET)
     get_target_property(TARGET_TYPE ${TARGET} TYPE)
     if(TARGET_TYPE STREQUAL "EXECUTABLE")
         # Executable-specific features.
-        #set_target_properties(${TARGET} PROPERTIES
-        #)
+        set_target_properties(${TARGET} PROPERTIES
+            POSITION_INDEPENDENT_CODE ON
+        )
     endif()
     if(TARGET_TYPE MATCHES "_LIBRARY$")
         # Library-specific features.
@@ -122,6 +126,7 @@ endfunction()
 
 function(target_populate_compiler_warnings TARGET)
     target_compile_options(${TARGET} PRIVATE
+        # Enable warnings
         -Wpedantic
         -Wall
         -Wextra
@@ -145,6 +150,10 @@ function(target_populate_compiler_warnings TARGET)
             -Wsuggest-override       # warn on overriding virtual functions without the override specifier
         >
         -Wundef              # warn on undefined macro checks without defined(...) wrapping
+        # Disable warnings
+        $<$<COMPILE_LANGUAGE:CXX>:
+            -Wno-useless-cast        # ignore redundant casting
+        >
     )
 endfunction()
 
