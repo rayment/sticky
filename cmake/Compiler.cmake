@@ -132,6 +132,7 @@ function(target_populate_compiler_warnings TARGET)
         -Wextra
         -Wconversion         # warn on implicit conversions
         -Wsign-conversion    # warn on implicit sign changes
+        -Wno-error=sign-conversion # ... and do not treat them as errors
         -Wshadow             # warn on variable shadowing
         -Wformat=2           # aggressively check format strings
         -Wnull-dereference   # warn on obvious null pointer usage
