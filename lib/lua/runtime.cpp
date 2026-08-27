@@ -86,6 +86,51 @@ st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
 }
 
 st::bool_t
+st::lua::runtime::execute_function(std::string_view name) noexcept
+{
+    return execute_function(name, {});
+}
+
+st::bool_t
+st::lua::runtime::execute_function(std::string_view name,
+                                   std::initializer_list<const lua_arg_type> args) noexcept
+{
+    lua_getglobal(m_impl->L, name.data());
+    if (!lua_isfunction((m_impl->L), -1))
+    {
+        lua_pop(m_impl->L, 1);
+        return false;
+    }
+
+    for (const auto &arg : args)
+    {
+        std::visit([this](const auto &value)
+        {
+            using type = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<type, std::monostate>)
+                lua_pushnil(m_impl->L);
+            else if constexpr (std::is_same_v<type, st::bool_t>)
+                lua_pushboolean(m_impl->L, value);
+            else if constexpr (std::is_same_v<type, st::int64>)
+                lua_pushinteger(m_impl->L, value);
+            else if constexpr (std::is_same_v<type, st::float64>)
+                lua_pushnumber(m_impl->L, value);
+            else if constexpr (std::is_same_v<type, std::string_view>)
+                lua_pushlstring(m_impl->L, value.data(), value.size());
+        }, arg);
+    }
+
+    if (lua_pcall(m_impl->L, static_cast<st::int32>(args.size()), 0, 0) != LUA_OK)
+    {
+        luaL_traceback(m_impl->L, m_impl->L, lua_tostring(m_impl->L, -1), 1);
+        st::io::log::error(lua_tostring(m_impl->L, -1));
+        lua_pop(m_impl->L, 2);
+        return false;
+    }
+    return true;
+}
+
+st::bool_t
 st::lua::runtime::execute_string(ST_UNUSED std::string_view code) noexcept
 {
     // TODO: Implement
