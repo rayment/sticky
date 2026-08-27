@@ -17,6 +17,38 @@
 #include "st_macros.h"
 #include "io/log.h"
 
+#ifndef NDEBUG
+void
+st_io_log_trace(const st_char *message)
+{
+    st::io::log::trace(message);
+}
+
+void
+st_io_log_debug(const st_char *message)
+{
+    st::io::log::debug(message);
+}
+#endif // NDEBUG
+
+void
+st_io_log_info(const st_char *message)
+{
+    st::io::log::info(message);
+}
+
+void
+st_io_log_warn(const st_char *message)
+{
+    st::io::log::warn(message);
+}
+
+void
+st_io_log_error(const st_char *message)
+{
+    st::io::log::error(message);
+}
+
 namespace
 {
     constexpr st_bool
@@ -67,38 +99,6 @@ namespace
             spdlog::log(Level, message);
         }
     }
-}
-
-#ifndef NDEBUG
-void
-st_io_log_trace(const st_char *message)
-{
-    st::io::log::trace(message);
-}
-
-void
-st_io_log_debug(const st_char *message)
-{
-    st::io::log::debug(message);
-}
-#endif // NDEBUG
-
-void
-st_io_log_info(const st_char *message)
-{
-    st::io::log::info(message);
-}
-
-void
-st_io_log_warn(const st_char *message)
-{
-    st::io::log::warn(message);
-}
-
-void
-st_io_log_error(const st_char *message)
-{
-    st::io::log::error(message);
 }
 
 struct st::io::log::logger::logger_impl
