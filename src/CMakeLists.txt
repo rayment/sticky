@@ -3,7 +3,6 @@ set(ST_EXE_SOURCES
 )
 
 add_executable(sticky)
-
 target_sources(sticky PRIVATE ${ST_EXE_SOURCES})
 target_populate_compiler_features(sticky)
 target_populate_linker_features(sticky)
