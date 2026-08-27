@@ -40,3 +40,5 @@ target_link_libraries(
 
 target_populate_compiler_features(imgui)
 target_populate_linker_features(imgui)
+target_disable_exceptions(imgui)
+target_disable_rtti(imgui)
