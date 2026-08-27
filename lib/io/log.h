@@ -30,6 +30,12 @@ namespace st::io::log
         ST_DELETE_COPY_CTORS(logger);
         ST_DELETE_MOVE_CTORS(logger);
 
+        void trace(std::string_view message) noexcept;
+        void debug(std::string_view message) noexcept;
+        void info (std::string_view message) noexcept;
+        void warn (std::string_view message) noexcept;
+        void error(std::string_view message) noexcept;
+
         void set_default() noexcept;
 
     private:

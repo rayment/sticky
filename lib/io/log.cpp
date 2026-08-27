@@ -7,6 +7,7 @@
 
 #include <ctime>
 #include <filesystem>
+#include <vector>
 
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
@@ -15,6 +16,58 @@
 
 #include "st_macros.h"
 #include "io/log.h"
+
+namespace
+{
+    constexpr st_bool
+    is_debug_level(spdlog::level::level_enum lvl) noexcept
+    {
+        return lvl == spdlog::level::trace || lvl == spdlog::level::debug;
+    }
+
+    constexpr spdlog::level::level_enum default_log_level() noexcept
+    {
+#ifdef NDEBUG
+        return spdlog::level::info;
+#else // NDEBUG
+        return spdlog::level::trace;
+#endif // NDEBUG
+    }
+
+    template <spdlog::level::level_enum Level>
+    void
+    log_to(spdlog::logger *logger,
+           std::string_view message) noexcept
+    {
+#ifdef NDEBUG
+        if constexpr (is_debug_level(Level))
+        {
+            (void) logger;
+            (void) message;
+        }
+        else
+#endif // NDEBUG
+        {
+            logger->log(Level, message);
+        }
+    }
+
+    template <spdlog::level::level_enum Level>
+    void
+    log_default(std::string_view message) noexcept
+    {
+#ifdef NDEBUG
+        if constexpr (is_debug_level(Level))
+        {
+            (void) message;
+        }
+        else
+#endif // NDEBUG
+        {
+            spdlog::log(Level, message);
+        }
+    }
+}
 
 #ifndef NDEBUG
 void
@@ -70,10 +123,10 @@ struct st::io::log::logger::logger_impl
         return (std::filesystem::path("log") / (std::string{buffer.data()} + ".log")).string();
     }
 
-    static spdlog::sinks_init_list sinks;
+    static std::vector<spdlog::sink_ptr> sinks;
 };
 
-spdlog::sinks_init_list st::io::log::logger::logger_impl::sinks = {
+std::vector<spdlog::sink_ptr> st::io::log::logger::logger_impl::sinks = {
     std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
     std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink_file_log_path(), false)
 };
@@ -86,11 +139,7 @@ st::io::log::logger::logger(std::string_view name) noexcept
         logger_impl::sinks.begin(),
         logger_impl::sinks.end()
     );
-#ifndef NDEBUG
-    m_impl->logger->set_level(spdlog::level::trace);
-#else // NDEBUG
-    m_impl->logger->set_level(spdlog::level::info);
-#endif // NDEBUG
+    m_impl->logger->set_level(default_log_level());
     spdlog::register_logger(m_impl->logger);
 }
 
@@ -105,37 +154,14 @@ st::io::log::logger::set_default() noexcept
     spdlog::set_default_logger(m_impl->logger);
 }
 
-#ifdef NDEBUG
-void st::io::log::trace(ST_UNUSED std::string_view message) noexcept {}
-void st::io::log::debug(ST_UNUSED std::string_view message) noexcept {}
-#else // NDEBUG
-void
-st::io::log::trace(std::string_view message) noexcept
-{
-    spdlog::trace(message);
-}
+void st::io::log::trace(std::string_view m) noexcept { log_default<spdlog::level::trace>(m); }
+void st::io::log::debug(std::string_view m) noexcept { log_default<spdlog::level::debug>(m); }
+void st::io::log::info (std::string_view m) noexcept { log_default<spdlog::level::info >(m); }
+void st::io::log::warn (std::string_view m) noexcept { log_default<spdlog::level::warn >(m); }
+void st::io::log::error(std::string_view m) noexcept { log_default<spdlog::level::err  >(m); }
 
-void
-st::io::log::debug(std::string_view message) noexcept
-{
-    spdlog::debug(message);
-}
-#endif // NDEBUG
-
-void
-st::io::log::info(std::string_view message) noexcept
-{
-    spdlog::info(message);
-}
-
-void
-st::io::log::warn(std::string_view message) noexcept
-{
-    spdlog::warn(message);
-}
-
-void
-st::io::log::error(std::string_view message) noexcept
-{
-    spdlog::error(message);
-}
+void st::io::log::logger::trace(std::string_view m) noexcept { log_to<spdlog::level::trace>(m_impl->logger.get(), m); }
+void st::io::log::logger::debug(std::string_view m) noexcept { log_to<spdlog::level::debug>(m_impl->logger.get(), m); }
+void st::io::log::logger::info (std::string_view m) noexcept { log_to<spdlog::level::info >(m_impl->logger.get(), m); }
+void st::io::log::logger::warn (std::string_view m) noexcept { log_to<spdlog::level::warn >(m_impl->logger.get(), m); }
+void st::io::log::logger::error(std::string_view m) noexcept { log_to<spdlog::level::err  >(m_impl->logger.get(), m); }
