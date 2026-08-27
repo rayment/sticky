@@ -1,4 +1,5 @@
 set(ST_LIB_SOURCES
+    st_static_init.cpp
     io/log.cpp
     os/popup.cpp
     $<$<PLATFORM_ID:Linux>:
