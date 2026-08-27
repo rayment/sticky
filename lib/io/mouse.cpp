@@ -46,7 +46,7 @@ st::io::mouse::button_down(st::io::mouse::button b) noexcept
     case Middle: mask = SDL_BUTTON_MIDDLE; break;
     case X1:     mask = SDL_BUTTON_X1;     break;
     case X2:     mask = SDL_BUTTON_X2;     break;
-    default: ST_ASSERT(false);             break;
+    default: ST_ASSERT(false); ST_UNREACHABLE();
     }
     SDL_MouseButtonFlags flags = SDL_GetMouseState(nullptr, nullptr);
     return (flags & SDL_BUTTON_MASK(mask)) != 0;
