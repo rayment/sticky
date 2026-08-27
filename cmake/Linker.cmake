@@ -12,12 +12,6 @@ function(target_populate_linker_features TARGET)
             -Wl,--enable-reloc-section # ensure relocation section is present
             -Wl,--nxcompat # mark compatible with Windows Data Execution Prevention
             -Wl,--high-entropy-va # enable high-entropy 64-bit ASLR support
-            -Wl,--no-seh # mark as not using exceptions
-        >
-        $<$<BOOL:${MINGW}>:
-            # statically link glibc and libstdc++ for MinGW builds
-            -static-libgcc
-            -static-libstdc++
         >
     )
 endfunction()
