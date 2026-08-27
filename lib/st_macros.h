@@ -123,6 +123,15 @@
 #define ST_EXTERN_PROTOTYPE(prototype) \
     prototype; prototype
 
+#ifdef __cplusplus
+#define ST_DELETE_COPY_CTORS(classname) \
+    classname(const classname&) = delete; \
+    classname& operator=(const classname&) = delete
+#define ST_DELETE_MOVE_CTORS(classname) \
+    classname(classname&&) = delete; \
+    classname& operator=(classname&&) = delete
+#endif // __cplusplus
+
 #ifdef NDEBUG
 #define ST_ASSERT(expr) expr
 #else // NDEBUG
