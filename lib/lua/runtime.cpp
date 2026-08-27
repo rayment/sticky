@@ -58,6 +58,21 @@ st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
         return false;
 
     st::lua::set_logger(&m_impl->lua_logger);
+
+    const auto directory = std::filesystem::absolute(path).parent_path();
+
+    // Change lua package path to directory that file belongs to.
+    lua_getglobal(m_impl->L, "package");
+    lua_pushstring(
+        m_impl->L,
+        (directory.generic_string() + "/?.lua;").c_str());
+    lua_setfield(m_impl->L, -2, "path");
+
+    // Disable native module loading.
+    lua_pushstring(m_impl->L, "");
+    lua_setfield(m_impl->L, -2, "cpath");
+    lua_pop(m_impl->L, 1);
+
     if (luaL_loadfile(m_impl->L, path.generic_string().c_str()) != LUA_OK)
         return false;
     if (lua_pcallk(m_impl->L, 0, 0, 0, 0, nullptr) != LUA_OK)
