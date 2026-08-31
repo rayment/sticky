@@ -38,6 +38,8 @@ set(ST_LIB_PUBLIC_DEPENDENCIES
     SDL3_mixer::SDL3_mixer
     # Math
     glm
+    # Config
+    yaml-cpp
     # Archives
     zlib
 )

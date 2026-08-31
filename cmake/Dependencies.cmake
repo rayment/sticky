@@ -17,6 +17,7 @@ include(contrib/openal.cmake)
 include(contrib/libxmp.cmake)
 include(contrib/sdl3_mixer.cmake)
 include(contrib/glm.cmake)
+include(contrib/yaml-cpp.cmake)
 include(contrib/zlib.cmake)
 
 if(MINGW)
