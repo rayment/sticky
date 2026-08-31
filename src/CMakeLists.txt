@@ -1,4 +1,5 @@
 set(ST_EXE_SOURCES
+    argparse.cpp
     main.cpp
 )
 
