@@ -3,7 +3,6 @@ set(ST_LIB_INTERFACES
 )
 
 set(ST_LIB_SOURCES
-    st_static_init.cpp
     io/gamepad.cpp
     io/keyboard.cpp
     io/log.cpp
@@ -11,6 +10,8 @@ set(ST_LIB_SOURCES
     lua/log_bindings.cpp
     lua/runtime.cpp
     os/popup.cpp
+    st_init.cpp
+
     $<$<PLATFORM_ID:Linux>:
         os/popup_linux.c
     >
