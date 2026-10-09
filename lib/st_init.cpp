@@ -25,6 +25,14 @@
         abort(); \
     }
 
+// TODO: Do better than this?
+#define ST_OPENAL_SAFE_CALL(name, expr) \
+    if (ST_UNLIKELY(!(expr))) \
+    { \
+        st::os::popup::error((name), "Error occurred initialising OpenAL!"); \
+        abort(); \
+    }
+
 static std::unique_ptr<st::io::log::logger> default_logger;
 
 static void
@@ -48,7 +56,7 @@ static void
 init_openal() noexcept
 {
     st::io::log::debug("Init OpenAL resources.");
-    st::audio::server::init();
+    ST_OPENAL_SAFE_CALL("st::audio::server::init", st::audio::server::init());
 }
 
 static void
@@ -62,7 +70,7 @@ static void
 free_openal() noexcept
 {
     st::io::log::debug("Free OpenAL resources.");
-    st::audio::server::free();
+    ST_OPENAL_SAFE_CALL("st::audio::server::free", st::audio::server::free());
 }
 
 st_bool
