@@ -12,6 +12,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "audio/server.h"
 #include "io/log.h"
 #include "st_init.h"
 #include "st_macros.h"
@@ -44,10 +45,24 @@ init_sdl() noexcept
 }
 
 static void
+init_openal() noexcept
+{
+    st::io::log::debug("Init OpenAL resources.");
+    st::audio::server::init();
+}
+
+static void
 free_sdl() noexcept
 {
     st::io::log::debug("Free SDL resources.");
     SDL_Quit();
+}
+
+static void
+free_openal() noexcept
+{
+    st::io::log::debug("Free OpenAL resources.");
+    st::audio::server::free();
 }
 
 st_bool
@@ -58,6 +73,7 @@ st::lib_init() noexcept
     st::io::log::debug("--------");
     st::io::log::debug("Begin libsticky static init.");
     init_sdl();
+    init_openal();
     st::io::log::debug("End libsticky static init.");
     st::io::log::debug("--------");
     return true;
@@ -68,6 +84,7 @@ st::lib_free() noexcept
 {
     st::io::log::debug("--------");
     st::io::log::debug("Begin libsticky static free.");
+    free_openal();
     free_sdl();
     st::io::log::debug("End libsticky static free.");
     st::io::log::debug("--------");

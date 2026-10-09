@@ -3,6 +3,10 @@ set(ST_LIB_INTERFACES
 )
 
 set(ST_LIB_SOURCES
+    audio/client.cpp
+    audio/server.cpp
+    audio/sound.cpp
+    audio/source.cpp
     io/gamepad.cpp
     io/keyboard.cpp
     io/log.cpp
