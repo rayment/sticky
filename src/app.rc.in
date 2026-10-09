@@ -1,0 +1,42 @@
+#include <windows.h>
+
+#define APP_FILE_VERSION \
+    @VERSION_MAJOR@, @VERSION_MINOR@, @VERSION_PATCH@, 0
+
+#define APP_FILE_VERSION_STRING "@VERSION_STRING@\0"
+#define APP_PRODUCT_NAME        "@PROGRAM_TITLE@\0"
+#define APP_COPYRIGHT           "Copyright (c) @COPYRIGHT_OWNER@ @COPYRIGHT_STRING@\0"
+
+IDI_ICON1 ICON "@CMAKE_SOURCE_DIR@/res/appicon.ico"
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION     APP_FILE_VERSION
+    PRODUCTVERSION  APP_FILE_VERSION
+
+    FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+    FILEFLAGS       @VERSION_FILEFLAGS@
+    FILEOS          VOS_NT_WINDOWS32
+    FILETYPE        VFT_APP
+    FILESUBTYPE     VFT2_UNKNOWN
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      "@COPYRIGHT_OWNER@\0"
+            VALUE "FileDescription",  "@PROGRAM_TITLE@\0"
+            VALUE "FileVersion",      APP_FILE_VERSION_STRING
+            VALUE "InternalName",     "@OUTPUT_NAME@\0"
+            VALUE "LegalCopyright",   APP_COPYRIGHT
+            VALUE "OriginalFilename", "@OUTPUT_FILENAME@\0"
+            VALUE "ProductName",      APP_PRODUCT_NAME
+            VALUE "ProductVersion",   APP_FILE_VERSION_STRING
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1252
+    END
+END
