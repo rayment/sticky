@@ -1,0 +1,35 @@
+/*
+ * filesystem.h
+ *
+ * Author       : Finn Rayment <finn@rayment.fr>
+ * Date created : 09/10/2026
+ */
+
+#ifndef STICKY_IO_FILESYSTEM_H
+#define STICKY_IO_FILESYSTEM_H
+
+#include <filesystem>
+#include <string>
+#include <vector>
+
+#include "st_types.h"
+
+namespace st::io::filesystem
+{
+
+    [[nodiscard]] st::bool_t exists      (const std::filesystem::path &path) noexcept;
+    [[nodiscard]] st::bool_t is_directory(const std::filesystem::path &path) noexcept;
+    [[nodiscard]] st::bool_t is_file     (const std::filesystem::path &path) noexcept;
+
+    [[nodiscard]] std::string basename (const std::filesystem::path &path) noexcept;
+    [[nodiscard]] std::string dirname  (const std::filesystem::path &path) noexcept;
+    [[nodiscard]] std::string extension(const std::filesystem::path &path) noexcept;
+    [[nodiscard]] std::string stem     (const std::filesystem::path &path) noexcept;
+
+    [[nodiscard]] std::vector<std::filesystem::path> list_all    (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+    [[nodiscard]] std::vector<std::filesystem::path> list_files  (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+    [[nodiscard]] std::vector<std::filesystem::path> list_subdirs(const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+
+}
+
+#endif // STICKY_FILESYSTEM_H

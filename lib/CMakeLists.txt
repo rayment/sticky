@@ -7,6 +7,7 @@ set(ST_LIB_SOURCES
     audio/server.cpp
     audio/sound.cpp
     audio/source.cpp
+    io/filesystem.cpp
     io/gamepad.cpp
     io/keyboard.cpp
     io/log.cpp
