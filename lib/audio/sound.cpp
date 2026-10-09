@@ -15,7 +15,7 @@
 #include <AL/alc.h>
 
 static st_bool
-load_mod_to_openal_buffer(const std::string &path, ALuint *out_buffer)
+load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
 {
     MIX_AudioDecoder *decoder = NULL;
     SDL_AudioSpec spec;
@@ -32,7 +32,7 @@ load_mod_to_openal_buffer(const std::string &path, ALuint *out_buffer)
      * This causes SDL3_mixer to select the appropriate decoder,
      * which should be libxmp for MOD files when XMP support is enabled.
      */
-    decoder = MIX_CreateAudioDecoder(path.c_str(), 0);
+    decoder = MIX_CreateAudioDecoder(path.u8string().c_str(), 0);
     if (decoder == NULL)
         goto fail;
 
@@ -149,7 +149,7 @@ st::audio::sound::~sound() noexcept
 }
 
 std::shared_ptr<st::audio::sound>
-st::audio::sound::load_file(const std::string &path) noexcept
+st::audio::sound::load_file(const std::filesystem::path &path) noexcept
 {
     ALuint buffer;
     if (load_mod_to_openal_buffer(path, &buffer))

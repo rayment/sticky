@@ -8,8 +8,8 @@
 #ifndef STICKY_AUDIO_SOUND_H
 #define STICKY_AUDIO_SOUND_H
 
+#include <filesystem>
 #include <memory>
-#include <string>
 
 #include "st_macros.h"
 #include "st_types.h"
@@ -23,7 +23,7 @@ namespace st::audio
     public:
         friend st::audio::source;
 
-        [[nodiscard]] static std::shared_ptr<sound> load_file(const std::string &path) noexcept;
+        [[nodiscard]] static std::shared_ptr<sound> load_file(const std::filesystem::path &path) noexcept;
 
         ~sound() noexcept;
 
