@@ -133,7 +133,7 @@
 #endif // __cplusplus
 
 #ifdef NDEBUG
-#define ST_ASSERT(expr) expr
+#define ST_ASSERT(expr) ((void)(expr))
 #else // NDEBUG
 #define ST_ASSERT(expr) \
     if (!(expr)) \
