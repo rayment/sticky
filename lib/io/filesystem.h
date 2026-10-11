@@ -8,6 +8,10 @@
 #ifndef STICKY_IO_FILESYSTEM_H
 #define STICKY_IO_FILESYSTEM_H
 
+#ifndef __cplusplus
+#error "C++ compiler required to include this header."
+#endif // __cplusplus
+
 #include <filesystem>
 #include <string>
 #include <vector>
