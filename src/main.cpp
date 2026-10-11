@@ -28,15 +28,6 @@ main(st_int32 argc,
     st::io::log::info(fmt::format("Copyright (c) {} {}.", COPYRIGHT_OWNER, COPYRIGHT_STRING));
 
     {
-        if (!st::io::filesystem::exists("mod/core/main.lua"))
-        {
-            st::os::popup::error(fmt::format(
-                "Could not locate core mod main.lua. The program installation may be corrupt. Please reinstall {} and try again!",
-                PROGRAM_TITLE
-            ));
-            return EXIT_FAILURE;
-        }
-
         st::modloader ml;
         auto mods = ml.load_mods();
 
