@@ -31,9 +31,9 @@ struct st::lua::runtime::runtime_impl
 };
 
 [[nodiscard]]
-static bool is_within_directory(
-    const std::filesystem::path &root,
-    const std::filesystem::path &candidate) noexcept
+static bool
+is_within_directory(const std::filesystem::path &root,
+                    const std::filesystem::path &candidate) noexcept
 {
     auto root_it = root.begin();
     auto candidate_it = candidate.begin();
@@ -48,14 +48,14 @@ static bool is_within_directory(
 }
 
 [[nodiscard]]
-static bool resolve_file(
-    const std::filesystem::path &root,
-    const std::filesystem::path &requested,
-    std::filesystem::path &resolved) noexcept
+static st::bool_t
+resolve_path(const std::filesystem::path &root,
+             const std::filesystem::path &requested,
+             std::filesystem::path &resolved) noexcept
 {
     std::error_code ec;
 
-    const std::filesystem::path canonical_root = std::filesystem::canonical(root, ec);
+    const auto canonical_root = std::filesystem::canonical(root, ec);
     if (ec)
         return false;
 
@@ -68,10 +68,156 @@ static bool resolve_file(
     if (ec || !is_within_directory(canonical_root, resolved))
         return false;
 
-    if (!std::filesystem::is_regular_file(resolved, ec) || ec)
+    return true;
+}
+
+[[nodiscard]]
+static st::bool_t
+resolve_file(const std::filesystem::path &root,
+             const std::filesystem::path &requested,
+             std::filesystem::path &resolved) noexcept
+{
+    if (!resolve_path(root, requested, resolved))
         return false;
 
+    std::error_code ec;
+    return std::filesystem::is_regular_file(resolved, ec) && !ec;
+}
+
+[[nodiscard]]
+static bool
+is_valid_module_name(const std::string &name) noexcept
+{
+    if (name.empty() || name.front() == '.' || name.back() == '.')
+        return false;
+    bool previous_dot = false;
+    for (const unsigned char c : name)
+    {
+        if (c == '.')
+        {
+            if (previous_dot)
+                return false;
+            previous_dot = true;
+            continue;
+        }
+        if (!(
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') ||
+            c == '_'))
+        {
+            return false;
+        }
+        previous_dot = false;
+    }
     return true;
+}
+
+static void
+load_std_libraries(lua_State *L)
+{
+    luaL_requiref(L, LUA_GNAME, luaopen_base, 1);
+    lua_pop(L, 1);
+    luaL_requiref(L, LUA_COLIBNAME, luaopen_coroutine, 1);
+    lua_pop(L, 1);
+    luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
+    lua_pop(L, 1);
+    luaL_requiref(L, LUA_STRLIBNAME, luaopen_string, 1);
+    lua_pop(L, 1);
+    luaL_requiref(L, LUA_UTF8LIBNAME, luaopen_utf8, 1);
+    lua_pop(L, 1);
+    luaL_requiref(L, LUA_MATHLIBNAME, luaopen_math, 1);
+    lua_pop(L, 1);
+
+    constexpr const char *unsafe_globals[] = {
+        "dofile",
+        "loadfile",
+        "load",
+        "collectgarbage"
+    };
+
+    for (const char *name : unsafe_globals)
+    {
+        lua_pushnil(L);
+        lua_setglobal(L, name);
+    }
+}
+
+static st::char_t require_cache_key;
+
+static int
+require_mod(lua_State *L)
+{
+    const char *name_arg = luaL_checkstring(L, 1);
+    const std::string name(name_arg);
+
+    if (!is_valid_module_name(name))
+        return luaL_error(L, "invalid module name '%s'", name.c_str());
+
+    // Retrieve the module cache from the Lua registry.
+    lua_rawgetp(L, LUA_REGISTRYINDEX, &require_cache_key);
+    const int cache_index = lua_gettop(L);
+
+    // Return the cached module, if present.
+    lua_pushlstring(L, name.data(), name.size());
+    lua_rawget(L, cache_index);
+
+    if (!lua_isnil(L, -1))
+    {
+        lua_remove(L, cache_index);
+        return 1;
+    }
+
+    lua_pop(L, 1);
+
+    const char *root_arg = lua_tostring(L, lua_upvalueindex(1));
+    if (root_arg == nullptr)
+    {
+        lua_pop(L, 1);
+        return luaL_error(L, "missing Lua root directory");
+    }
+
+    std::string relative_name = name;
+    for (char &c : relative_name)
+    {
+        if (c == '.')
+            c = '/';
+    }
+    relative_name += ".lua";
+
+    std::filesystem::path candidate;
+    if (!resolve_file(root_arg, relative_name, candidate))
+    {
+        lua_pop(L, 1);
+        return luaL_error(
+            L, "module '%s' could not be resolved within the Lua directory",
+            name.c_str());
+    }
+
+    if (luaL_loadfile(L, candidate.string().c_str()) != LUA_OK)
+    {
+        lua_remove(L, cache_index);
+        return lua_error(L);
+    }
+
+    if (lua_pcall(L, 0, 1, 0) != LUA_OK)
+    {
+        lua_remove(L, cache_index);
+        return lua_error(L);
+    }
+
+    if (lua_isnil(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_pushboolean(L, 1);
+    }
+
+    lua_pushlstring(L, name.data(), name.size());
+    lua_pushvalue(L, -2);
+    lua_rawset(L, cache_index);
+
+    lua_remove(L, cache_index);
+    return 1;
 }
 
 st::lua::runtime::runtime(std::string_view name,
@@ -82,26 +228,21 @@ st::lua::runtime::runtime(std::string_view name,
 
     m_impl->L = luaL_newstate();
     ST_ASSERT(m_impl->L);
-    luaL_openlibs(m_impl->L);
+
+    load_std_libraries(m_impl->L);
+
+    const auto lua_root = std::filesystem::canonical(root_dir);
+    lua_newtable(m_impl->L);
+    lua_rawsetp(m_impl->L, LUA_REGISTRYINDEX, &require_cache_key);
+    lua_pushstring(m_impl->L, lua_root.generic_string().c_str());
+    lua_pushcclosure(m_impl->L, require_mod, 1);
+    lua_setglobal(m_impl->L, "require");
+
     lua_pushnil(m_impl->L);
     lua_setglobal(m_impl->L, "print");
-    luaL_requiref(m_impl->L, "sticky", luaopen_sticky, 1);
-    luaL_loadstring(m_impl->L, "st = require('sticky')");
-    lua_pcallk(m_impl->L, 0, -1, 0, 0, nullptr);
-    lua_pop(m_impl->L, 1);
 
-    // Change lua package path to directory that file belongs to.
-    lua_getglobal(m_impl->L, "package");
-    lua_pushfstring(
-        m_impl->L,
-        "%s/?.lua;%s/?/init.lua",
-        root_dir.generic_string().c_str(), root_dir.generic_string().c_str());
-    lua_setfield(m_impl->L, -2, "path");
-
-    // Disable native module loading.
-    lua_pushstring(m_impl->L, "");
-    lua_setfield(m_impl->L, -2, "cpath");
-    lua_pop(m_impl->L, 1);
+    luaL_requiref(m_impl->L, "sticky", luaopen_sticky, 0);
+    lua_setglobal(m_impl->L, "st");
 }
 
 st::lua::runtime::~runtime() noexcept
