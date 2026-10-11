@@ -1,6 +1,7 @@
 set(ST_EXE_SOURCES
     argparse.cpp
     main.cpp
+    modloader.cpp
 )
 
 add_executable(sticky)
