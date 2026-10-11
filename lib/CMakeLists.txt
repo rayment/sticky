@@ -1,6 +1,5 @@
 set(ST_LIB_INTERFACES
     st_lua_typemaps.i
-    io/filesystem.i
     io/log.i
 )
 
