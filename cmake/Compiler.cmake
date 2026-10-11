@@ -135,7 +135,6 @@ function(target_populate_compiler_warnings TARGET)
         -Wextra
         -Wconversion         # warn on implicit conversions
         -Wsign-conversion    # warn on implicit sign changes
-        -Wno-error=sign-conversion # ... and do not treat them as errors
         -Wshadow             # warn on variable shadowing
         -Wformat=2           # aggressively check format strings
         -Wnull-dereference   # warn on obvious null pointer usage
@@ -157,6 +156,9 @@ function(target_populate_compiler_warnings TARGET)
         $<$<COMPILE_LANGUAGE:CXX>:
             -Wno-useless-cast        # ignore redundant casting
         >
+        # Disable certain warnings being converted to errors
+        -Wno-error=sign-conversion   # don't treat implicit sign changes as errors
+        -Wno-error=extra-semi        # ignore extra semicolons
     )
 endfunction()
 
