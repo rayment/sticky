@@ -22,6 +22,11 @@
 #include "st_macros.h"
 #include "st_types.h"
 
+namespace st::gui
+{
+    class core; // forward-declare
+}
+
 namespace st::video
 {
     class window
@@ -45,6 +50,7 @@ namespace st::video
         void accumulate       ()                                          noexcept;
         void reset_accumulator()                                          noexcept;
         void simulate         (std::function<void(st::float64)> callback) noexcept;
+        void attach_gui       (st::gui::core &gui)                        noexcept; // TODO: Remove.
 
         [[nodiscard]] st::bool_t      close_requested() const noexcept;
         [[nodiscard]] st::float64     delta_time     () const noexcept;
@@ -59,6 +65,9 @@ namespace st::video
         void set_fullscreen    (fullscreen_mode mode)   noexcept;
         void set_title         (std::string_view title) noexcept;
         void set_vsync         (vsync_mode mode)        noexcept;
+
+        void *sdl_ptr() const noexcept;
+        void *gl_ptr () const noexcept;
 
     private:
         struct window_impl;

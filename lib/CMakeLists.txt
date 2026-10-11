@@ -1,5 +1,8 @@
+set(GUI_BACKEND imgui)
+
 set(ST_LIB_INTERFACES
     st_lua_typemaps.i
+    gui/frame.i
     io/log.i
 )
 
@@ -8,6 +11,9 @@ set(ST_LIB_SOURCES
     audio/server.cpp
     audio/sound.cpp
     audio/source.cpp
+    gui/component.cpp
+    gui/backend_${GUI_BACKEND}/core.cpp
+    gui/backend_${GUI_BACKEND}/frame.cpp
     io/filesystem.cpp
     io/gamepad.cpp
     io/keyboard.cpp

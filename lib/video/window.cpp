@@ -14,6 +14,7 @@
 #include <GL/glew.h>
 #include <SDL3/SDL.h>
 
+#include "gui/core.h"
 #include "io/gamepad.h"
 #include "io/log.h"
 #include "video/window.h"
@@ -39,6 +40,7 @@ struct st::video::window::window_impl
     st::float64      fixed_timestep = 0.02;
     st::uint64       perf_counter   = 0;
     st::float64      accumulator    = 0;
+    st::gui::core   *gui            = nullptr; // TODO: Remove.
 };
 
 #define ST_SDL_SAFE_CALL(name, expr) \
@@ -119,6 +121,12 @@ st::video::window::poll() noexcept
         else if (e.type == SDL_EVENT_GAMEPAD_REMOVED)
         {
             st::io::gamepad::disconnect(e.gdevice.which);
+        }
+        else
+        {
+            // TODO: Replace with event bus.
+            if (m_impl->gui)
+                m_impl->gui->process_event(e);
         }
     }
 }
@@ -260,4 +268,23 @@ st::video::window::set_vsync(vsync_mode mode) noexcept
             SDL_GL_SetSwapInterval(SDL_RENDERER_VSYNC_DISABLED));
         break;
     }
+}
+
+void *
+st::video::window::sdl_ptr() const noexcept
+{
+    return m_impl->window;
+}
+
+void *
+st::video::window::gl_ptr() const noexcept
+{
+    return m_impl->gl_context;
+}
+
+void
+st::video::window::attach_gui(st::gui::core &gui) noexcept
+{
+    // TODO: Remove.
+    m_impl->gui = &gui;
 }

@@ -18,11 +18,14 @@
 
 %include "st_lua_typemaps.i"
 
+%include "gui/frame.i"
 %include "io/log.i"
 
 // Shift all class namespaces back under the correct `st` namespace to avoid double nesting (e.g. `st.st.lua`)
 %luacode %{
     local M = sticky
+
+    M.gui = M.st.gui
 
     M.st = nil
 %}

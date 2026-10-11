@@ -159,6 +159,8 @@ function(target_populate_compiler_warnings TARGET)
         # Disable certain warnings being converted to errors
         -Wno-error=sign-conversion   # don't treat implicit sign changes as errors
         -Wno-error=extra-semi        # ignore extra semicolons
+        -Wno-error=old-style-cast    # C-style casts
+        -Wno-error=conversion
     )
 endfunction()
 
