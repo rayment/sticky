@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include "gui/core.h"
 #include "io/filesystem.h"
 #include "io/log.h"
 #include "lua/runtime.h"
@@ -56,6 +57,8 @@ main(st_int32 argc,
         }
 
         st::video::window win;
+        st::gui::core gui(win);
+        win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
         win.show();
 
         for (auto &mod : mods)
@@ -86,6 +89,16 @@ main(st_int32 argc,
             }
 
             win.clear();
+
+            gui.clear();
+            for (auto &mod : mods)
+            {
+                auto &lua_rt = mod.second->runtime();
+                lua_rt.execute_function("on_gui_render");
+            }
+            gui.render();
+            gui.swap();
+
             win.swap();
         }
 
