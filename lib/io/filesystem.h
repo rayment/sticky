@@ -26,9 +26,9 @@ namespace st::io::filesystem
     [[nodiscard]] std::string extension(const std::filesystem::path &path) noexcept;
     [[nodiscard]] std::string stem     (const std::filesystem::path &path) noexcept;
 
-    [[nodiscard]] std::vector<std::filesystem::path> list_all    (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
-    [[nodiscard]] std::vector<std::filesystem::path> list_files  (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
-    [[nodiscard]] std::vector<std::filesystem::path> list_subdirs(const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+    [[nodiscard]] std::vector<std::string> list_all    (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+    [[nodiscard]] std::vector<std::string> list_files  (const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
+    [[nodiscard]] std::vector<std::string> list_subdirs(const std::filesystem::path &path, st::bool_t follow_symlinks = false) noexcept;
 
 }
 

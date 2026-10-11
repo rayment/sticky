@@ -6,7 +6,6 @@
  */
 
 #include <system_error>
-#include <utility>
 
 #include "io/filesystem.h"
 
@@ -52,11 +51,11 @@ st::io::filesystem::stem(const std::filesystem::path &path) noexcept
     return path.stem().string();
 }
 
-std::vector<std::filesystem::path>
+std::vector<std::string>
 st::io::filesystem::list_all(const std::filesystem::path &path,
                              st::bool_t follow_symlinks) noexcept
 {
-    std::vector<std::filesystem::path> entries;
+    std::vector<std::string> entries;
 
     std::error_code ec;
     for (std::filesystem::directory_iterator it(path, ec), end;
@@ -82,22 +81,22 @@ st::io::filesystem::list_all(const std::filesystem::path &path,
             if (canonical_ec)
                 continue;
 
-            entries.push_back(std::move(resolved));
+            entries.push_back(resolved.string());
         }
         else
         {
-            entries.push_back(entry);
+            entries.push_back(entry.string());
         }
     }
 
     return entries;
 }
 
-std::vector<std::filesystem::path>
+std::vector<std::string>
 st::io::filesystem::list_files(const std::filesystem::path &path,
                                st::bool_t follow_symlinks) noexcept
 {
-    std::vector<std::filesystem::path> files;
+    std::vector<std::string> files;
 
     std::error_code ec;
     for (std::filesystem::directory_iterator it(path, ec), end; !ec && it != end; it.increment(ec))
@@ -118,22 +117,22 @@ st::io::filesystem::list_files(const std::filesystem::path &path,
 
             std::error_code status_ec;
             if (std::filesystem::is_regular_file(resolved, status_ec) && !status_ec)
-                files.push_back(std::move(resolved));
+                files.push_back(resolved.string());
         }
         else if (it->is_regular_file(type_ec) && !type_ec)
         {
-            files.push_back(it->path());
+            files.push_back(it->path().string());
         }
     }
 
     return files;
 }
 
-std::vector<std::filesystem::path>
+std::vector<std::string>
 st::io::filesystem::list_subdirs(const std::filesystem::path &path,
                                  st::bool_t follow_symlinks) noexcept
 {
-    std::vector<std::filesystem::path> dirs;
+    std::vector<std::string> dirs;
 
     std::error_code ec;
     for (std::filesystem::directory_iterator it(path, ec), end; !ec && it != end; it.increment(ec))
@@ -154,11 +153,11 @@ st::io::filesystem::list_subdirs(const std::filesystem::path &path,
 
             std::error_code status_ec;
             if (std::filesystem::is_directory(resolved, status_ec) && !status_ec)
-                dirs.push_back(std::move(resolved));
+                dirs.push_back(resolved.string());
         }
         else if (it->is_directory(type_ec) && !type_ec)
         {
-            dirs.push_back(it->path());
+            dirs.push_back(it->path().string());
         }
     }
 
