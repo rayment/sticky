@@ -17,6 +17,7 @@ set(ST_LIB_SOURCES
     lua/log_bindings.cpp
     lua/runtime.cpp
     os/popup.cpp
+    video/window.cpp
     st_init.cpp
 
     $<$<PLATFORM_ID:Linux>:
