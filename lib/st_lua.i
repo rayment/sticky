@@ -14,4 +14,5 @@
 
 %include "st_lua_typemaps.i"
 
+%include "io/filesystem.i"
 %include "io/log.i"
