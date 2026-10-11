@@ -103,8 +103,8 @@ st::modloader::load_mods() noexcept
     auto mod_folders = st::io::filesystem::list_subdirs("mod");
     for (auto &mod_folder : mod_folders)
     {
-        st::bool_t has_metadata   = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "metadata.json");
-        st::bool_t has_entrypoint = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "main.lua");
+        st::bool_t has_metadata   = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "mod.json");
+        st::bool_t has_entrypoint = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "lua" / "main.lua");
         if (!has_metadata)
         {
             st::io::log::info(fmt::format("Ignoring mod folder '{}' because no metadata.json file was found.", mod_folder));
@@ -115,7 +115,7 @@ st::modloader::load_mods() noexcept
             st::io::log::info(fmt::format("Ignoring mod folder '{}' because no main.lua file was found.", mod_folder));
             continue;
         }
-        std::ifstream metadata_file((std::filesystem::path(mod_folder) / "metadata.json").string());
+        std::ifstream metadata_file((std::filesystem::path(mod_folder) / "mod.json").string());
         try
         {
             nlohmann::json metadata = nlohmann::json::parse(metadata_file);
@@ -140,7 +140,7 @@ st::modloader::load_mods() noexcept
                 metadata["version"].get<std::string>(),
                 metadata["author"].get<std::string>(),
                 metadata["description"].get<std::string>(),
-                mod_folder
+                std::filesystem::path(mod_folder) / "lua"
             );
             mods.emplace(mod_name, std::unique_ptr<st::mod>(mod));
         } catch (...)
