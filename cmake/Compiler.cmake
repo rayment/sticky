@@ -22,6 +22,7 @@ check_c_compiler_flag("-fstrict-flex-arrays=3"          HAVE_FSTRICT_FLEX_ARRAYS
 check_c_compiler_flag("-fcf-protection=full"            HAVE_FCF_PROTECTION_FULL)
 check_c_compiler_flag("-fno-delete-null-pointer-checks" HAVE_FNO_DELETE_NULL_POINTER_CHECKS)
 check_c_compiler_flag("-ftrivial-auto-var-init=zero"    HAVE_FTRIVIAL_AUTO_VAR_INIT_ZERO)
+check_c_compiler_flag("-fdiagnostics-show-option"       HAVE_FDIAGNOSTICS_SHOW_OPTION)
 check_cxx_compiler_flag("-fno-exceptions"               HAVE_FNO_EXCEPTIONS)
 check_cxx_compiler_flag("-fno-rtti"                     HAVE_FNO_RTTI)
 
@@ -58,6 +59,8 @@ function(target_populate_compiler_features TARGET)
         $<$<BOOL:${HAVE_FSTRICT_FLEX_ARRAYS_3}>:-fstrict-flex-arrays=3> # strict array members
         $<$<BOOL:${HAVE_FCF_PROTECTION_FULL}>:-fcf-protection=full> # control flow integrity protection
         $<$<BOOL:${HAVE_FNO_DELETE_NULL_POINTER_CHECKS}>:-fno-delete-null-pointer-checks>  # prevent optimiser from removing null checks
+
+        $<$<BOOL:${HAVE_FDIAGNOSTICS_SHOW_OPTION}>:-fdiagnostics-show-option>  # show option flags in warnings/errors to assist debugging
 
         $<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugWithSanitizer>>:
             -O0 # disable all optimisations
