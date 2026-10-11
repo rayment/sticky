@@ -19,18 +19,64 @@ extern "C" int luaopen_sticky(lua_State *L);
 
 struct st::lua::runtime::runtime_impl
 {
-    runtime_impl (std::string_view name) noexcept
-        : logger_name(name), lua_logger(name)
+    runtime_impl(std::string_view name, std::filesystem::path root_dir) noexcept
+        : logger_name(name), lua_logger(name), root_dir_path(root_dir)
     {}
     ~runtime_impl() noexcept = default;
 
     std::string logger_name;
     st::io::log::logger lua_logger;
+    std::filesystem::path root_dir_path;
     lua_State *L;
 };
 
-st::lua::runtime::runtime(std::string_view name) noexcept
-    : m_impl{std::make_unique<runtime_impl>(name)}
+[[nodiscard]]
+static bool is_within_directory(
+    const std::filesystem::path &root,
+    const std::filesystem::path &candidate) noexcept
+{
+    auto root_it = root.begin();
+    auto candidate_it = candidate.begin();
+
+    for (; root_it != root.end(); ++root_it, ++candidate_it)
+    {
+        if (candidate_it == candidate.end() || *root_it != *candidate_it)
+            return false;
+    }
+
+    return true;
+}
+
+[[nodiscard]]
+static bool resolve_file(
+    const std::filesystem::path &root,
+    const std::filesystem::path &requested,
+    std::filesystem::path &resolved) noexcept
+{
+    std::error_code ec;
+
+    const std::filesystem::path canonical_root = std::filesystem::canonical(root, ec);
+    if (ec)
+        return false;
+
+    const auto candidate = requested.is_absolute()
+        ? requested
+        : canonical_root / requested;
+
+    resolved = std::filesystem::canonical(candidate, ec);
+
+    if (ec || !is_within_directory(canonical_root, resolved))
+        return false;
+
+    if (!std::filesystem::is_regular_file(resolved, ec) || ec)
+        return false;
+
+    return true;
+}
+
+st::lua::runtime::runtime(std::string_view name,
+                          std::filesystem::path root_dir) noexcept
+    : m_impl{std::make_unique<runtime_impl>(name, root_dir)}
 {
     st::lua::set_logger(&m_impl->lua_logger);
 
@@ -43,6 +89,19 @@ st::lua::runtime::runtime(std::string_view name) noexcept
     luaL_loadstring(m_impl->L, "st = require('sticky')");
     lua_pcallk(m_impl->L, 0, -1, 0, 0, nullptr);
     lua_pop(m_impl->L, 1);
+
+    // Change lua package path to directory that file belongs to.
+    lua_getglobal(m_impl->L, "package");
+    lua_pushfstring(
+        m_impl->L,
+        "%s/?.lua;%s/?/init.lua",
+        root_dir.generic_string().c_str(), root_dir.generic_string().c_str());
+    lua_setfield(m_impl->L, -2, "path");
+
+    // Disable native module loading.
+    lua_pushstring(m_impl->L, "");
+    lua_setfield(m_impl->L, -2, "cpath");
+    lua_pop(m_impl->L, 1);
 }
 
 st::lua::runtime::~runtime() noexcept
@@ -54,27 +113,20 @@ st::lua::runtime::~runtime() noexcept
 st::bool_t
 st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
 {
-    if (!std::filesystem::exists(path) || !std::filesystem::is_regular_file(path))
+    std::filesystem::path resolved;
+
+    if (!resolve_file(m_impl->root_dir_path, path, resolved))
         return false;
 
     st::lua::set_logger(&m_impl->lua_logger);
 
-    const auto directory = std::filesystem::absolute(path).parent_path();
-
-    // Change lua package path to directory that file belongs to.
-    lua_getglobal(m_impl->L, "package");
-    lua_pushstring(
-        m_impl->L,
-        (directory.generic_string() + "/?.lua;").c_str());
-    lua_setfield(m_impl->L, -2, "path");
-
-    // Disable native module loading.
-    lua_pushstring(m_impl->L, "");
-    lua_setfield(m_impl->L, -2, "cpath");
-    lua_pop(m_impl->L, 1);
-
-    if (luaL_loadfile(m_impl->L, path.generic_string().c_str()) != LUA_OK)
+    if (luaL_loadfile(m_impl->L, resolved.generic_string().c_str()) != LUA_OK)
+    {
+        luaL_traceback(m_impl->L, m_impl->L, lua_tostring(m_impl->L, -1), 1);
+        st::io::log::error(lua_tostring(m_impl->L, -1));
+        lua_pop(m_impl->L, 2);
         return false;
+    }
     if (lua_pcallk(m_impl->L, 0, 0, 0, 0, nullptr) != LUA_OK)
     {
         luaL_traceback(m_impl->L, m_impl->L, lua_tostring(m_impl->L, -1), 1);
