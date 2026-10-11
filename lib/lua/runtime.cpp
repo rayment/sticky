@@ -172,6 +172,8 @@ st::lua::runtime::execute_function(std::string_view name,
         }, arg);
     }
 
+    st::lua::set_logger(&m_impl->lua_logger);
+
     if (lua_pcall(m_impl->L, static_cast<st::int32>(args.size()), 0, 0) != LUA_OK)
     {
         luaL_traceback(m_impl->L, m_impl->L, lua_tostring(m_impl->L, -1), 1);
