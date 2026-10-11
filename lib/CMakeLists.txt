@@ -46,7 +46,7 @@ set(ST_LIB_PUBLIC_DEPENDENCIES
     # Math
     glm
     # Config
-    yaml-cpp
+    nlohmann_json::nlohmann_json
     # Archives
     zlib
 )
