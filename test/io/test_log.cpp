@@ -6,6 +6,7 @@
  */
 
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 
@@ -23,6 +24,16 @@ namespace
 #else
         true;
 #endif
+
+    std::optional<st::io::log::overlay_line> overlay_find(const std::string &text)
+    {
+        for (const auto &line : st::io::log::overlay_lines())
+        {
+            if (line.text == text)
+                return line;
+        }
+        return std::nullopt;
+    }
 
     // Captures everything a logger writes in an in-memory buffer and restores
     // the previous default logger on destruction.
@@ -134,6 +145,37 @@ TEST_SUITE("io::log")
         CHECK_EQ(std::string::npos, other_output.str().find("to fixture"));
         CHECK(contains("to fixture"));
         CHECK_FALSE(contains("to other"));
+    }
+
+    TEST_CASE_FIXTURE(log_fixture, "overlay captures warnings and errors only")
+    {
+        logger.info("overlay info");
+        logger.warn("overlay warn");
+        logger.error("overlay error");
+
+        const auto lines = st::io::log::overlay_lines();
+        CHECK_EQ(st::io::log::overlay_capacity, lines.size());
+        CHECK_FALSE(overlay_find("overlay info"));
+        const auto warn = overlay_find("overlay warn");
+        const auto error = overlay_find("overlay error");
+        CHECK(warn.has_value());
+        CHECK(error.has_value());
+        CHECK_FALSE(warn.value_or(st::io::log::overlay_line{true, {}}).is_error);
+        CHECK(error.value_or(st::io::log::overlay_line{}).is_error);
+    }
+
+    TEST_CASE_FIXTURE(log_fixture, "overlay wraps around after reaching capacity")
+    {
+        for (std::size_t i = 0; i < st::io::log::overlay_capacity; ++i)
+            logger.warn("wrap " + std::to_string(i));
+
+        CHECK(overlay_find("wrap 0"));
+
+        logger.warn("wrap extra");
+
+        CHECK_FALSE(overlay_find("wrap 0"));
+        CHECK(overlay_find("wrap 1"));
+        CHECK(overlay_find("wrap extra"));
     }
 
     TEST_CASE("logger destructor unregisters the logger")
