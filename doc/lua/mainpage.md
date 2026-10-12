@@ -9,6 +9,7 @@ add new pages by following the steps in the @ref lua_doc_howto "contributing not
 Contents
 --------
 
+- @subpage lua_mod_runtime — explanation of the Lua mod runtime environment
 - @subpage lua_getting_started — writing and loading your first mod
 - @subpage lua_api_index — reference for every module exposed to Lua
 - @subpage lua_doc_howto — how to add or reorganise pages in this manual
