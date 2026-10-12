@@ -21,6 +21,7 @@ struct st::argparse::argparse_impl
     st_char **non_args;
     st_bool   should_exit;
     st_bool   safe_mode;
+    st_bool   developer_mode;
     st_int32  exit_code;
 };
 
@@ -34,6 +35,7 @@ st::argparse::argparse(st_int32  argc,
     m_impl->argv = argv;
 
     option long_options[] = {
+        {"developer", no_argument, nullptr, 'd'},
         {"help", no_argument, nullptr, 'h'},
         {"safe-mode", no_argument, nullptr, 's'},
         {"version", no_argument, nullptr, 'v'},
@@ -42,7 +44,7 @@ st::argparse::argparse(st_int32  argc,
 
     while (true)
     {
-        int c = getopt_long(argc, argv, "hsv", long_options, nullptr);
+        int c = getopt_long(argc, argv, "dhsv", long_options, nullptr);
         if (c == -1)
             break;
         switch (c)
@@ -52,6 +54,9 @@ st::argparse::argparse(st_int32  argc,
         case 'h':
             print_help();
             m_impl->should_exit = true;
+            break;
+        case 'd':
+            m_impl->developer_mode = true;
             break;
         case 's':
             m_impl->safe_mode = true;
@@ -76,6 +81,7 @@ st::argparse::print_help() const noexcept
     std::cout << fmt::format("Usage: {} [options]", m_impl->argv[0]) << '\n';
     std::cout << "Options:" << '\n';
     ;
+    std::cout << "  -d, --developer          Enable developer mode." << '\n';
     std::cout << "  -h, --help               Display this help message." << '\n';
     std::cout << "  -s, --safe-mode          Start without loading any mods." << '\n';
     std::cout << "  -v, --version            Display version information." << '\n';
@@ -103,6 +109,12 @@ st_bool
 st::argparse::should_exit() const noexcept
 {
     return m_impl->should_exit;
+}
+
+st_bool
+st::argparse::developer_mode() const noexcept
+{
+    return m_impl->developer_mode;
 }
 
 st_bool

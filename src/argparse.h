@@ -7,7 +7,6 @@
 
 #ifndef STICKY_ARGPARSE_H
 #define STICKY_ARGPARSE_H
-#include "st_types.h"
 
 #ifndef __cplusplus
 #error "C++ compiler required to include this header."
@@ -29,6 +28,7 @@ namespace st
 
         [[nodiscard]] st_size   num_non_args() const noexcept;
         [[nodiscard]] st_char **non_args() const noexcept;
+        [[nodiscard]] st_bool   developer_mode() const noexcept;
         [[nodiscard]] st_bool   safe_mode() const noexcept;
         [[nodiscard]] st_bool   should_exit() const noexcept;
         [[nodiscard]] st_int32  exit_code() const noexcept;
