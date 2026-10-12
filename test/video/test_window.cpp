@@ -12,39 +12,16 @@
 #include <doctest/doctest.h>
 #include <glm/vec3.hpp>
 
-#include "st_init.h"
-#include "st_macros.h"
+#include "headless_session.h"
 #include "video/window.h"
 
 namespace
 {
     // Windows are created hidden, so tests render without showing anything.
-    // OpenAL's null backend avoids needing an audio device.
-    // The library can only be initialized once per process.
-    struct headless_session
-    {
-        static headless_session &instance()
-        {
-            static headless_session session;
-            return session;
-        }
-
-        headless_session()
-        {
-            SDL_setenv_unsafe("ALSOFT_DRIVERS", "null", 1);
-            CHECK(st::lib_init(false));
-        }
-
-        ~headless_session() { static_cast<void>(st::lib_free()); }
-
-        ST_DELETE_COPY_CTORS(headless_session);
-        ST_DELETE_MOVE_CTORS(headless_session);
-    };
-
     struct window_fixture
     {
-        headless_session &session = headless_session::instance();
-        st::video::window window;
+        st::test::headless_session &session = st::test::headless_session::instance();
+        st::video::window           window;
     };
 } // namespace
 
