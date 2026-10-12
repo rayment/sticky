@@ -15,16 +15,16 @@
 
 #include <doctest/doctest.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "io/filesystem.h"
+#include "symlink.h"
 
 namespace
 {
     namespace fs = std::filesystem;
     namespace stfs = st::io::filesystem;
+
+    using st::test::make_symlink;
+    using st::test::remove_link;
 
     const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
 
@@ -61,39 +61,6 @@ namespace
         CHECK_FALSE(stfs::exists(path));
         CHECK_FALSE(stfs::is_file(path));
         CHECK_FALSE(stfs::is_directory(path));
-    }
-
-    // libstdc++ on MinGW doesn't implement create_symlink.
-    void make_symlink(const fs::path  &target,
-                      const fs::path  &link,
-                      bool             directory,
-                      std::error_code &ec)
-    {
-#ifdef _WIN32
-        DWORD flags = SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
-        if (directory)
-            flags |= SYMBOLIC_LINK_FLAG_DIRECTORY;
-        if (CreateSymbolicLinkW(link.c_str(), target.c_str(), flags) != 0)
-            ec.clear();
-        else
-            ec.assign(static_cast<int>(GetLastError()), std::system_category());
-#else
-        if (directory)
-            fs::create_directory_symlink(target, link, ec);
-        else
-            fs::create_symlink(target, link, ec);
-#endif
-    }
-
-    void remove_link(const fs::path &link)
-    {
-#ifdef _WIN32
-        if (DeleteFileW(link.c_str()) == 0)
-            RemoveDirectoryW(link.c_str());
-#else
-        std::error_code ec;
-        fs::remove(link, ec);
-#endif
     }
 
     // Symlinks can't be stored in the repository on every platform, so they
