@@ -5,17 +5,21 @@
  * Date created : 27/08/2026
  */
 
+#include <array>
+#include <chrono>
 #include <ctime>
 #include <filesystem>
+#include <mutex>
 #include <vector>
 
 #include <fmt/format.h>
-#include <spdlog/spdlog.h>
+#include <spdlog/sinks/base_sink.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
-#include "st_macros.h"
 #include "io/log.h"
+#include "st_macros.h"
 
 #ifndef NDEBUG
 void
@@ -51,8 +55,7 @@ st_io_log_error(const st_char *message)
 
 namespace
 {
-    constexpr st_bool
-    is_debug_level(spdlog::level::level_enum lvl) noexcept
+    constexpr st_bool is_debug_level(spdlog::level::level_enum lvl) noexcept
     {
         return lvl == spdlog::level::trace || lvl == spdlog::level::debug;
     }
@@ -66,10 +69,58 @@ namespace
 #endif // NDEBUG
     }
 
+    constexpr std::chrono::seconds overlay_lifetime{10};
+
+    class overlay_sink final : public spdlog::sinks::base_sink<std::mutex>
+    {
+    public:
+        overlay_sink() noexcept { set_level(spdlog::level::warn); }
+
+        std::vector<st::io::log::overlay_line> lines() noexcept
+        {
+            const auto                             now = std::chrono::steady_clock::now();
+            std::vector<st::io::log::overlay_line> result(m_slots.size());
+            std::lock_guard<std::mutex>            lock(mutex_);
+            for (std::size_t i = 0; i < m_slots.size(); ++i)
+            {
+                if (now - m_slots[i].time < overlay_lifetime)
+                    result[i] = m_slots[i].line;
+            }
+            return result;
+        }
+
+    protected:
+        void sink_it_(const spdlog::details::log_msg &msg) override
+        {
+            slot &s = m_slots[m_next];
+            s.line.is_error = msg.level >= spdlog::level::err;
+            s.line.text.assign(msg.payload.data(), msg.payload.size());
+            s.time = std::chrono::steady_clock::now();
+            m_next = (m_next + 1) % m_slots.size();
+        }
+
+        void flush_() override {}
+
+    private:
+        struct slot
+        {
+            st::io::log::overlay_line             line;
+            std::chrono::steady_clock::time_point time;
+        };
+
+        std::array<slot, st::io::log::overlay_capacity> m_slots;
+        std::size_t                                     m_next = 0;
+    };
+
+    const std::shared_ptr<overlay_sink> &overlay() noexcept
+    {
+        static const auto instance = std::make_shared<overlay_sink>();
+        return instance;
+    }
+
     template <spdlog::level::level_enum Level>
-    void
-    log_to(spdlog::logger *logger,
-           std::string_view message) noexcept
+    void log_to(spdlog::logger  *logger,
+                std::string_view message) noexcept
     {
 #ifdef NDEBUG
         if constexpr (is_debug_level(Level))
@@ -85,8 +136,7 @@ namespace
     }
 
     template <spdlog::level::level_enum Level>
-    void
-    log_default(std::string_view message) noexcept
+    void log_default(std::string_view message) noexcept
     {
 #ifdef NDEBUG
         if constexpr (is_debug_level(Level))
@@ -99,11 +149,11 @@ namespace
             spdlog::log(Level, message);
         }
     }
-}
+} // namespace
 
 struct st::io::log::logger::logger_impl
 {
-    logger_impl () noexcept = default;
+    logger_impl() noexcept = default;
     ~logger_impl() noexcept = default;
 
     std::shared_ptr<spdlog::logger> logger;
@@ -112,14 +162,9 @@ struct st::io::log::logger::logger_impl
     {
         std::filesystem::create_directory("log");
         std::array<char, 32> buffer{};
-        const std::time_t now = std::time(nullptr);
-        const std::tm *local = std::localtime(&now);
-        std::strftime(
-            buffer.data(),
-            buffer.size(),
-            "%Y-%m-%d_%H-%M-%S",
-            local
-        );
+        const std::time_t    now = std::time(nullptr);
+        const std::tm       *local = std::localtime(&now);
+        std::strftime(buffer.data(), buffer.size(), "%Y-%m-%d_%H-%M-%S", local);
         return (std::filesystem::path("log") / (std::string{buffer.data()} + ".log")).string();
     }
 
@@ -129,24 +174,24 @@ struct st::io::log::logger::logger_impl
 std::vector<spdlog::sink_ptr> st::io::log::logger::logger_impl::sinks = {
     std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
     std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink_file_log_path(), false),
+    overlay(),
 };
 
-st::io::log::logger::logger(std::string_view name) noexcept
-    : m_impl{std::make_unique<logger_impl>()}
+std::vector<st::io::log::overlay_line>
+st::io::log::overlay_lines() noexcept
 {
-    m_impl->logger = std::make_shared<spdlog::logger>(
-        std::string(name),
-        logger_impl::sinks.begin(),
-        logger_impl::sinks.end()
-    );
+    return overlay()->lines();
+}
+
+st::io::log::logger::logger(std::string_view name) noexcept : m_impl{std::make_unique<logger_impl>()}
+{
+    m_impl->logger =
+        std::make_shared<spdlog::logger>(std::string(name), logger_impl::sinks.begin(), logger_impl::sinks.end());
     m_impl->logger->set_level(default_log_level());
     spdlog::register_logger(m_impl->logger);
 }
 
-st::io::log::logger::~logger() noexcept
-{
-    spdlog::drop(m_impl->logger->name());
-}
+st::io::log::logger::~logger() noexcept { spdlog::drop(m_impl->logger->name()); }
 
 void
 st::io::log::logger::set_default() noexcept
@@ -154,14 +199,54 @@ st::io::log::logger::set_default() noexcept
     spdlog::set_default_logger(m_impl->logger);
 }
 
-void st::io::log::trace(std::string_view m) noexcept { log_default<spdlog::level::trace>(m); }
-void st::io::log::debug(std::string_view m) noexcept { log_default<spdlog::level::debug>(m); }
-void st::io::log::info (std::string_view m) noexcept { log_default<spdlog::level::info >(m); }
-void st::io::log::warn (std::string_view m) noexcept { log_default<spdlog::level::warn >(m); }
-void st::io::log::error(std::string_view m) noexcept { log_default<spdlog::level::err  >(m); }
+void
+st::io::log::trace(std::string_view m) noexcept
+{
+    log_default<spdlog::level::trace>(m);
+}
+void
+st::io::log::debug(std::string_view m) noexcept
+{
+    log_default<spdlog::level::debug>(m);
+}
+void
+st::io::log::info(std::string_view m) noexcept
+{
+    log_default<spdlog::level::info>(m);
+}
+void
+st::io::log::warn(std::string_view m) noexcept
+{
+    log_default<spdlog::level::warn>(m);
+}
+void
+st::io::log::error(std::string_view m) noexcept
+{
+    log_default<spdlog::level::err>(m);
+}
 
-void st::io::log::logger::trace(std::string_view m) noexcept { log_to<spdlog::level::trace>(m_impl->logger.get(), m); }
-void st::io::log::logger::debug(std::string_view m) noexcept { log_to<spdlog::level::debug>(m_impl->logger.get(), m); }
-void st::io::log::logger::info (std::string_view m) noexcept { log_to<spdlog::level::info >(m_impl->logger.get(), m); }
-void st::io::log::logger::warn (std::string_view m) noexcept { log_to<spdlog::level::warn >(m_impl->logger.get(), m); }
-void st::io::log::logger::error(std::string_view m) noexcept { log_to<spdlog::level::err  >(m_impl->logger.get(), m); }
+void
+st::io::log::logger::trace(std::string_view m) noexcept
+{
+    log_to<spdlog::level::trace>(m_impl->logger.get(), m);
+}
+void
+st::io::log::logger::debug(std::string_view m) noexcept
+{
+    log_to<spdlog::level::debug>(m_impl->logger.get(), m);
+}
+void
+st::io::log::logger::info(std::string_view m) noexcept
+{
+    log_to<spdlog::level::info>(m_impl->logger.get(), m);
+}
+void
+st::io::log::logger::warn(std::string_view m) noexcept
+{
+    log_to<spdlog::level::warn>(m_impl->logger.get(), m);
+}
+void
+st::io::log::logger::error(std::string_view m) noexcept
+{
+    log_to<spdlog::level::err>(m_impl->logger.get(), m);
+}
