@@ -34,6 +34,7 @@
 %include "gui/gui.i"
 #endif
 %include "io/log.i"
+%include "util/config.i"
 
 // Shift all class namespaces back under the correct `st` namespace to avoid double nesting (e.g. `st.st.lua`)
 %luacode %{

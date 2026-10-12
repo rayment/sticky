@@ -16,6 +16,8 @@ extern "C" {
 
 #include "io/filesystem.h"
 #include "io/log.h"
+#include "lua/config_bindings.h"
+#include "lua/resource_bindings.h"
 #if ST_MODULE_AUDIO
 #include "audio/sound.h"
 #include "audio/sound_handle.h"
@@ -167,12 +169,10 @@ namespace
         return matches;
     }
 
-    // Collects the valid settings of `st.init.config`, with names prefixed by the mod name.
-    [[nodiscard]] std::vector<config_definition> collect_config(lua_State         *L,
-                                                                const std::string &mod_name) noexcept
+    // Collects the valid settings of `st.init.config` by their short names.
+    [[nodiscard]] std::vector<config_definition> collect_config(lua_State *L) noexcept
     {
         std::vector<config_definition> definitions;
-        const std::string prefix = (!mod_name.empty() && mod_name.back() == '.') ? mod_name : mod_name + ".";
 
         for_each_entry(L, "config", "string 'name' and 'type' keys and a 'default' matching the type",
                        [&]
@@ -183,7 +183,6 @@ namespace
                                !read_string_field(L, "type", type) ||
                                !read_config_default(L, type, definition.default_value))
                                return false;
-                           definition.name.insert(0, prefix);
                            definitions.push_back(std::move(definition));
                            return true;
                        });
@@ -260,26 +259,11 @@ struct st::mod::mod_impl
         lua_getglobal(L, "st");
         lua_rawsetp(L, LUA_REGISTRYINDEX, &st_table_key);
         set_init_table(L, true);
-    }
-
-    ~mod_impl() noexcept
-    {
 #if ST_MODULE_AUDIO
-        st::audio::sound_handle::set_registry(nullptr);
+        st::lua::set_sound_registry(L, &m_sounds);
 #endif
 #if ST_MODULE_VIDEO
-        st::video::texture_handle::set_registry(nullptr);
-#endif
-    }
-
-    // Points the process-wide Lua bindings at this mod before running its code.
-    void activate() noexcept
-    {
-#if ST_MODULE_AUDIO
-        st::audio::sound_handle::set_registry(&m_sounds);
-#endif
-#if ST_MODULE_VIDEO
-        st::video::texture_handle::set_registry(&m_textures);
+        st::lua::set_texture_registry(L, &m_textures);
 #endif
     }
 
@@ -292,6 +276,8 @@ struct st::mod::mod_impl
     std::vector<config_definition> m_config;
     // The Lua folder of the mod; the `res` folder sits next to it.
     std::filesystem::path m_root_dir;
+    // Outlives the runtime, whose registry holds a pointer to it.
+    std::unique_ptr<st::util::config_scope> m_scope;
     // The registries outlive the runtime, whose scripts hold pointers into them.
 #if ST_MODULE_AUDIO
     st::audio::sound_registry m_sounds;
@@ -348,8 +334,6 @@ st::mod::name() noexcept
 st::bool_t
 st::mod::execute_init(const progress_callback &progress)
 {
-    m_impl->activate();
-
     const auto report = [&](std::string_view status, st::float32 fraction)
     {
         if (progress)
@@ -363,7 +347,7 @@ st::mod::execute_init(const progress_callback &progress)
     const st::bool_t ok = m_impl->m_runtime.execute_file("init.lua");
     const auto       textures = ok ? collect_definitions(L, "textures") : std::vector<resource_definition>{};
     const auto       sounds = ok ? collect_definitions(L, "sounds") : std::vector<resource_definition>{};
-    m_impl->m_config = ok ? collect_config(L, m_impl->m_name) : std::vector<config_definition>{};
+    m_impl->m_config = ok ? collect_config(L) : std::vector<config_definition>{};
     set_init_table(L, true);
 
     if (!ok)
@@ -394,24 +378,25 @@ st::mod::execute_init(const progress_callback &progress)
 }
 
 void
-st::mod::register_config(st::util::config &config) const noexcept
+st::mod::bind_config(st::util::config &config) noexcept
 {
+    auto scope = std::make_unique<st::util::config_scope>(config, m_impl->m_name);
     for (const auto &definition : m_impl->m_config)
-        static_cast<void>(config.set_default(definition.name, definition.default_value));
+        static_cast<void>(scope->declare(definition.name, definition.default_value));
+
+    st::lua::set_config_scope(m_impl->m_runtime.state(), scope.get());
+    m_impl->m_scope = std::move(scope);
 }
 
 st::bool_t
 st::mod::execute_runtime()
 {
-    m_impl->activate();
-
     return m_impl->m_runtime.execute_file("runtime.lua");
 }
 
 st::bool_t
 st::mod::execute_function(std::string_view name) noexcept
 {
-    m_impl->activate();
     return m_impl->m_runtime.execute_function(name);
 }
 
@@ -419,7 +404,6 @@ st::bool_t
 st::mod::execute_function(std::string_view                                            name,
                           std::initializer_list<const st::lua::runtime::lua_arg_type> args) noexcept
 {
-    m_impl->activate();
     return m_impl->m_runtime.execute_function(name, args);
 }
 

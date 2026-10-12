@@ -45,9 +45,10 @@ namespace st
 
         // Runs `init.lua` with `st.init` available, then loads the textures and sounds it declared.
         st::bool_t execute_init(const progress_callback &progress = {});
-        // Adds the settings declared in `st.init.config` that the config does not already hold, prefixed by the mod
-        // name.
-        void register_config(st::util::config &config) const noexcept;
+        // Declares the settings of `st.init.config` in the config, prefixed by the mod name, and lets the mod's
+        // `st.util.config` use them. The config must outlive the mod. Call after `execute_init` and before
+        // `execute_runtime`.
+        void bind_config(st::util::config &config) noexcept;
         // Runs `runtime.lua` with `st.init` locked.
         st::bool_t execute_runtime();
         st::bool_t execute_function(std::string_view name) noexcept;

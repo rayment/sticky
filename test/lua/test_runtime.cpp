@@ -356,6 +356,11 @@ namespace
         "_G.st.gui.textedit.set_vertical_scrollbar",
         "_G.st.gui.textedit.show",
         "_G.st.gui.textedit.text",
+        "_G.st.util",
+        "_G.st.util.config",
+        "_G.st.util.config.get",
+        "_G.st.util.config.get_from",
+        "_G.st.util.config.set",
         "_G.st.io",
         "_G.st.io.log",
         "_G.st.io.log.debug",
@@ -1083,6 +1088,28 @@ TEST_SUITE("lua::runtime")
             CHECK(contains(entry.tag));
             CHECK(contains(message));
         }
+    }
+
+    TEST_CASE("st.io.log writes to the logger of the calling Lua state")
+    {
+        std::ostringstream first_output;
+        std::ostringstream second_output;
+        st::lua::runtime   first{"test_lua_log_first", lua_dir};
+        st::lua::runtime   second{"test_lua_log_second", lua_dir};
+        capture_into("test_lua_log_first", first_output);
+        capture_into("test_lua_log_second", second_output);
+
+        CHECK(first.execute_string("saved = st.io.log.info"));
+        CHECK(second.execute_string("x = 1"));
+
+        // Called straight through the state, as a callback fired by the engine would be.
+        lua_State *L = first.state();
+        lua_getglobal(L, "saved");
+        lua_pushstring(L, "from a callback");
+        CHECK(lua_pcall(L, 1, 0, 0) == LUA_OK);
+
+        CHECK(first_output.str().find("from a callback") != std::string::npos);
+        CHECK(second_output.str().find("from a callback") == std::string::npos);
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "warn logs through st.io.log.warn")

@@ -100,5 +100,6 @@ st.init.textures = {
 See also
 --------
 
+- @ref lua_api_util_config
 - @ref lua_api_audio_sound
 - @ref lua_api_video_texture

@@ -21,6 +21,7 @@ The following API features are only available during the runtime mod phase, and 
 - @subpage lua_api_audio_source
 - @subpage lua_api_video_texture
 - @subpage lua_api_io_mouse
+- @subpage lua_api_util_config
 
 ### GUI
 
