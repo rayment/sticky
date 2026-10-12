@@ -6,6 +6,15 @@ target_sources(sticky_test PRIVATE
     io/test_log.cpp
 )
 
+if(ST_MODULE_AUDIO)
+    target_sources(sticky_test PRIVATE
+        audio/test_client.cpp
+        audio/test_server.cpp
+        audio/test_sound.cpp
+        audio/test_source.cpp
+    )
+endif()
+
 if(ST_MODULE_VIDEO)
     target_sources(sticky_test PRIVATE video/test_window.cpp)
 endif()
