@@ -15,3 +15,9 @@ function(target_populate_linker_features TARGET)
         >
     )
 endfunction()
+
+function(target_export_all_symbols TARGET)
+    if(WIN32)
+        target_link_options(${TARGET} PRIVATE -fno-use-linker-plugin)
+    endif()
+endfunction()

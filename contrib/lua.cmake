@@ -56,3 +56,4 @@ target_sources(
 
 target_populate_compiler_features(lua)
 target_populate_linker_features(lua)
+target_export_all_symbols(lua)
