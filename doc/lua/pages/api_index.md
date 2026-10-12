@@ -1,16 +1,11 @@
 API Reference {#lua_api_index}
 =============
 
-One page per Lua module. Each module page is linked from this list with
-`@subpage`, which places it under this page in the navigation tree.
-
-\todo Add module pages here, e.g. `- @subpage lua_api_log`.
-
 ## Shared API
 
 The following pages document shared API features that are available in both the init and runtime mod phases.
 
-- TBA
+- @subpage lua_api_io_log
 
 ## Init API
 
