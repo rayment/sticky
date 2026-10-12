@@ -36,6 +36,20 @@ This method sets the text shown by the label.
 
 **Returns:** nothing
 
+### st.gui.label:set_size(width, height) {#lua_api_gui_label_set_size}
+
+This method sets a box, in pixels, that the text is centred in. This is useful for lining text up with other
+components, such as the labels of a grid. A label with no text only takes up the box.
+
+If either dimension is `0` the label fits its text, which is the default.
+
+| Parameter | Type   | Description                 |
+|-----------|--------|-----------------------------|
+| `width`   | number | The width of the box.       |
+| `height`  | number | The height of the box.      |
+
+**Returns:** nothing
+
 See also
 --------
 

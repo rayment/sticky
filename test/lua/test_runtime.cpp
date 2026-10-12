@@ -234,6 +234,7 @@ namespace
         "_G.st.gui.label.close",
         "_G.st.gui.label.is_closed",
         "_G.st.gui.label.set_parent",
+        "_G.st.gui.label.set_size",
         "_G.st.gui.label.set_text",
         "_G.st.gui.label.show",
         "_G.st.gui.mono_component",
