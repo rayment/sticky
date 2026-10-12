@@ -17,3 +17,29 @@ function check_init_locked()
     assert(not pcall(function() return st.init.sounds end))
     assert(not pcall(function() st.init.sounds = {} end))
 end
+
+function check_source()
+    local src = st.audio.source()
+    assert(src ~= nil)
+    assert(not src:is_playing())
+
+    assert(src:select(st.audio.sound.get('good')))
+    assert(src:set_position(1.0, 2.0, 3.0))
+    assert(src:set_velocity(0.0, 0.5, 0.0))
+    assert(src:set_pitch(1.5))
+    assert(src:set_gain(0.5))
+    assert(src:set_loop(true))
+    assert(src:set_spatial(true))
+
+    assert(src:play())
+    assert(src:is_playing())
+    assert(src:pause())
+    assert(src:is_paused())
+    assert(src:resume())
+    assert(src:is_playing())
+    assert(src:stop())
+    assert(src:is_stopped())
+
+    assert(not pcall(function() src:select(nil) end))
+    assert(not pcall(function() src:set_position(1.0) end))
+end

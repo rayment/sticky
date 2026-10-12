@@ -83,6 +83,16 @@ TEST_CASE_FIXTURE(phase_fixture,
 }
 
 TEST_CASE_FIXTURE(phase_fixture,
+                  "audio sources can be created and driven from Lua")
+{
+    st::mod mod = make_mod("0016-mod-sounds");
+
+    CHECK(mod.execute_init());
+    CHECK(mod.execute_runtime());
+    CHECK(mod.execute_function("check_source"));
+}
+
+TEST_CASE_FIXTURE(phase_fixture,
                   "st.init.sounds is locked outside of the init phase")
 {
     st::mod mod = make_mod("0016-mod-sounds");

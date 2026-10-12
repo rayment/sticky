@@ -9,13 +9,17 @@
 
 #include "AL/alext.h"
 
-st::audio::source::source() noexcept
-    : m_position(0, 0, 0),
-      m_velocity(0, 0, 0),
-      m_pitch(1.0f),
-      m_gain(1.0f),
-      m_loop(false),
-      m_spatial(true)
+st::audio::source::source() noexcept :
+    m_position(0,
+               0,
+               0),
+    m_velocity(0,
+               0,
+               0),
+    m_pitch(1.0f),
+    m_gain(1.0f),
+    m_loop(false),
+    m_spatial(true)
 {
     alGenSources(1, &m_source);
     alSourcei(m_source, AL_SOURCE_RELATIVE, AL_FALSE);
@@ -25,22 +29,14 @@ st::audio::source::source() noexcept
     alSourcef(m_source, AL_ROLLOFF_FACTOR, 1.0f);
 }
 
-st::audio::source::~source() noexcept
-{
-    alDeleteSources(1, &m_source);
-}
+st::audio::source::~source() noexcept { alDeleteSources(1, &m_source); }
 
 st::bool_t
 st::audio::source::set_position(glm::f64vec3 position) noexcept
 {
     m_position = position;
-    alSource3f(
-        m_source,
-        AL_POSITION,
-        static_cast<ALfloat>(m_position.x),
-        static_cast<ALfloat>(m_position.y),
-        static_cast<ALfloat>(m_position.z)
-    );
+    alSource3f(m_source, AL_POSITION, static_cast<ALfloat>(m_position.x), static_cast<ALfloat>(m_position.y),
+               static_cast<ALfloat>(m_position.z));
     return true;
 }
 
@@ -49,14 +45,36 @@ st::audio::source::set_velocity(glm::f64vec3 velocity) noexcept
 {
 
     m_velocity = velocity;
-    alSource3f(
-        m_source,
-        AL_VELOCITY,
-        static_cast<ALfloat>(m_velocity.x),
-        static_cast<ALfloat>(m_velocity.y),
-        static_cast<ALfloat>(m_velocity.z)
-    );
+    alSource3f(m_source, AL_VELOCITY, static_cast<ALfloat>(m_velocity.x), static_cast<ALfloat>(m_velocity.y),
+               static_cast<ALfloat>(m_velocity.z));
     return true;
+}
+
+st::bool_t
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+st::audio::source::set_position(st::float64 x,
+                                st::float64 y,
+                                st::float64 z) noexcept
+{
+    return set_position(glm::f64vec3(x, y, z));
+}
+
+st::bool_t
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+st::audio::source::set_velocity(st::float64 x,
+                                st::float64 y,
+                                st::float64 z) noexcept
+{
+    return set_velocity(glm::f64vec3(x, y, z));
+}
+
+st::bool_t
+st::audio::source::select(const st::audio::sound_handle &sound) noexcept
+{
+    const auto &shared = sound.shared();
+    if (!shared)
+        return false;
+    return select(*shared);
 }
 
 st::bool_t
@@ -87,7 +105,8 @@ st::bool_t
 st::audio::source::set_spatial(st::bool_t spatial) noexcept
 {
     // TODO: This forces stereo sounds to work. OpenAL does not spatialise stereo by default.
-    // Need to instead allow both spatialised and non-spatialised stereo (by loading as mono instead, not using this line)
+    // Need to instead allow both spatialised and non-spatialised stereo (by loading as mono instead, not using this
+    // line)
     //   and also spatialised mono. This line eventually thus needs to be removed.
     m_spatial = spatial;
     alSourcei(m_source, AL_SOURCE_SPATIALIZE_SOFT, spatial ? AL_TRUE : AL_FALSE);

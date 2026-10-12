@@ -1,5 +1,6 @@
 %{
 #include "audio/sound_handle.h"
+#include "audio/source.h"
 %}
 
 // Lua only ever sees named sounds loaded during the init phase.
@@ -13,3 +14,11 @@
 
 %nspace st::audio::sound_handle;
 %include "audio/sound_handle.h"
+
+// Lua passes positions as components and sounds as named handles.
+%ignore st::audio::source::select(const st::audio::sound &);
+%ignore st::audio::source::set_position(glm::f64vec3);
+%ignore st::audio::source::set_velocity(glm::f64vec3);
+
+%nspace st::audio::source;
+%include "audio/source.h"
