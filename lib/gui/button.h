@@ -33,6 +33,10 @@ namespace st::gui
 
         void clear_on_click() noexcept;
 
+    protected:
+        // Drops the click callbacks so that closures referencing the button are released.
+        void handle_close() noexcept override;
+
     private:
         struct button_impl;
         std::unique_ptr<button_impl> m_impl;

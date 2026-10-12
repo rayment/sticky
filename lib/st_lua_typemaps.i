@@ -1,7 +1,7 @@
 %{
-#include <cstdio>
 #include <memory>
 
+#include "io/log.h"
 #include "st_types.h"
 
 // Owns a Lua registry reference for the lifetime of the callback.
@@ -22,6 +22,49 @@ struct st_swig_lua_callback_ref
     st_swig_lua_callback_ref(const st_swig_lua_callback_ref &) = delete;
     st_swig_lua_callback_ref &operator=(const st_swig_lua_callback_ref &) = delete;
 };
+
+// A coroutine can be collected while the engine still holds its callbacks, so references are made on the main
+// thread, which lives as long as the state.
+inline lua_State *st_swig_lua_main_thread(lua_State *L)
+{
+    lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD);
+    lua_State *main_thread = lua_tothread(L, -1);
+    lua_pop(L, 1);
+    return main_thread;
+}
+
+// Holds the Lua value at `index` in the registry until the returned token is released.
+inline std::shared_ptr<void> st_swig_lua_pin(lua_State *L, int index)
+{
+    lua_pushvalue(L, index);
+    const int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    return std::make_shared<st_swig_lua_callback_ref>(st_swig_lua_main_thread(L), ref);
+}
+
+inline int st_swig_lua_traceback(lua_State *L)
+{
+    const char *message = lua_tostring(L, 1);
+    if (message == nullptr)
+        message = "(error object is not a string)";
+    luaL_traceback(L, L, message, 1);
+    return 1;
+}
+
+// Errors are logged with a traceback and never propagate into the engine.
+inline void st_swig_lua_invoke(const st_swig_lua_callback_ref &callback)
+{
+    lua_State *L = callback.L;
+    const int base = lua_gettop(L);
+
+    lua_pushcfunction(L, st_swig_lua_traceback);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, callback.ref);
+    if (lua_pcall(L, 0, 0, base + 1) != LUA_OK)
+    {
+        const char *error = lua_tostring(L, -1);
+        st::io::log::error(error != nullptr ? error : "Unknown Lua callback error.");
+    }
+    lua_settop(L, base);
+}
 %}
 
 #define ST_SWIG_IMPLICIT_CONVERSION_TO_STRING(type, temp_type, conversion) \
@@ -43,16 +86,8 @@ struct st_swig_lua_callback_ref
     %typemap(in) type & (type temp) { \
         lua_pushvalue(L, $input); \
         const int ref = luaL_ref(L, LUA_REGISTRYINDEX); \
-        auto fn = std::make_shared<st_swig_lua_callback_ref>(L, ref); \
-        temp = [fn]() { \
-            lua_rawgeti(fn->L, LUA_REGISTRYINDEX, fn->ref); \
-            if (lua_pcall(fn->L, 0, 0, 0) != LUA_OK) { \
-                const char *error = lua_tostring(fn->L, -1); \
-                fprintf(stderr, "Lua callback error: %s\n", \
-                    error ? error : "unknown error"); \
-                lua_pop(fn->L, 1); \
-            } \
-        }; \
+        auto fn = std::make_shared<st_swig_lua_callback_ref>(st_swig_lua_main_thread(L), ref); \
+        temp = [fn]() { st_swig_lua_invoke(*fn); }; \
         $1 = &temp; \
     }
 

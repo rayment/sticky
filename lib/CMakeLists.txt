@@ -48,6 +48,7 @@ endif()
 
 if(ST_MODULE_VIDEO)
     list(APPEND ST_LIB_INTERFACES
+        gui/gui.i
         video/video.i
     )
     list(APPEND ST_LIB_SOURCES

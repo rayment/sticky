@@ -18,13 +18,12 @@
 
 namespace st::gui
 {
-    class frame : public nestable_component
+    class frame : public root_component
     {
     public:
          frame() noexcept;
         ~frame() noexcept;
 
-        void close () noexcept;
         void render() noexcept override;
 
         void set_auto_resize  (st::bool_t auto_resize)       noexcept;
@@ -44,6 +43,10 @@ namespace st::gui
         void register_on_close(const on_close_callback &callback) noexcept;
 
         void clear_on_close() noexcept;
+
+    protected:
+        // Fires the close callbacks once and then drops them.
+        void handle_close() noexcept override;
 
     private:
         struct frame_impl;

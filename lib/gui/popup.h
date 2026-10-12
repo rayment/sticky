@@ -16,13 +16,12 @@
 
 namespace st::gui
 {
-    class popup : public component
+    class popup : public mono_component
     {
     public:
         popup() noexcept;
         ~popup() noexcept;
 
-        void close() noexcept;
         void render() noexcept override;
 
         void set_title(const std::string &title) noexcept;
@@ -34,6 +33,10 @@ namespace st::gui
         void register_on_close(const on_close_callback &callback) noexcept;
 
         void clear_on_close() noexcept;
+
+    protected:
+        // Fires the close callbacks once and then drops them.
+        void handle_close() noexcept override;
 
     private:
         struct popup_impl;

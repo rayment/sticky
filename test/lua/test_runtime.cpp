@@ -192,6 +192,83 @@ namespace
         "_G.st.audio.source.set_spatial",
         "_G.st.audio.source.set_velocity",
         "_G.st.audio.source.stop",
+        "_G.st.gui",
+        "_G.st.gui.button",
+        "_G.st.gui.button.clear_on_click",
+        "_G.st.gui.button.close",
+        "_G.st.gui.button.is_closed",
+        "_G.st.gui.button.register_on_click",
+        "_G.st.gui.button.set_enabled",
+        "_G.st.gui.button.set_parent",
+        "_G.st.gui.button.set_text",
+        "_G.st.gui.button.show",
+        "_G.st.gui.component",
+        "_G.st.gui.component.close",
+        "_G.st.gui.component.is_closed",
+        "_G.st.gui.component.set_parent",
+        "_G.st.gui.component.show",
+        "_G.st.gui.frame",
+        "_G.st.gui.frame.clear_on_close",
+        "_G.st.gui.frame.close",
+        "_G.st.gui.frame.is_closed",
+        "_G.st.gui.frame.register_on_close",
+        "_G.st.gui.frame.set_auto_resize",
+        "_G.st.gui.frame.set_closable",
+        "_G.st.gui.frame.set_collapsable",
+        "_G.st.gui.frame.set_movable",
+        "_G.st.gui.frame.set_parent",
+        "_G.st.gui.frame.set_position",
+        "_G.st.gui.frame.set_resizable",
+        "_G.st.gui.frame.set_show_titlebar",
+        "_G.st.gui.frame.set_size",
+        "_G.st.gui.frame.set_title",
+        "_G.st.gui.frame.show",
+        "_G.st.gui.image",
+        "_G.st.gui.image.close",
+        "_G.st.gui.image.is_closed",
+        "_G.st.gui.image.set_parent",
+        "_G.st.gui.image.set_size",
+        "_G.st.gui.image.set_texture",
+        "_G.st.gui.image.show",
+        "_G.st.gui.label",
+        "_G.st.gui.label.close",
+        "_G.st.gui.label.is_closed",
+        "_G.st.gui.label.set_parent",
+        "_G.st.gui.label.set_text",
+        "_G.st.gui.label.show",
+        "_G.st.gui.mono_component",
+        "_G.st.gui.mono_component.close",
+        "_G.st.gui.mono_component.is_closed",
+        "_G.st.gui.mono_component.set_parent",
+        "_G.st.gui.mono_component.show",
+        "_G.st.gui.nestable_component",
+        "_G.st.gui.nestable_component.close",
+        "_G.st.gui.nestable_component.is_closed",
+        "_G.st.gui.nestable_component.set_parent",
+        "_G.st.gui.nestable_component.show",
+        "_G.st.gui.popup",
+        "_G.st.gui.popup.clear_on_close",
+        "_G.st.gui.popup.close",
+        "_G.st.gui.popup.is_closed",
+        "_G.st.gui.popup.register_on_close",
+        "_G.st.gui.popup.set_button_text",
+        "_G.st.gui.popup.set_parent",
+        "_G.st.gui.popup.set_text",
+        "_G.st.gui.popup.set_title",
+        "_G.st.gui.popup.show",
+        "_G.st.gui.progress",
+        "_G.st.gui.progress.close",
+        "_G.st.gui.progress.is_closed",
+        "_G.st.gui.progress.set_parent",
+        "_G.st.gui.progress.set_text",
+        "_G.st.gui.progress.set_value",
+        "_G.st.gui.progress.show",
+        "_G.st.gui.progress.value",
+        "_G.st.gui.root_component",
+        "_G.st.gui.root_component.close",
+        "_G.st.gui.root_component.is_closed",
+        "_G.st.gui.root_component.set_parent",
+        "_G.st.gui.root_component.show",
         "_G.st.io",
         "_G.st.io.log",
         "_G.st.io.log.debug",
@@ -607,7 +684,6 @@ TEST_SUITE("lua::runtime")
         CHECK(runtime.execute_function("on_start"));
         CHECK(runtime.execute_function("on_fixed_step", {st::float64{0.01}}));
         CHECK(runtime.execute_function("on_step", {st::float64{0.016}}));
-        CHECK_FALSE(runtime.execute_function("on_gui_render"));
         CHECK(runtime.execute_function("on_quit"));
 
         CHECK(contains("main start 42"));
@@ -947,6 +1023,145 @@ TEST_SUITE("lua::runtime")
     {
         CHECK(runtime.execute_string("assert(not pcall(error, 'handled'))"));
         CHECK_FALSE(contains("[error]"));
+    }
+
+    namespace
+    {
+        // Runs a full collection, which also finalizes everything that became unreachable.
+        void collect_garbage(st::lua::runtime &runtime)
+        {
+            lua_gc(runtime.state(), LUA_GCCOLLECT);
+            lua_gc(runtime.state(), LUA_GCCOLLECT);
+        }
+    } // namespace
+
+    TEST_CASE_FIXTURE(runtime_fixture, "a gui component that was never shown is collected")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            weak = setmetatable({}, {__mode = 'v'})
+            do
+                local frame = st.gui.frame()
+                weak[1] = frame
+            end
+        )lua"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string("assert(weak[1] == nil, 'frame was not collected')"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "a shown gui component stays alive without references until it is closed")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            weak = setmetatable({}, {__mode = 'v'})
+            do
+                local frame = st.gui.frame()
+                weak[1] = frame
+                frame:show()
+            end
+        )lua"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string(R"lua(
+            assert(weak[1] ~= nil, 'shown frame was collected')
+            assert(not weak[1]:is_closed())
+        )lua"));
+
+        CHECK(runtime.execute_string("weak[1]:close()"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string("assert(weak[1] == nil, 'closed frame was not collected')"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "closing a gui component releases callbacks that reference it")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            weak = setmetatable({}, {__mode = 'v'})
+            do
+                local frame = st.gui.frame()
+                local button = st.gui.button()
+                button:set_parent(frame)
+                button:register_on_click(function() frame:close() end)
+                frame:register_on_close(function() frame:set_title('closed') end)
+                weak[1], weak[2] = frame, button
+                frame:show()
+            end
+        )lua"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string("assert(weak[1] ~= nil and weak[2] ~= nil, 'open frame lost its children')"));
+
+        CHECK(runtime.execute_string("weak[1]:close()"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string("assert(weak[1] == nil and weak[2] == nil, 'closed frame leaked')"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "the children of a shown gui component are kept alive by their parent")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            weak = setmetatable({}, {__mode = 'v'})
+            do
+                local frame = st.gui.frame()
+                local label = st.gui.label()
+                label:set_parent(frame)
+                weak[1], weak[2] = frame, label
+                frame:show()
+            end
+        )lua"));
+        collect_garbage(runtime);
+        CHECK(runtime.execute_string(R"lua(
+            assert(weak[2] ~= nil, 'child of a shown frame was collected')
+            assert(not weak[2]:is_closed())
+        )lua"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "gui close callbacks run once and the component is reported closed")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            calls = 0
+            frame = st.gui.frame()
+            frame:register_on_close(function() calls = calls + 1 end)
+            frame:show()
+            frame:close()
+            frame:close()
+            assert(calls == 1, 'close callback ran ' .. calls .. ' times')
+            assert(frame:is_closed())
+        )lua"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "an error in a gui callback is logged with a traceback and does not propagate")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            local frame = st.gui.frame()
+            frame:register_on_close(function() error('callback failure') end)
+            frame:close()
+        )lua"));
+
+        CHECK(contains("[error]"));
+        CHECK(contains("callback failure"));
+        CHECK(contains("stack traceback"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "gui components cannot be rendered or inspected from Lua")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            local frame = st.gui.frame()
+            assert(frame.render == nil)
+            assert(frame.parent == nil)
+            assert(frame.children == nil)
+            assert(frame.id == nil)
+        )lua"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "a runtime can be destroyed while gui components are open")
+    {
+        {
+            st::lua::runtime short_lived{"test_lua_gui", lua_dir};
+            CHECK(short_lived.execute_string(R"lua(
+                local frame = st.gui.frame()
+                local button = st.gui.button()
+                button:set_parent(frame)
+                button:register_on_click(function() frame:close() end)
+                frame:show()
+                st.gui.popup():show()
+            )lua"));
+        }
+        CHECK(runtime.execute_string("x = 1"));
     }
 
     TEST_CASE("classes do not expose SWIG internals")

@@ -61,13 +61,23 @@ st::gui::button::clear_on_click() noexcept
 }
 
 void
+st::gui::button::handle_close() noexcept
+{
+    clear_on_click();
+}
+
+void
 st::gui::button::render() noexcept
 {
     ImGui::BeginDisabled(!m_impl->m_enabled);
-    if (ImGui::Button(m_impl->m_text.c_str()))
-    {
-        for (const auto &callback : m_impl->m_callback_on_click)
-            callback();
-    }
+    const st::bool_t clicked = ImGui::Button(m_impl->m_text.c_str());
     ImGui::EndDisabled();
+
+    if (!clicked)
+        return;
+
+    // A callback may close the button, which clears the callbacks being run.
+    const auto callbacks = m_impl->m_callback_on_click;
+    for (const auto &callback : callbacks)
+        callback();
 }

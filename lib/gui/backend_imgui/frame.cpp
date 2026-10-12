@@ -5,6 +5,8 @@
  * Date created : 11/10/2026
  */
 
+#include <utility>
+
 #include <fmt/format.h>
 #include <imgui.h>
 
@@ -23,7 +25,6 @@ struct st::gui::frame::frame_impl
           m_position_set(false),
           m_size_set(false),
           m_closable(true),
-          m_visible(true),
           m_window_open(true)
     {}
     ~frame_impl() noexcept = default;
@@ -33,7 +34,7 @@ struct st::gui::frame::frame_impl
     ImGuiWindowFlags m_flags;
     st::bool_t m_position_set, m_size_set;
     glm::f32vec2 m_position, m_size;
-    st::bool_t m_closable, m_visible, m_window_open;
+    st::bool_t                     m_closable, m_window_open;
     std::vector<on_close_callback> m_callback_on_close;
 };
 
@@ -114,12 +115,17 @@ st::gui::frame::set_title(std::string_view title) noexcept
 }
 
 void
-st::gui::frame::close() noexcept
+st::gui::frame::handle_close() noexcept
 {
     m_impl->m_window_open = false;
-    m_impl->m_visible = false;
-    for (auto &callback : m_impl->m_callback_on_close)
+
+    // Callbacks may close this frame again or release the last reference to it, so they are taken out first.
+    const auto callbacks = std::move(m_impl->m_callback_on_close);
+    m_impl->m_callback_on_close.clear();
+    for (const auto &callback : callbacks)
         callback();
+
+    nestable_component::handle_close();
 }
 
 void
@@ -138,7 +144,7 @@ st::gui::frame::clear_on_close() noexcept
 void
 st::gui::frame::render() noexcept
 {
-    if (!m_impl->m_visible)
+    if (is_closed())
         return;
 
     if (m_impl->m_size_set)
@@ -161,10 +167,9 @@ st::gui::frame::render() noexcept
         m_impl->m_flags
     ))
     {
-        for (auto &child : children())
-            child->render();
+        render_children();
     }
     ImGui::End();
-    if (m_impl->m_visible != m_impl->m_window_open)
+    if (!m_impl->m_window_open)
         close();
 }

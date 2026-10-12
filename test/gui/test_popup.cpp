@@ -22,6 +22,17 @@ TEST_SUITE("gui::popup")
         CHECK_EQ(1, calls);
     }
 
+    TEST_CASE("close invokes registered callbacks once")
+    {
+        st::gui::popup popup;
+        st::int32      calls = 0;
+        popup.register_on_close([&calls] { ++calls; });
+        popup.close();
+        popup.close();
+        CHECK_EQ(1, calls);
+        CHECK(popup.is_closed());
+    }
+
     TEST_CASE("clear_on_close removes callbacks")
     {
         st::gui::popup popup;

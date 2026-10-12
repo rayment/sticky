@@ -109,10 +109,6 @@ run_video_loop(st::video::window &win,
         win.clear();
 
         gui.clear();
-        for (auto &mod : mods)
-        {
-            mod.second->execute_function("on_gui_render");
-        }
         gui.render();
         gui.swap();
 

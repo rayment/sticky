@@ -29,7 +29,6 @@
 %include "audio/audio.i"
 #endif
 #if ST_MODULE_VIDEO
-// Video must come first so that gui bindings can refer to its types.
 %include "video/video.i"
 %include "gui/gui.i"
 #endif
@@ -41,6 +40,7 @@
 
     M.audio = M.st and M.st.audio
     M.video = M.st and M.st.video
+    M.gui = M.st and M.st.gui
 
     M.st = nil
 

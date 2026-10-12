@@ -13,6 +13,7 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl3.h>
 
+#include "gui/component.h"
 #include "gui/core.h"
 #include "io/log.h"
 
@@ -113,6 +114,7 @@ st::gui::core::clear() noexcept
 void
 st::gui::core::render() noexcept
 {
+    st::gui::component::render_shown();
     render_log_overlay();
     ImGui::Render();
 }
