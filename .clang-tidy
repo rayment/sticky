@@ -1,0 +1,22 @@
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-magic-numbers,
+  -readability-make-member-function-const,
+  -readability-uppercase-literal-suffix,
+  -readability-isolate-declaration,
+  -readability-identifier-length,
+  -readability-braces-around-statements,
+  -readability-convert-member-functions-to-static,
+  -bugprone-signed-bitwise
+WarningsAsErrors: '*'
+HeaderFilterRegex: '/(lib|src|test)/'
+ExcludeHeaderFilterRegex: '_deps'
+FormatStyle: file
+ExtraArgs:
+  - -Wno-unknown-warning-option
+  - -Wno-unused-command-line-argument

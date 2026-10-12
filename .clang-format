@@ -4,10 +4,14 @@ BasedOnStyle: LLVM
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossComments: false
+  AcrossEmptyLines: false
 AlignOperands: false
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortEnumsOnASingleLine: true
 BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
@@ -27,6 +31,7 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakAfterReturnType: TopLevelDefinitions
 BreakBeforeBraces: Custom
+InsertBraces: false
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
