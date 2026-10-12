@@ -7,7 +7,13 @@ set(PROGRAM_TITLE "sticky" CACHE STRING "Display title of the program, also used
 set(ST_GUI_BACKEND "imgui" CACHE STRING "GUI backend to build libsticky with")
 set_property(CACHE ST_GUI_BACKEND PROPERTY STRINGS imgui)
 
-option(ST_BUILD_TESTS     "Build the doctest suite and register it with CTest" ON)
+if(CMAKE_BUILD_TYPE MATCHES "^(Release|RelWithDebInfo)$")
+    set(ST_BUILD_TESTS_DEFAULT OFF)
+else()
+    set(ST_BUILD_TESTS_DEFAULT ON)
+endif()
+
+option(ST_BUILD_TESTS     "Build the doctest suite and register it with CTest" ${ST_BUILD_TESTS_DEFAULT})
 option(ST_ENABLE_DOCS     "Generate Doxygen documentation targets when Doxygen is available" ON)
 option(ST_ENABLE_COVERAGE "Instrument lib/ and enable the coverage target" OFF)
 option(ST_MODULE_AUDIO    "Build and initialise the audio module (OpenAL, SDL3_mixer, libxmp)" ON)
