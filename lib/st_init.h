@@ -17,9 +17,9 @@
 namespace st
 {
 
-    [[nodiscard]] st_bool lib_init() noexcept;
+    [[nodiscard]] st_bool lib_init(st_bool popups = true) noexcept;
     [[nodiscard]] st_bool lib_free() noexcept;
 
-}
+} // namespace st
 
 #endif // STICKY_ST_INIT_H

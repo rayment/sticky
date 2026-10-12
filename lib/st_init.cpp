@@ -5,8 +5,8 @@
  * Date created : 31/08/2026
  */
 
-#include <ctime>
 #include <cstdlib>
+#include <ctime>
 #include <filesystem>
 #include <memory>
 
@@ -14,26 +14,37 @@
 
 #include "audio/server.h"
 #include "io/log.h"
+#include "os/popup.h"
 #include "st_init.h"
 #include "st_macros.h"
 
-#define ST_SDL_SAFE_CALL(name, expr) \
-    if (ST_UNLIKELY(!(expr))) \
-    { \
-        const st_char *err = SDL_GetError(); \
-        st::os::popup::error((name), err); \
-        abort(); \
+#define ST_SDL_SAFE_CALL(name, expr)                                                                                   \
+    if (ST_UNLIKELY(!(expr)))                                                                                          \
+    {                                                                                                                  \
+        const st_char *err = SDL_GetError();                                                                           \
+        init_fail((name), err);                                                                                        \
     }
 
 // TODO: Do better than this?
-#define ST_OPENAL_SAFE_CALL(name, expr) \
-    if (ST_UNLIKELY(!(expr))) \
-    { \
-        st::os::popup::error((name), "Error occurred initialising OpenAL!"); \
-        abort(); \
+#define ST_OPENAL_SAFE_CALL(name, expr)                                                                                \
+    if (ST_UNLIKELY(!(expr)))                                                                                          \
+    {                                                                                                                  \
+        init_fail((name), "Error occurred initialising OpenAL!");                                                      \
     }
 
 static std::unique_ptr<st::io::log::logger> default_logger;
+static st_bool                              show_popups = true;
+
+[[noreturn]] static void
+init_fail(const st_char *name,
+          const st_char *message) noexcept
+{
+    if (show_popups)
+        st::os::popup::error(name, message);
+    else
+        st::io::log::error(message);
+    abort();
+}
 
 static void
 init_sdl() noexcept
@@ -41,14 +52,16 @@ init_sdl() noexcept
     st::io::log::debug("Init SDL resources.");
     ST_SDL_SAFE_CALL("SDL_Init", SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0));
-    ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+    ST_SDL_SAFE_CALL("SDL_GL_SetAttribute",
+                     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
     ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8));
 #ifdef __APPLE__
-    ST_SDL_SAFE_CALL("SDL_GL_SetAttribute", SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+    ST_SDL_SAFE_CALL("SDL_GL_SetAttribute",
+                     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
 #endif // __APPLE__
 }
 
@@ -74,8 +87,9 @@ free_openal() noexcept
 }
 
 st_bool
-st::lib_init() noexcept
+st::lib_init(st_bool popups) noexcept
 {
+    show_popups = popups;
     default_logger = std::make_unique<st::io::log::logger>("engine");
     default_logger->set_default();
     st::io::log::debug("--------");
