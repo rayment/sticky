@@ -4,6 +4,7 @@
   "configurePresets": [
     {
       "name": "Debug",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/Debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
@@ -11,6 +12,7 @@
     },
     {
       "name": "DebugWithSanitizer",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/DebugWithSanitizer",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
@@ -18,6 +20,7 @@
     },
     {
       "name": "RelWithDebInfo",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/RelWithDebInfo",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
@@ -25,6 +28,7 @@
     },
     {
       "name": "Release",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/Release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
