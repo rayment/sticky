@@ -98,6 +98,12 @@ st::gui::component::parent() const
     return m_impl->m_parent;
 }
 
+st::bool_t
+st::gui::component::is_menubar() const noexcept
+{
+    return false;
+}
+
 void
 st::gui::component::detach() noexcept
 {

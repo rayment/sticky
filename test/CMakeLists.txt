@@ -21,8 +21,11 @@ endif()
 if(ST_MODULE_VIDEO)
     target_sources(sticky_test PRIVATE
         gui/test_component.cpp
+        gui/test_lineedit.cpp
+        gui/test_menubar.cpp
         gui/test_popup.cpp
         gui/test_progress.cpp
+        gui/test_textedit.cpp
         io/test_mouse.cpp
         mod/test_mod_phases.cpp
         video/test_texture.cpp

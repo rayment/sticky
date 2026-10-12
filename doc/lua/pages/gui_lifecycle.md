@@ -191,8 +191,11 @@ See also
 - @ref lua_api_gui_component
 - @ref lua_api_gui_frame
 - @ref lua_api_gui_button
+- @ref lua_api_gui_menubar
 - @ref lua_api_gui_label
 - @ref lua_api_gui_progress
+- @ref lua_api_gui_lineedit
+- @ref lua_api_gui_textedit
 - @ref lua_api_gui_rect
 - @ref lua_api_gui_hlayout
 - @ref lua_api_gui_vlayout

@@ -31,8 +31,11 @@ live and how to release them.
 - @subpage lua_api_gui_component
 - @subpage lua_api_gui_frame
 - @subpage lua_api_gui_button
+- @subpage lua_api_gui_menubar
 - @subpage lua_api_gui_label
 - @subpage lua_api_gui_progress
+- @subpage lua_api_gui_lineedit
+- @subpage lua_api_gui_textedit
 - @subpage lua_api_gui_rect
 - @subpage lua_api_gui_hlayout
 - @subpage lua_api_gui_vlayout

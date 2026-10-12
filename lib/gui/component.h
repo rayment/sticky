@@ -47,6 +47,9 @@ namespace st::gui
         [[nodiscard]] st::bool_t                   is_closed() const noexcept;
         [[nodiscard]] st::gui::nestable_component *parent() const;
 
+        // Lets a frame reserve a menu bar without RTTI.
+        [[nodiscard]] virtual st::bool_t is_menubar() const noexcept;
+
         // Renders every shown component. Called once per frame by the core.
         static void render_shown() noexcept;
 

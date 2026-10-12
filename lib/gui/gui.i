@@ -5,9 +5,12 @@
 #include "gui/frame.h"
 #include "gui/label.h"
 #include "gui/layout.h"
+#include "gui/lineedit.h"
+#include "gui/menubar.h"
 #include "gui/popup.h"
 #include "gui/progress.h"
 #include "gui/rect.h"
+#include "gui/textedit.h"
 %}
 
 // Components are created by Lua and rendered by the engine from show() or their parent. Lua never renders.
@@ -15,6 +18,7 @@
 %ignore st::gui::component::render_shown;
 %ignore st::gui::component::id;
 %ignore st::gui::component::parent;
+%ignore st::gui::component::is_menubar;
 %ignore st::gui::nestable_component::children;
 %ignore st::gui::frame::render;
 %ignore st::gui::frame::fade_out;
@@ -26,6 +30,13 @@
 %ignore st::gui::vlayout::render;
 %ignore st::gui::popup::render;
 %ignore st::gui::progress::render;
+%ignore st::gui::lineedit::render;
+%ignore st::gui::textedit::render;
+%ignore st::gui::menubar::render;
+%ignore st::gui::menu::render;
+%ignore st::gui::menu_button::render;
+%ignore st::gui::menu_checkbox::render;
+%ignore st::gui::menu_separator::render;
 
 // Showing a component or adding it to a parent pins the Lua object in the registry until the engine lets go of it
 // (closed, orphaned or destroyed), so a component that Lua no longer references stays alive and renders.
@@ -83,10 +94,26 @@ ST_SWIG_IMPLICIT_CONVERSION_TO_ENUM_FUNCTION(st::gui::rect::on_click_callback, s
 %nspace st::gui::progress;
 %include "gui/progress.h"
 
+%nspace st::gui::lineedit;
+%include "gui/lineedit.h"
+
+%nspace st::gui::textedit;
+%include "gui/textedit.h"
+
 ST_SWIG_IMPLICIT_CONVERSION_TO_FUNCTION(st::gui::button::on_click_callback);
 
 %nspace st::gui::button;
 %include "gui/button.h"
+
+ST_SWIG_IMPLICIT_CONVERSION_TO_FUNCTION(st::gui::menu_button::on_click_callback);
+ST_SWIG_IMPLICIT_CONVERSION_TO_BOOL_FUNCTION(st::gui::menu_checkbox::on_toggle_callback);
+
+%nspace st::gui::menubar;
+%nspace st::gui::menu;
+%nspace st::gui::menu_button;
+%nspace st::gui::menu_checkbox;
+%nspace st::gui::menu_separator;
+%include "gui/menubar.h"
 
 ST_SWIG_IMPLICIT_CONVERSION_TO_FUNCTION(st::gui::popup::on_close_callback);
 

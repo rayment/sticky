@@ -60,8 +60,11 @@ if(ST_MODULE_VIDEO)
         gui/backend_${ST_GUI_BACKEND}/rect.cpp
         gui/backend_${ST_GUI_BACKEND}/label.cpp
         gui/backend_${ST_GUI_BACKEND}/layout.cpp
+        gui/backend_${ST_GUI_BACKEND}/lineedit.cpp
+        gui/backend_${ST_GUI_BACKEND}/menubar.cpp
         gui/backend_${ST_GUI_BACKEND}/popup.cpp
         gui/backend_${ST_GUI_BACKEND}/progress.cpp
+        gui/backend_${ST_GUI_BACKEND}/textedit.cpp
         io/gamepad.cpp
         io/keyboard.cpp
         io/mouse.cpp

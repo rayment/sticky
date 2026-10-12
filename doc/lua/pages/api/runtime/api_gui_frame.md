@@ -97,6 +97,21 @@ This method sets whether the user can collapse the frame to its titlebar. The de
 
 **Returns:** nothing
 
+### st.gui.frame:set_min_size(width, height) {#lua_api_gui_frame_set_min_size}
+
+This method sets the smallest size, in pixels, that the frame can have. The default is `0` by `0`, which lets the frame
+shrink to nothing.
+
+The minimum applies to the user resizing the frame, to @ref lua_api_gui_frame_set_size and to
+@ref lua_api_gui_frame_set_auto_resize.
+
+| Parameter | Type   | Description                  |
+|-----------|--------|------------------------------|
+| `width`   | number | The minimum frame width.     |
+| `height`  | number | The minimum frame height.    |
+
+**Returns:** nothing
+
 ### st.gui.frame:set_movable(movable) {#lua_api_gui_frame_set_movable}
 
 This method sets whether the user can drag the frame. The default is `true`.
@@ -161,6 +176,7 @@ See also
 - @ref lua_gui_lifecycle
 - @ref lua_api_gui_component
 - @ref lua_api_gui_button
+- @ref lua_api_gui_menubar
 - @ref lua_api_gui_label
 - @ref lua_api_gui_progress
 - @ref lua_api_gui_rect
