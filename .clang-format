@@ -7,11 +7,8 @@ AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: false
 AlignTrailingComments: false
-AlwaysBreakAfterReturnType: TopLevelDefinitions
-AlwaysBreakTemplateDeclarations: Yes
-BinPackArguments: true
-BinPackParameters: true
-BraceWrapping: 
+AllowAllParametersOfDeclarationOnNextLine: false
+BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: true
@@ -28,13 +25,14 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
+BreakAfterReturnType: TopLevelDefinitions
 BreakBeforeBraces: Custom
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
+BreakTemplateDeclarations: Yes
 ColumnLimit: 120
 CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ContinuationIndentWidth: 4
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: LogicalBlock
@@ -54,10 +52,14 @@ IndentPPDirectives: None
 IndentWidth: 4
 IndentWrappedFunctionNames: false
 InsertNewlineAtEOF: true
+LineEnding: LF
 MacroBlockBegin: ''
 MacroBlockEnd: ''
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
+PackConstructorInitializers: CurrentLine
+PackParameters:
+  BinPack: AlwaysOnePerLine
 PointerAlignment: Right
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false
@@ -68,13 +70,15 @@ SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceBeforeSquareBrackets: false
-SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
-SpacesInConditionalStatement: false
-SpacesInCStyleCastParentheses: false
-SpacesInParentheses: false
+SpacesInParens: Custom
+SpacesInParensOptions:
+  InConditionalStatements: false
+  InCStyleCasts: false
+  InEmptyParentheses: false
 SpacesInSquareBrackets: false
+Standard: c++17
 TabWidth: 4
 UseTab: Never
 ...
