@@ -56,6 +56,7 @@ namespace st::video
         [[nodiscard]] st::float64     delta_time     () const noexcept;
         [[nodiscard]] st::float64     fixed_timestep () const noexcept;
         [[nodiscard]] fullscreen_mode fullscreen     () const noexcept;
+        [[nodiscard]] glm::f32vec2    size           () const noexcept;
         [[nodiscard]] std::string     title          () const noexcept;
         [[nodiscard]] st::bool_t      visible        () const noexcept;
         [[nodiscard]] vsync_mode      vsync          () const noexcept;

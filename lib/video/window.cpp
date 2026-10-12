@@ -197,6 +197,15 @@ st::video::window::fullscreen() const noexcept
     return m_impl->fullscreen;
 }
 
+glm::f32vec2
+st::video::window::size() const noexcept
+{
+    st_int32 w = 0;
+    st_int32 h = 0;
+    SDL_GetWindowSize(m_impl->window, &w, &h);
+    return {static_cast<st::float32>(w), static_cast<st::float32>(h)};
+}
+
 std::string
 st::video::window::title() const noexcept
 {
