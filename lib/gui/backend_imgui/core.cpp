@@ -74,7 +74,8 @@ st::gui::core::core(const st::video::window &window) noexcept : m_impl{std::make
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    (void) io;
+    io.IniFilename = nullptr;
+    io.LogFilename = nullptr;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
