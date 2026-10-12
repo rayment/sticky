@@ -7,8 +7,8 @@ Overview
 --------
 
 Every class in `st.gui` derives from `st.gui.component`, so the methods on this page are available on frames, buttons,
-labels, progress bars, images and popups. `st.gui.nestable_component` is the base of components that can hold children,
-which is only `st.gui.frame`.
+labels, progress bars, rects, layouts and popups. `st.gui.nestable_component` is the base of components that can hold
+children, which are `st.gui.frame` and the layouts `st.gui.hlayout` and `st.gui.vlayout`.
 
 These classes cannot be constructed directly. Create one of the concrete classes instead.
 
@@ -52,7 +52,8 @@ This method queries whether the component has been closed.
 
 ### st.gui.component:set_parent(parent) {#lua_api_gui_component_set_parent}
 
-This method makes the component a child of a frame, which then draws it and closes it when the frame is closed.
+This method makes the component a child of a frame or a layout, which then draws it and closes it when the parent is
+closed.
 
 Children are drawn in the order that they were added. Setting the same parent again moves the component to the end.
 Setting a different parent moves the component away from its previous one. A component that was shown stops being drawn
@@ -64,7 +65,7 @@ parent, so the call is ignored for them as well.
 
 | Parameter | Type           | Description                           |
 |-----------|----------------|---------------------------------------|
-| `parent`  | `st.gui.frame` | The frame that should contain the component. |
+| `parent`  | `st.gui.frame`, `st.gui.hlayout` or `st.gui.vlayout` | The frame or layout that should contain the component. |
 
 **Returns:** nothing
 

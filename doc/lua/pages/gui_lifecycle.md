@@ -193,5 +193,7 @@ See also
 - @ref lua_api_gui_button
 - @ref lua_api_gui_label
 - @ref lua_api_gui_progress
-- @ref lua_api_gui_image
+- @ref lua_api_gui_rect
+- @ref lua_api_gui_hlayout
+- @ref lua_api_gui_vlayout
 - @ref lua_api_gui_popup

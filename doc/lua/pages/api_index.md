@@ -20,6 +20,7 @@ The following API features are only available during the runtime mod phase, and 
 - @subpage lua_api_audio_sound
 - @subpage lua_api_audio_source
 - @subpage lua_api_video_texture
+- @subpage lua_api_io_mouse
 
 ### GUI
 
@@ -32,5 +33,7 @@ live and how to release them.
 - @subpage lua_api_gui_button
 - @subpage lua_api_gui_label
 - @subpage lua_api_gui_progress
-- @subpage lua_api_gui_image
+- @subpage lua_api_gui_rect
+- @subpage lua_api_gui_hlayout
+- @subpage lua_api_gui_vlayout
 - @subpage lua_api_gui_popup
