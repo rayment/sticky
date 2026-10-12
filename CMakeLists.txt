@@ -37,6 +37,9 @@ include(cmake/Compiler.cmake)
 include(cmake/Linker.cmake)
 include(cmake/Dependencies.cmake)
 include(cmake/Doxygen.cmake)
+include(cmake/Coverage.cmake)
+
+enable_testing()
 
 add_subdirectory(lib)
 add_subdirectory(src)

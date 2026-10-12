@@ -11,6 +11,15 @@
       }
     },
     {
+      "name": "Coverage",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/Coverage",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ST_ENABLE_COVERAGE": "ON"
+      }
+    },
+    {
       "name": "DebugWithSanitizer",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/DebugWithSanitizer",
@@ -39,6 +48,10 @@
     {
       "name": "Debug",
       "configurePreset": "Debug"
+    },
+    {
+      "name": "Coverage",
+      "configurePreset": "Coverage"
     },
     {
       "name": "DebugWithSanitizer",
