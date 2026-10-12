@@ -172,6 +172,8 @@ namespace
     const std::set<std::string> documented_names = {
         "_G.require",
         "_G.st",
+        "_G.st.app",
+        "_G.st.app.quit",
         "_G.st.audio",
         "_G.st.audio.sound",
         "_G.st.audio.sound.get",

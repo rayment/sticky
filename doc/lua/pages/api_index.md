@@ -5,6 +5,7 @@ API Reference {#lua_api_index}
 
 The following pages document shared API features that are available in both the init and runtime mod phases.
 
+- @subpage lua_api_app
 - @subpage lua_api_io_log
 
 ## Init API

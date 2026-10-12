@@ -1,4 +1,5 @@
 set(ST_LIB_INTERFACES
+    app.i
     st_lua_typemaps.i
     io/log.i
     util/config.i
@@ -7,6 +8,7 @@ set(ST_LIB_INTERFACES
 set(ST_LIB_SOURCES
     io/filesystem.cpp
     io/log.cpp
+    lua/app_bindings.cpp
     lua/config_bindings.cpp
     lua/log_bindings.cpp
     lua/resource_bindings.cpp

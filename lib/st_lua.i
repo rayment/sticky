@@ -33,6 +33,7 @@
 %include "io/mouse.i"
 %include "gui/gui.i"
 #endif
+%include "app.i"
 %include "io/log.i"
 %include "util/config.i"
 
