@@ -17,7 +17,10 @@ if(ST_MODULE_AUDIO)
 endif()
 
 if(ST_MODULE_VIDEO)
-    target_sources(sticky_test PRIVATE video/test_window.cpp)
+    target_sources(sticky_test PRIVATE
+        video/test_texture.cpp
+        video/test_window.cpp
+    )
 endif()
 
 target_populate_compiler_features(sticky_test)
