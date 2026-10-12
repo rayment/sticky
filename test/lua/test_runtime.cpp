@@ -215,6 +215,7 @@ namespace
         "_G.st.gui.frame.set_auto_resize",
         "_G.st.gui.frame.set_closable",
         "_G.st.gui.frame.set_collapsable",
+        "_G.st.gui.frame.set_min_size",
         "_G.st.gui.frame.set_movable",
         "_G.st.gui.frame.set_parent",
         "_G.st.gui.frame.set_position",

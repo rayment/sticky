@@ -17,6 +17,7 @@
 %ignore st::gui::component::parent;
 %ignore st::gui::nestable_component::children;
 %ignore st::gui::frame::render;
+%ignore st::gui::frame::fade_out;
 %ignore st::gui::button::render;
 %ignore st::gui::rect::render;
 %ignore st::gui::label::render;
