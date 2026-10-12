@@ -66,8 +66,8 @@ namespace st::video
         void set_title         (std::string_view title) noexcept;
         void set_vsync         (vsync_mode mode)        noexcept;
 
-        void *sdl_ptr() const noexcept;
-        void *gl_ptr () const noexcept;
+        [[nodiscard]] void *sdl_ptr() const noexcept;
+        [[nodiscard]] void *gl_ptr () const noexcept;
 
     private:
         struct window_impl;
