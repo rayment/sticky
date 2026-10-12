@@ -5,6 +5,8 @@ set(ALSOFT_NO_CONFIG_UTIL ON  CACHE BOOL "" FORCE)
 set(ALSOFT_EXAMPLES       OFF CACHE BOOL "" FORCE)
 set(ALSOFT_TESTS          OFF CACHE BOOL "" FORCE)
 set(ALSOFT_EAX            OFF CACHE BOOL "" FORCE)
+# See https://github.com/kcat/openal-soft/issues/1287
+set(ALSOFT_ENABLE_MODULES OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
     openal
