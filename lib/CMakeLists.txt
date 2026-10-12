@@ -1,6 +1,5 @@
 set(ST_LIB_INTERFACES
     st_lua_typemaps.i
-    gui/frame.i
     io/log.i
 )
 
@@ -41,7 +40,9 @@ if(ST_MODULE_VIDEO OR ST_MODULE_AUDIO)
 endif()
 
 if(ST_MODULE_VIDEO)
-    list(APPEND ST_LIB_INTERFACES gui/gui.i)
+    list(APPEND ST_LIB_INTERFACES
+        gui/gui.i
+    )
     list(APPEND ST_LIB_SOURCES
         gui/component.cpp
         gui/backend_${ST_GUI_BACKEND}/button.cpp
