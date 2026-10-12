@@ -24,5 +24,6 @@ target_link_libraries(sticky_test PRIVATE
     doctest
     libsticky
 )
+target_link_resource_file(sticky_test test.rc.in)
 
 add_test(NAME sticky_test COMMAND sticky_test)
