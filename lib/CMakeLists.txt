@@ -13,9 +13,11 @@ set(ST_LIB_SOURCES
     st_init.cpp
 
     $<$<PLATFORM_ID:Linux>:
+        io/filesystem_linux.cpp
         os/popup_linux.c
     >
     $<$<PLATFORM_ID:Windows>:
+        io/filesystem_win32.cpp
         os/popup_win32.c
     >
 )
