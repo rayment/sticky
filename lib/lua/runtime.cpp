@@ -12,6 +12,8 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include <utility>
+
 #include "io/log.h"
 #include "lua/runtime.h"
 
@@ -20,7 +22,7 @@ extern "C" int luaopen_sticky(lua_State *L);
 struct st::lua::runtime::runtime_impl
 {
     runtime_impl(std::string_view name, std::filesystem::path root_dir) noexcept
-        : logger_name(name), lua_logger(name), root_dir_path(root_dir)
+        : logger_name(name), lua_logger(name), root_dir_path(std::move(root_dir))
     {}
     ~runtime_impl() noexcept = default;
 
@@ -49,6 +51,7 @@ is_within_directory(const std::filesystem::path &root,
 
 [[nodiscard]]
 static st::bool_t
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 resolve_path(const std::filesystem::path &root,
              const std::filesystem::path &requested,
              std::filesystem::path &resolved) noexcept
@@ -65,10 +68,7 @@ resolve_path(const std::filesystem::path &root,
 
     resolved = std::filesystem::canonical(candidate, ec);
 
-    if (ec || !is_within_directory(canonical_root, resolved))
-        return false;
-
-    return true;
+    return !ec && is_within_directory(canonical_root, resolved);
 }
 
 [[nodiscard]]
@@ -100,14 +100,11 @@ is_valid_module_name(const std::string &name) noexcept
             previous_dot = true;
             continue;
         }
-        if (!(
-            (c >= 'a' && c <= 'z') ||
-            (c >= 'A' && c <= 'Z') ||
-            (c >= '0' && c <= '9') ||
-            c == '_'))
-        {
+        const bool is_alnum = (c >= 'a' && c <= 'z') ||
+                              (c >= 'A' && c <= 'Z') ||
+                              (c >= '0' && c <= '9');
+        if (!is_alnum && c != '_')
             return false;
-        }
         previous_dot = false;
     }
     return true;
@@ -133,7 +130,7 @@ load_std_libraries(lua_State *L)
         "dofile",
         "loadfile",
         "load",
-        "collectgarbage"
+        "collectgarbage",
     };
 
     for (const char *name : unsafe_globals)
@@ -221,7 +218,7 @@ require_mod(lua_State *L)
 }
 
 st::lua::runtime::runtime(std::string_view name,
-                          std::filesystem::path root_dir) noexcept
+                          const std::filesystem::path &root_dir) noexcept
     : m_impl{std::make_unique<runtime_impl>(name, root_dir)}
 {
     st::lua::set_logger(&m_impl->lua_logger);
@@ -288,7 +285,7 @@ st::bool_t
 st::lua::runtime::execute_function(std::string_view name,
                                    std::initializer_list<const lua_arg_type> args) noexcept
 {
-    lua_getglobal(m_impl->L, name.data());
+    lua_getglobal(m_impl->L, std::string(name).c_str());
     if (!lua_isfunction((m_impl->L), -1))
     {
         lua_pop(m_impl->L, 1);

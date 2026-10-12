@@ -128,7 +128,7 @@ struct st::io::log::logger::logger_impl
 
 std::vector<spdlog::sink_ptr> st::io::log::logger::logger_impl::sinks = {
     std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
-    std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink_file_log_path(), false)
+    std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink_file_log_path(), false),
 };
 
 st::io::log::logger::logger(std::string_view name) noexcept

@@ -32,8 +32,8 @@ namespace st::video
     class window
     {
     public:
-        enum fullscreen_mode { Windowed, Fullscreen };
-        enum vsync_mode { Adaptive, Disabled };
+        enum fullscreen_mode : st::uint8 { Windowed, Fullscreen };
+        enum vsync_mode : st::uint8 { Adaptive, Disabled };
 
         window () noexcept;
         ~window() noexcept;
@@ -49,7 +49,7 @@ namespace st::video
         void swap             ()                                          noexcept;
         void accumulate       ()                                          noexcept;
         void reset_accumulator()                                          noexcept;
-        void simulate         (std::function<void(st::float64)> callback) noexcept;
+        void simulate         (const std::function<void(st::float64)> &callback) noexcept;
         void attach_gui       (st::gui::core &gui)                        noexcept; // TODO: Remove.
 
         [[nodiscard]] st::bool_t      close_requested() const noexcept;

@@ -19,12 +19,14 @@ static ALCcontext *context;
 
 static void list_audio_devices(const ALCchar* devices)
 {
-    const ALCchar* dev = devices, * next = devices + 1;
+    const ALCchar *dev = devices;
+    const ALCchar *next = devices + 1;
     size_t len = 0;
 
     st::io::log::debug("Devices list:");
     st::io::log::debug("-------------");
-    while (dev && *dev != '\0' && next && *next != '\0') {
+    while ((dev != nullptr) && *dev != '\0' && (next != nullptr) && *next != '\0')
+    {
         st::io::log::debug(fmt::format("{}", dev));
         len = strlen(dev);
         dev += (len + 1);
@@ -38,7 +40,7 @@ st::audio::server::init()
 {
     // TODO: Make calls safe.
     device = alcOpenDevice(nullptr);
-    if (!alcIsExtensionPresent(device, "ALC_ENUMERATION_EXT"))
+    if (alcIsExtensionPresent(device, "ALC_ENUMERATION_EXT") == 0)
     {
         st::io::log::debug("alcIsExtensionPresent(): enumeration not enabled");
         return false;

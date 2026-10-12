@@ -27,7 +27,7 @@ namespace st::lua
     public:
         typedef std::variant<std::monostate, st::bool_t, st::int64, st::float64, std::string_view> lua_arg_type;
 
-         runtime(std::string_view name, std::filesystem::path root_dir) noexcept;
+         runtime(std::string_view name, const std::filesystem::path &root_dir) noexcept;
         ~runtime() noexcept;
 
         ST_DELETE_COPY_CTORS(runtime);

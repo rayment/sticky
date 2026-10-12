@@ -125,7 +125,7 @@ st::video::window::poll() noexcept
         else
         {
             // TODO: Replace with event bus.
-            if (m_impl->gui)
+            if (m_impl->gui != nullptr)
                 m_impl->gui->process_event(e);
         }
     }
@@ -164,7 +164,7 @@ st::video::window::reset_accumulator() noexcept
 }
 
 void
-st::video::window::simulate(std::function<void(st::float64)> callback) noexcept
+st::video::window::simulate(const std::function<void(st::float64)> &callback) noexcept
 {
     while (m_impl->accumulator >= m_impl->fixed_timestep)
     {

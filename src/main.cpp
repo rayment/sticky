@@ -12,9 +12,9 @@
 #include "argparse.h"
 #include "modloader.h"
 
-int
-main(st_int32 argc,
-     st_char **argv)
+static int
+run(st_int32 argc,
+    st_char **argv)
 {
     st::argparse args(argc, argv);
 
@@ -107,4 +107,19 @@ main(st_int32 argc,
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
+}
+
+int
+main(st_int32 argc,
+     st_char **argv)
+{
+    try
+    {
+        return run(argc, argv);
+    }
+    catch (...)
+    {
+        st::io::log::error("Unhandled exception. Exiting.");
+    }
+    return EXIT_FAILURE;
 }

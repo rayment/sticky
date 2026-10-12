@@ -26,7 +26,7 @@ namespace st
              std::string_view version,
              std::string_view author,
              std::string_view description,
-             std::filesystem::path root_dir) noexcept;
+             const std::filesystem::path &root_dir) noexcept;
         ~mod() noexcept;
 
         ST_DELETE_COPY_CTORS(mod);

@@ -24,14 +24,14 @@ namespace st::io
     class gamepad
     {
     public:
-        enum axis
+        enum axis : st::uint8
         {
             LeftX, LeftY,
             RightX, RightY,
-            TriggerLeft, TriggerRight
+            TriggerLeft, TriggerRight,
         };
 
-        enum button
+        enum button : st::uint8
         {
             North, East, South, West,
             Back, Guide, Start,
@@ -39,7 +39,7 @@ namespace st::io
             DPadUp, DPadDown, DPadLeft, DPadRight,
             LeftPaddle1, LeftPaddle2, RightPaddle1, RightPaddle2,
             Touchpad,
-            Misc1, Misc2, Misc3, Misc4, Misc5, Misc6
+            Misc1, Misc2, Misc3, Misc4, Misc5, Misc6,
         };
 
         static std::unordered_map<st::size, std::shared_ptr<gamepad>> gamepads;

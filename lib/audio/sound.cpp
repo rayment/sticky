@@ -17,10 +17,10 @@
 static st_bool
 load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
 {
-    MIX_AudioDecoder *decoder = NULL;
+    MIX_AudioDecoder *decoder = nullptr;
     SDL_AudioSpec spec;
     SDL_AudioSpec decoder_spec;
-    void *pcm = NULL;
+    void *pcm = nullptr;
     st::size pcm_size = 0;
     st::size pcm_capacity = 0;
     ALuint buffer = 0;
@@ -33,7 +33,7 @@ load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
      * which should be libxmp for MOD files when XMP support is enabled.
      */
     decoder = MIX_CreateAudioDecoder(path.u8string().c_str(), 0);
-    if (decoder == NULL)
+    if (decoder == nullptr)
         goto fail;
 
     /*
@@ -62,13 +62,13 @@ load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
 
         if (required > pcm_capacity)
         {
-            st::size new_capacity = pcm_capacity ? pcm_capacity * 2 : chunk_size;
+            st::size new_capacity = (pcm_capacity != 0u) ? pcm_capacity * 2 : chunk_size;
 
             while (new_capacity < required)
                 new_capacity *= 2;
 
             void *new_pcm = SDL_realloc(pcm, new_capacity);
-            if (new_pcm == NULL)
+            if (new_pcm == nullptr)
                 goto fail;
 
             pcm = new_pcm;
@@ -95,7 +95,7 @@ load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
     }
 
     MIX_DestroyAudioDecoder(decoder);
-    decoder = NULL;
+    decoder = nullptr;
 
     /*
      * Now pcm contains:
@@ -131,7 +131,7 @@ fail:
     if (buffer != 0)
         alDeleteBuffers(1, &buffer);
 
-    if (decoder != NULL)
+    if (decoder != nullptr)
         MIX_DestroyAudioDecoder(decoder);
 
     SDL_free(pcm);

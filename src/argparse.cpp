@@ -33,8 +33,8 @@ st::argparse::argparse(st_int32 argc,
     m_impl->argv = argv;
 
     option long_options[] = {
-        { "help", no_argument, nullptr, 'h' },
-        { "version", no_argument, nullptr, 'v' }
+        {"help", no_argument, nullptr, 'h'},
+        {"version", no_argument, nullptr, 'v'},
     };
 
     while (true)
@@ -67,16 +67,17 @@ st::argparse::~argparse() noexcept = default;
 void
 st::argparse::print_help() const noexcept
 {
-    std::cout << fmt::format("Usage: {} [options]", m_impl->argv[0]) << std::endl;
-    std::cout << "Options:" << std::endl;;
-    std::cout << "  -h, --help               Display this help message." << std::endl;
-    std::cout << "  -v, --version            Display version information." << std::endl;
+    std::cout << fmt::format("Usage: {} [options]", m_impl->argv[0]) << '\n';
+    std::cout << "Options:" << '\n';
+    ;
+    std::cout << "  -h, --help               Display this help message." << '\n';
+    std::cout << "  -v, --version            Display version information." << '\n';
 }
 
 void
 st::argparse::print_version() const noexcept
 {
-    std::cout << fmt::format("{} {}", PROGRAM_TITLE, VERSION_STRING) << std::endl;
+    std::cout << fmt::format("{} {}", PROGRAM_TITLE, VERSION_STRING) << '\n';
 }
 
 st_size

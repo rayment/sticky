@@ -117,19 +117,21 @@
 #define ST_TYPEOF(x) __typeof__(x)
 #endif // __cplusplus
 
-#define ST_STRINGIFY(x) _ST_STRINGIFY2(x)
-#define _ST_STRINGIFY2(x) #x
+#define ST_STRINGIFY(x) ST_STRINGIFY_IMPL(x)
+#define ST_STRINGIFY_IMPL(x) #x
 
 #define ST_EXTERN_PROTOTYPE(prototype) \
     prototype; prototype
 
 #ifdef __cplusplus
+// NOLINTBEGIN(bugprone-macro-parentheses)
 #define ST_DELETE_COPY_CTORS(classname) \
     classname(const classname&) = delete; \
     classname& operator=(const classname&) = delete
 #define ST_DELETE_MOVE_CTORS(classname) \
     classname(classname&&) = delete; \
     classname& operator=(classname&&) = delete
+// NOLINTEND(bugprone-macro-parentheses)
 #endif // __cplusplus
 
 #ifdef NDEBUG

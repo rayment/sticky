@@ -17,12 +17,13 @@
 
 struct st::mod::mod_impl
 {
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     mod_impl(std::string_view name,
              std::string_view display_name,
              std::string_view version,
              std::string_view author,
              std::string_view description,
-             std::filesystem::path root_dir) noexcept
+             const std::filesystem::path &root_dir) noexcept
         : m_name(name),
           m_display_name(display_name),
           m_version(version),
@@ -45,7 +46,7 @@ st::mod::mod(std::string_view name,
              std::string_view version,
              std::string_view author,
              std::string_view description,
-             std::filesystem::path root_dir) noexcept
+             const std::filesystem::path &root_dir) noexcept
     : m_impl{std::make_unique<mod_impl>(name, display_name, version, author, description, root_dir)}
 {}
 

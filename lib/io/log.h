@@ -7,6 +7,8 @@
 
 #ifndef STICKY_IO_LOG_H
 #define STICKY_IO_LOG_H
+
+#include "st_macros.h"
 #include "st_types.h"
 
 #ifdef __cplusplus

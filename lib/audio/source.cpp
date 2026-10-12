@@ -97,7 +97,7 @@ st::audio::source::set_spatial(st::bool_t spatial) noexcept
 st::bool_t
 st::audio::source::select(const st::audio::sound &sound) noexcept
 {
-    alSourcei(m_source, AL_BUFFER, sound.m_buffer);
+    alSourcei(m_source, AL_BUFFER, static_cast<ALint>(sound.m_buffer));
     return true;
 }
 

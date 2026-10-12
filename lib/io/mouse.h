@@ -18,9 +18,9 @@
 
 namespace st::io::mouse
 {
-    enum button
+    enum button : st::uint8
     {
-        Left, Right, Middle, X1, X2
+        Left, Right, Middle, X1, X2,
     };
 
     [[nodiscard]] glm::f32vec2 delta_pos    () noexcept;

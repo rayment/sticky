@@ -21,7 +21,7 @@ namespace st::audio
     class sound
     {
     public:
-        friend st::audio::source;
+        friend class st::audio::source;
 
         [[nodiscard]] static std::shared_ptr<sound> load_file(const std::filesystem::path &path) noexcept;
 
