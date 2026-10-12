@@ -8,10 +8,10 @@
 #include <utility>
 #include <vector>
 
-#include "gui/popup.h"
 #include "gui/button.h"
 #include "gui/frame.h"
 #include "gui/label.h"
+#include "gui/popup.h"
 
 struct st::gui::popup::popup_impl
 {
@@ -22,7 +22,7 @@ struct st::gui::popup::popup_impl
         m_label.set_parent(&m_frame);
         m_button.set_parent(&m_frame);
         m_button.set_text("OK");
-        m_button.register_on_click([this] { m_frame.close(); });
+        m_button.register_on_click([this] { m_frame.fade_out(); });
         // Closing the frame, such as with the titlebar button, closes the whole popup.
         m_frame.register_on_close([owner] { owner->close(); });
     }
