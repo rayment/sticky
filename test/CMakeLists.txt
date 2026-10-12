@@ -26,8 +26,15 @@ target_disable_exceptions(sticky_test)
 target_disable_rtti(sticky_test)
 target_include_directories(sticky_test PUBLIC .)
 target_compile_definitions(sticky_test PRIVATE
-    ST_TEST_RES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/res"
+    ST_TEST_RES_DIR="$<TARGET_FILE_DIR:sticky_test>/test"
 )
+
+add_custom_target(sticky_test_res
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+        "${CMAKE_CURRENT_SOURCE_DIR}/res"
+        "$<TARGET_FILE_DIR:sticky_test>/test"
+)
+add_dependencies(sticky_test sticky_test_res)
 
 target_link_libraries(sticky_test PRIVATE
     doctest
