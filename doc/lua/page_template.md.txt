@@ -1,0 +1,38 @@
+module_name {#lua_api_module_name}
+===========
+
+One-sentence summary of the module.
+
+Overview
+--------
+
+What the module is for and when to use it.
+
+Functions
+---------
+
+### module_name.function_name(arg) {#lua_api_module_name_function_name}
+
+Description of what the function does.
+
+| Parameter | Type   | Description         |
+|-----------|--------|---------------------|
+| `arg`     | string | What `arg` means.   |
+
+**Returns:** `boolean` — what the return value means.
+
+```lua
+local ok = module_name.function_name("value")
+```
+
+Classes
+-------
+
+### module_name.class_name {#lua_api_module_name_class_name}
+
+Description of the class, its constructor and methods.
+
+See also
+--------
+
+- @ref lua_api_index

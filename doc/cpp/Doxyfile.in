@@ -1,0 +1,81 @@
+# Doxygen configuration for the sticky C++ engine library (lib/).
+# Only non-default settings are listed. Configured by cmake/Doxygen.cmake.
+
+PROJECT_NAME           = "sticky"
+PROJECT_NUMBER         = "@VERSION_STRING@"
+PROJECT_BRIEF          = "C++ engine library reference"
+OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doc/cpp"
+QUIET                  = YES
+
+# Input
+INPUT                  = "@CMAKE_SOURCE_DIR@/lib" \
+                         "@CMAKE_SOURCE_DIR@/doc/cpp/mainpage.md"
+FILE_PATTERNS          = *.h *.cpp *.c
+RECURSIVE              = YES
+STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/lib"
+STRIP_FROM_INC_PATH    = "@CMAKE_SOURCE_DIR@/lib"
+USE_MDFILE_AS_MAINPAGE = "@CMAKE_SOURCE_DIR@/doc/cpp/mainpage.md"
+OPTIMIZE_OUTPUT_FOR_C  = NO
+
+# Extraction: document everything, even without comments
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+EXTRACT_ANON_NSPACES   = NO
+CASE_SENSE_NAMES       = YES
+EXCLUDE_SYMBOLS        = *_impl \
+                         *_impl::*
+
+# Preprocessing: neutralise attribute macros and expose C++ branches
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = __cplusplus=201703L \
+                         ST_HOT= \
+                         ST_COLD= \
+                         ST_LIKELY(x)=x \
+                         ST_UNLIKELY(x)=x \
+                         ST_ALIGNED(n)= \
+                         ST_PACKED= \
+                         ST_PURE= \
+                         ST_CONST= \
+                         ST_INLINE= \
+                         ST_NOINLINE= \
+                         ST_NORETURN= \
+                         ST_UNUSED= \
+                         "ST_DELETE_COPY_CTORS(x)=" \
+                         "ST_DELETE_MOVE_CTORS(x)="
+
+# Warnings
+WARN_IF_UNDOCUMENTED   = NO
+WARN_NO_PARAMDOC       = NO
+
+# Source browsing
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+
+# HTML output
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HTML_OUTPUT            = html
+HTML_DYNAMIC_SECTIONS  = YES
+HTML_COLORSTYLE        = AUTO_LIGHT
+GENERATE_TREEVIEW      = YES
+FULL_SIDEBAR           = NO
+SEARCHENGINE           = YES
+FULL_PATH_NAMES        = YES
+
+# Diagrams (requires Graphviz dot)
+HAVE_DOT               = @ST_DOXYGEN_HAVE_DOT@
+DOT_PATH               = "@ST_DOXYGEN_DOT_PATH@"
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = NO
+CALLER_GRAPH           = NO
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+DOT_MULTI_TARGETS      = YES

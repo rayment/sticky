@@ -1,0 +1,36 @@
+# Doxygen configuration for the sticky Lua API manual.
+# Pages are written by hand in doc/lua/pages and linked from mainpage.md.
+# Configured by cmake/Doxygen.cmake.
+
+PROJECT_NAME           = "sticky Lua API"
+PROJECT_NUMBER         = "@VERSION_STRING@"
+PROJECT_BRIEF          = "Lua scripting reference"
+OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doc/lua"
+QUIET                  = YES
+
+# Input: hand-written pages only, no source code
+INPUT                  = "@CMAKE_SOURCE_DIR@/doc/lua"
+FILE_PATTERNS          = *.md
+RECURSIVE              = YES
+USE_MDFILE_AS_MAINPAGE = "@CMAKE_SOURCE_DIR@/doc/lua/mainpage.md"
+EXAMPLE_PATH           = "@CMAKE_SOURCE_DIR@/doc/lua/examples"
+EXAMPLE_PATTERNS       = *.lua
+MARKDOWN_SUPPORT       = YES
+AUTOLINK_SUPPORT       = YES
+TOC_INCLUDE_HEADINGS   = 3
+
+# No code: hide generated code indexes
+EXTRACT_ALL            = NO
+SHOW_FILES             = NO
+SHOW_NAMESPACES        = NO
+GENERATE_TODOLIST      = YES
+GENERATE_DEPRECATEDLIST = YES
+
+# HTML output
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HTML_OUTPUT            = html
+HTML_COLORSTYLE        = AUTO_LIGHT
+GENERATE_TREEVIEW      = YES
+SEARCHENGINE           = YES
+HAVE_DOT               = NO

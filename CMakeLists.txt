@@ -36,6 +36,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 include(cmake/Compiler.cmake)
 include(cmake/Linker.cmake)
 include(cmake/Dependencies.cmake)
+include(cmake/Doxygen.cmake)
 
 add_subdirectory(lib)
 add_subdirectory(src)
