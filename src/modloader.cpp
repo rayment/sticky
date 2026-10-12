@@ -6,6 +6,7 @@
  */
 
 #include <fstream>
+#include <stdexcept>
 
 #include <fmt/format.h>
 #include <nlohmann/json.hpp>
@@ -95,60 +96,71 @@ st::modloader::modloader() noexcept
 st::modloader::~modloader() noexcept
 {}
 
+static std::unique_ptr<st::mod>
+load_mod(const std::string &mod_folder) noexcept
+{
+    try
+    {
+        const std::filesystem::path folder(mod_folder);
+        if (!st::io::filesystem::exists(folder / "mod.json"))
+        {
+            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no metadata.json file was found.", mod_folder));
+            return nullptr;
+        }
+        if (!st::io::filesystem::exists(folder / "lua" / "main.lua"))
+        {
+            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no main.lua file was found.", mod_folder));
+            return nullptr;
+        }
+
+        std::ifstream metadata_file((folder / "mod.json").string());
+        const nlohmann::json metadata = nlohmann::json::parse(metadata_file);
+        for (const char *key : {"name", "display_name", "version", "author", "description"})
+        {
+            if (!metadata.contains(key) || !metadata[key].is_string())
+                throw std::runtime_error(key);
+        }
+        return std::make_unique<st::mod>(
+            metadata["name"].get<std::string>(),
+            metadata["display_name"].get<std::string>(),
+            metadata["version"].get<std::string>(),
+            metadata["author"].get<std::string>(),
+            metadata["description"].get<std::string>(),
+            folder / "lua");
+    }
+    catch (...)
+    {
+        st::io::log::error("Skipping mod with invalid or unreadable metadata.json in folder:");
+        st::io::log::error(mod_folder);
+    }
+    return nullptr;
+}
+
 std::unordered_map<std::string, std::unique_ptr<st::mod>>
 st::modloader::load_mods() noexcept
 {
     std::unordered_map<std::string, std::unique_ptr<st::mod>> mods;
 
-    st::io::log::info("Loading mods...");
-    auto mod_folders = st::io::filesystem::list_subdirs("mod");
-    for (auto &mod_folder : mod_folders)
+    try
     {
-        st::bool_t has_metadata   = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "mod.json");
-        st::bool_t has_entrypoint = st::io::filesystem::exists(std::filesystem::path(mod_folder) / "lua" / "main.lua");
-        if (!has_metadata)
+        st::io::log::info("Loading mods...");
+        for (const auto &mod_folder : st::io::filesystem::list_subdirs("mod"))
         {
-            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no metadata.json file was found.", mod_folder));
-            continue;
-        }
-        if (!has_entrypoint)
-        {
-            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no main.lua file was found.", mod_folder));
-            continue;
-        }
-        std::ifstream metadata_file((std::filesystem::path(mod_folder) / "mod.json").string());
-        try
-        {
-            nlohmann::json metadata = nlohmann::json::parse(metadata_file);
-            if (!metadata.contains("name")         || !metadata["name"].is_string() ||
-                !metadata.contains("display_name") || !metadata["display_name"].is_string() ||
-                !metadata.contains("version")      || !metadata["version"].is_string() ||
-                !metadata.contains("author")       || !metadata["author"].is_string() ||
-                !metadata.contains("description")  || !metadata["description"].is_string()
-                )
-            {
-                throw std::exception();
-            }
-            std::string mod_name = metadata["name"].get<std::string>();
+            auto loaded = load_mod(mod_folder);
+            if (!loaded)
+                continue;
+            const std::string mod_name = loaded->name();
             if (mods.find(mod_name) != mods.end())
             {
                 st::io::log::error(fmt::format("Mod with name '{}' already loaded. Skipping mod in folder '{}'.", mod_name, mod_folder));
                 continue;
             }
-            st::mod *mod = new st::mod(
-                mod_name,
-                metadata["display_name"].get<std::string>(),
-                metadata["version"].get<std::string>(),
-                metadata["author"].get<std::string>(),
-                metadata["description"].get<std::string>(),
-                std::filesystem::path(mod_folder) / "lua"
-            );
-            mods.emplace(mod_name, std::unique_ptr<st::mod>(mod));
-        } catch (...)
-        {
-            st::io::log::error(fmt::format("Invalid metadata.json file for mod folder '{}'. Skipping mod.", mod_folder));
-            continue;
+            mods.emplace(mod_name, std::move(loaded));
         }
+    }
+    catch (...)
+    {
+        st::io::log::error("Failed while loading mods. Remaining mods were skipped.");
     }
     st::io::log::info("Finished loading mods.");
 
