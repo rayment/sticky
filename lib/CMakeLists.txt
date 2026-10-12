@@ -49,6 +49,7 @@ endif()
 if(ST_MODULE_VIDEO)
     list(APPEND ST_LIB_INTERFACES
         gui/gui.i
+        io/mouse.i
         video/video.i
     )
     list(APPEND ST_LIB_SOURCES
@@ -56,8 +57,9 @@ if(ST_MODULE_VIDEO)
         gui/backend_${ST_GUI_BACKEND}/button.cpp
         gui/backend_${ST_GUI_BACKEND}/core.cpp
         gui/backend_${ST_GUI_BACKEND}/frame.cpp
-        gui/backend_${ST_GUI_BACKEND}/image.cpp
+        gui/backend_${ST_GUI_BACKEND}/rect.cpp
         gui/backend_${ST_GUI_BACKEND}/label.cpp
+        gui/backend_${ST_GUI_BACKEND}/layout.cpp
         gui/backend_${ST_GUI_BACKEND}/popup.cpp
         gui/backend_${ST_GUI_BACKEND}/progress.cpp
         io/gamepad.cpp

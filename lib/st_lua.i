@@ -30,6 +30,7 @@
 #endif
 #if ST_MODULE_VIDEO
 %include "video/video.i"
+%include "io/mouse.i"
 %include "gui/gui.i"
 #endif
 %include "io/log.i"
@@ -41,6 +42,11 @@
     M.audio = M.st and M.st.audio
     M.video = M.st and M.st.video
     M.gui = M.st and M.st.gui
+
+    if M.st and M.st.io then
+        M.io = M.io or {}
+        M.io.mouse = M.st.io.mouse
+    end
 
     M.st = nil
 

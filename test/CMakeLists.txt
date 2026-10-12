@@ -23,6 +23,7 @@ if(ST_MODULE_VIDEO)
         gui/test_component.cpp
         gui/test_popup.cpp
         gui/test_progress.cpp
+        io/test_mouse.cpp
         mod/test_mod_phases.cpp
         video/test_texture.cpp
         video/test_window.cpp

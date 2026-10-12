@@ -8,6 +8,7 @@
 #ifndef STICKY_GUI_COMPONENT_H
 #define STICKY_GUI_COMPONENT_H
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -81,8 +82,9 @@ namespace st::gui
     protected:
         void handle_close() noexcept override;
 
-        // Renders the children, tolerating any of them being closed or reparented while rendering.
-        void render_children() noexcept;
+        // Renders the children, tolerating any of them being closed or reparented while rendering. `between` is
+        // called before every child that is rendered after the first.
+        void render_children(const std::function<void()> &between = nullptr) noexcept;
 
     private:
         struct nestable_component_impl;

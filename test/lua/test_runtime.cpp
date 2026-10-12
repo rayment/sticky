@@ -223,13 +223,12 @@ namespace
         "_G.st.gui.frame.set_size",
         "_G.st.gui.frame.set_title",
         "_G.st.gui.frame.show",
-        "_G.st.gui.image",
-        "_G.st.gui.image.close",
-        "_G.st.gui.image.is_closed",
-        "_G.st.gui.image.set_parent",
-        "_G.st.gui.image.set_size",
-        "_G.st.gui.image.set_texture",
-        "_G.st.gui.image.show",
+        "_G.st.gui.hlayout",
+        "_G.st.gui.hlayout.close",
+        "_G.st.gui.hlayout.is_closed",
+        "_G.st.gui.hlayout.set_parent",
+        "_G.st.gui.hlayout.set_spacing",
+        "_G.st.gui.hlayout.show",
         "_G.st.gui.label",
         "_G.st.gui.label.close",
         "_G.st.gui.label.is_closed",
@@ -237,6 +236,12 @@ namespace
         "_G.st.gui.label.set_size",
         "_G.st.gui.label.set_text",
         "_G.st.gui.label.show",
+        "_G.st.gui.layout",
+        "_G.st.gui.layout.close",
+        "_G.st.gui.layout.is_closed",
+        "_G.st.gui.layout.set_parent",
+        "_G.st.gui.layout.set_spacing",
+        "_G.st.gui.layout.show",
         "_G.st.gui.mono_component",
         "_G.st.gui.mono_component.close",
         "_G.st.gui.mono_component.is_closed",
@@ -265,6 +270,17 @@ namespace
         "_G.st.gui.progress.set_value",
         "_G.st.gui.progress.show",
         "_G.st.gui.progress.value",
+        "_G.st.gui.rect",
+        "_G.st.gui.rect.clear_on_click",
+        "_G.st.gui.rect.close",
+        "_G.st.gui.rect.is_closed",
+        "_G.st.gui.rect.register_on_click",
+        "_G.st.gui.rect.set_background",
+        "_G.st.gui.rect.set_colour",
+        "_G.st.gui.rect.set_parent",
+        "_G.st.gui.rect.set_size",
+        "_G.st.gui.rect.set_texture",
+        "_G.st.gui.rect.show",
         "_G.st.gui.root_component",
         "_G.st.gui.root_component.close",
         "_G.st.gui.root_component.is_closed",
@@ -277,6 +293,18 @@ namespace
         "_G.st.io.log.info",
         "_G.st.io.log.trace",
         "_G.st.io.log.warn",
+        "_G.st.io.mouse",
+        "_G.st.io.mouse.Left",
+        "_G.st.io.mouse.Middle",
+        "_G.st.io.mouse.Right",
+        "_G.st.io.mouse.X1",
+        "_G.st.io.mouse.X2",
+        "_G.st.gui.vlayout",
+        "_G.st.gui.vlayout.close",
+        "_G.st.gui.vlayout.is_closed",
+        "_G.st.gui.vlayout.set_parent",
+        "_G.st.gui.vlayout.set_spacing",
+        "_G.st.gui.vlayout.show",
         "_G.st.video",
         "_G.st.video.texture",
         "_G.st.video.texture.get",
@@ -1090,6 +1118,17 @@ TEST_SUITE("lua::runtime")
         CHECK(runtime.execute_string("weak[1]:close()"));
         collect_garbage(runtime);
         CHECK(runtime.execute_string("assert(weak[1] == nil and weak[2] == nil, 'closed frame leaked')"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "st.io.mouse exposes the mouse button enumerators")
+    {
+        CHECK(runtime.execute_string(R"lua(
+            local mouse = st.io.mouse
+            assert(mouse.Left == 0 and mouse.Right == 1 and mouse.Middle == 2 and mouse.X1 == 3 and mouse.X2 == 4)
+            local rect = st.gui.rect()
+            rect:register_on_click(function(button) end)
+            rect:clear_on_click()
+        )lua"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "the children of a shown gui component are kept alive by their parent")

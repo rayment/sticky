@@ -1,4 +1,5 @@
 %{
+#include <initializer_list>
 #include <memory>
 
 #include "io/log.h"
@@ -51,14 +52,17 @@ inline int st_swig_lua_traceback(lua_State *L)
 }
 
 // Errors are logged with a traceback and never propagate into the engine.
-inline void st_swig_lua_invoke(const st_swig_lua_callback_ref &callback)
+inline void st_swig_lua_invoke(const st_swig_lua_callback_ref &callback,
+                               std::initializer_list<lua_Integer> arguments = {})
 {
     lua_State *L = callback.L;
     const int base = lua_gettop(L);
 
     lua_pushcfunction(L, st_swig_lua_traceback);
     lua_rawgeti(L, LUA_REGISTRYINDEX, callback.ref);
-    if (lua_pcall(L, 0, 0, base + 1) != LUA_OK)
+    for (const lua_Integer argument : arguments)
+        lua_pushinteger(L, argument);
+    if (lua_pcall(L, static_cast<int>(arguments.size()), 0, base + 1) != LUA_OK)
     {
         const char *error = lua_tostring(L, -1);
         st::io::log::error(error != nullptr ? error : "Unknown Lua callback error.");
@@ -88,6 +92,19 @@ inline void st_swig_lua_invoke(const st_swig_lua_callback_ref &callback)
         const int ref = luaL_ref(L, LUA_REGISTRYINDEX); \
         auto fn = std::make_shared<st_swig_lua_callback_ref>(st_swig_lua_main_thread(L), ref); \
         temp = [fn]() { st_swig_lua_invoke(*fn); }; \
+        $1 = &temp; \
+    }
+
+// Callbacks that receive an enumerator are called with its integer value.
+#define ST_SWIG_IMPLICIT_CONVERSION_TO_ENUM_FUNCTION(type, enum_type) \
+    %typemap(typecheck) type & { \
+        $1 = lua_isfunction(L, $input); \
+    } \
+    %typemap(in) type & (type temp) { \
+        lua_pushvalue(L, $input); \
+        const int ref = luaL_ref(L, LUA_REGISTRYINDEX); \
+        auto fn = std::make_shared<st_swig_lua_callback_ref>(st_swig_lua_main_thread(L), ref); \
+        temp = [fn](enum_type value) { st_swig_lua_invoke(*fn, {static_cast<lua_Integer>(value)}); }; \
         $1 = &temp; \
     }
 

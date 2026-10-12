@@ -270,12 +270,16 @@ st::gui::mono_component::can_have_parent() const noexcept
 }
 
 void
-st::gui::nestable_component::render_children() noexcept
+st::gui::nestable_component::render_children(const std::function<void()> &between) noexcept
 {
-    auto &children = m_impl->m_children;
+    auto      &children = m_impl->m_children;
+    st::bool_t first = true;
     for (st::size i = 0; i < children.size();)
     {
         component *child = children[i];
+        if (!first && between)
+            between();
+        first = false;
         child->render();
         // A child that closed or moved itself was removed from the list, which shifted its successor into `i`.
         if (i < children.size() && children[i] == child)
