@@ -29,7 +29,7 @@ struct st::video::window::window_impl
 
     SDL_Window      *window         = nullptr;
     SDL_GLContext    gl_context     = {};
-    std::string      title          = PROGRAM_TITLE " " VERSION_STRING;
+    std::string      title          = "libsticky " VERSION_STRING;
     st::bool_t       visible        = false;
     st::bool_t       want_close     = false;
     vsync_mode       vsync          = Disabled;
@@ -61,7 +61,7 @@ st::video::window::window() noexcept
     SDL_WindowFlags window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     m_impl->size.x = static_cast<st_uint16>(1280 * scale);
     m_impl->size.y = static_cast<st_uint16>(720 * scale);
-    m_impl->window = SDL_CreateWindow(PROGRAM_TITLE, m_impl->size.x, m_impl->size.y, window_flags);
+    m_impl->window = SDL_CreateWindow(m_impl->title.c_str(), m_impl->size.x, m_impl->size.y, window_flags);
     ST_SDL_SAFE_CALL("SDL_CreateWindow", m_impl->window != nullptr);
     m_impl->gl_context = SDL_GL_CreateContext(m_impl->window);
     ST_SDL_SAFE_CALL("SDL_GL_CreateContext", m_impl->gl_context != nullptr);

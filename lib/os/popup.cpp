@@ -37,19 +37,19 @@ st_os_popup_error(const st_char *title,
 void
 st::os::popup::info(const std::string &message) noexcept
 {
-    info(PROGRAM_TITLE, message);
+    info("libsticky", message);
 }
 
 void
 st::os::popup::warn(const std::string &message) noexcept
 {
-    warn(PROGRAM_TITLE, message);
+    warn("libsticky", message);
 }
 
 void
 st::os::popup::error(const std::string &message) noexcept
 {
-    error(PROGRAM_TITLE, message);
+    error("libsticky", message);
 }
 
 void
