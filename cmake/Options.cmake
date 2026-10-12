@@ -10,6 +10,8 @@ set_property(CACHE ST_GUI_BACKEND PROPERTY STRINGS imgui)
 option(ST_BUILD_TESTS     "Build the doctest suite and register it with CTest" ON)
 option(ST_ENABLE_DOCS     "Generate Doxygen documentation targets when Doxygen is available" ON)
 option(ST_ENABLE_COVERAGE "Instrument lib/ and enable the coverage target" OFF)
+option(ST_MODULE_AUDIO    "Build and initialise the audio module (OpenAL, SDL3_mixer, libxmp)" ON)
+option(ST_MODULE_VIDEO    "Build and initialise the video module (SDL3, OpenGL, glew, imgui)" ON)
 
 if(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/gui/backend_${ST_GUI_BACKEND}")
     message(FATAL_ERROR "Unknown ST_GUI_BACKEND '${ST_GUI_BACKEND}': no lib/gui/backend_${ST_GUI_BACKEND}/")

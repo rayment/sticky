@@ -1,5 +1,3 @@
-set(GUI_BACKEND imgui)
-
 set(ST_LIB_INTERFACES
     st_lua_typemaps.i
     gui/frame.i
@@ -7,22 +5,11 @@ set(ST_LIB_INTERFACES
 )
 
 set(ST_LIB_SOURCES
-    audio/client.cpp
-    audio/server.cpp
-    audio/sound.cpp
-    audio/source.cpp
-    gui/component.cpp
-    gui/backend_${GUI_BACKEND}/core.cpp
-    gui/backend_${GUI_BACKEND}/frame.cpp
     io/filesystem.cpp
-    io/gamepad.cpp
-    io/keyboard.cpp
     io/log.cpp
-    io/mouse.cpp
     lua/log_bindings.cpp
     lua/runtime.cpp
     os/popup.cpp
-    video/window.cpp
     st_init.cpp
 
     $<$<PLATFORM_ID:Linux>:
@@ -37,24 +24,57 @@ set(ST_LIB_PUBLIC_DEPENDENCIES
     # Logging
     fmt::fmt
     spdlog::spdlog
-    # Graphics
-    SDL3::SDL3
-    glew
-    ${OPENGL_LIBRARY}
-    # GUI
-    imgui
     # Scripting
     lua
-    # Audio
-    OpenAL::OpenAL
-    libxmp-lite::xmp_lite_shared
-    SDL3_mixer::SDL3_mixer
     # Math
     glm
     # Config
     nlohmann_json::nlohmann_json
     # Archives
     zlib
+)
+
+if(ST_MODULE_VIDEO OR ST_MODULE_AUDIO)
+    list(APPEND ST_LIB_PUBLIC_DEPENDENCIES SDL3::SDL3)
+endif()
+
+if(ST_MODULE_VIDEO)
+    list(APPEND ST_LIB_INTERFACES gui/gui.i)
+    list(APPEND ST_LIB_SOURCES
+        gui/component.cpp
+        gui/backend_${ST_GUI_BACKEND}/button.cpp
+        gui/backend_${ST_GUI_BACKEND}/core.cpp
+        gui/backend_${ST_GUI_BACKEND}/frame.cpp
+        gui/backend_${ST_GUI_BACKEND}/label.cpp
+        io/gamepad.cpp
+        io/keyboard.cpp
+        io/mouse.cpp
+        video/window.cpp
+    )
+    list(APPEND ST_LIB_PUBLIC_DEPENDENCIES
+        glew
+        ${OPENGL_LIBRARY}
+        imgui
+    )
+endif()
+
+if(ST_MODULE_AUDIO)
+    list(APPEND ST_LIB_SOURCES
+        audio/client.cpp
+        audio/server.cpp
+        audio/sound.cpp
+        audio/source.cpp
+    )
+    list(APPEND ST_LIB_PUBLIC_DEPENDENCIES
+        OpenAL::OpenAL
+        libxmp-lite::xmp_lite_shared
+        SDL3_mixer::SDL3_mixer
+    )
+endif()
+
+set(ST_MODULE_DEFINITIONS
+    ST_MODULE_AUDIO=$<BOOL:${ST_MODULE_AUDIO}>
+    ST_MODULE_VIDEO=$<BOOL:${ST_MODULE_VIDEO}>
 )
 
 include(UseSWIG)
@@ -66,7 +86,7 @@ set_target_properties(libsticky_lua PROPERTIES
     SWIG_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR};${sdl3_SOURCE_DIR}/include"
 )
 target_include_directories(libsticky_lua PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_definitions(libsticky_lua PRIVATE STATIC_LINKED)
+target_compile_definitions(libsticky_lua PRIVATE STATIC_LINKED ${ST_MODULE_DEFINITIONS})
 target_link_libraries(libsticky_lua PRIVATE ${ST_LIB_PUBLIC_DEPENDENCIES})
 
 add_library(libsticky)
@@ -80,6 +100,7 @@ target_populate_compiler_warnings(libsticky)
 target_mark_warnings_as_errors(libsticky)
 target_disable_exceptions(libsticky)
 target_disable_rtti(libsticky)
+target_compile_definitions(libsticky PUBLIC ${ST_MODULE_DEFINITIONS})
 target_include_directories(libsticky PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(libsticky PUBLIC ${ST_LIB_PUBLIC_DEPENDENCIES} PRIVATE libsticky_lua)
 target_link_resource_file(libsticky lib.rc.in)

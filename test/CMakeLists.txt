@@ -3,8 +3,11 @@ add_executable(sticky_test)
 target_sources(sticky_test PRIVATE
     test_main.cpp
     io/test_log.cpp
-    video/test_window.cpp
 )
+
+if(ST_MODULE_VIDEO)
+    target_sources(sticky_test PRIVATE video/test_window.cpp)
+endif()
 
 target_populate_compiler_features(sticky_test)
 target_populate_linker_features(sticky_test)

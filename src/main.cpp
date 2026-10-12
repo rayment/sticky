@@ -2,18 +2,75 @@
 
 #include <fmt/format.h>
 
+#if ST_MODULE_AUDIO
+#include "audio/client.h"
+#include "audio/source.h"
+#endif
+#if ST_MODULE_VIDEO
 #include "gui/core.h"
+#endif
 #include "io/filesystem.h"
 #include "io/log.h"
 #include "lua/runtime.h"
 #include "st_init.h"
+#if ST_MODULE_VIDEO
 #include "video/window.h"
+#endif
 
 #include "argparse.h"
 #include "modloader.h"
 
+#if ST_MODULE_VIDEO
+template <typename Mods>
+static void
+run_video_loop(Mods &mods)
+{
+    st::video::window win;
+    win.set_title(PROGRAM_TITLE " " VERSION_STRING);
+    st::gui::core gui(win);
+    win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
+    win.show();
+
+    win.reset_accumulator();
+    while (!win.close_requested())
+    {
+        win.accumulate();
+        win.poll();
+
+        win.simulate(
+            [&](st::float64 dt)
+            {
+                for (auto &mod : mods)
+                {
+                    auto &lua_rt = mod.second->runtime();
+                    lua_rt.execute_function("on_fixed_step", {dt});
+                }
+            });
+
+        for (auto &mod : mods)
+        {
+            auto &lua_rt = mod.second->runtime();
+            lua_rt.execute_function("on_step", {win.delta_time()});
+        }
+
+        win.clear();
+
+        gui.clear();
+        for (auto &mod : mods)
+        {
+            auto &lua_rt = mod.second->runtime();
+            lua_rt.execute_function("on_gui_render");
+        }
+        gui.render();
+        gui.swap();
+
+        win.swap();
+    }
+}
+#endif // ST_MODULE_VIDEO
+
 static int
-run(st_int32 argc,
+run(st_int32  argc,
     st_char **argv)
 {
     st::argparse args(argc, argv);
@@ -29,7 +86,7 @@ run(st_int32 argc,
 
     {
         st::modloader ml;
-        auto mods = ml.load_mods();
+        auto          mods = ml.load_mods();
 
         for (auto it = mods.begin(); it != mods.end();)
         {
@@ -47,52 +104,15 @@ run(st_int32 argc,
             }
         }
 
-        st::video::window win;
-        win.set_title(PROGRAM_TITLE " " VERSION_STRING);
-        st::gui::core gui(win);
-        win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
-        win.show();
-
         for (auto &mod : mods)
         {
             auto &lua_rt = mod.second->runtime();
             lua_rt.execute_function("on_start");
         }
 
-        win.reset_accumulator();
-        while (!win.close_requested())
-        {
-            win.accumulate();
-            win.poll();
-
-            win.simulate([&](st::float64 dt)
-            {
-                for (auto &mod : mods)
-                {
-                    auto &lua_rt = mod.second->runtime();
-                    lua_rt.execute_function("on_fixed_step", { dt });
-                }
-            });
-
-            for (auto &mod : mods)
-            {
-                auto &lua_rt = mod.second->runtime();
-                lua_rt.execute_function("on_step", { win.delta_time() } );
-            }
-
-            win.clear();
-
-            gui.clear();
-            for (auto &mod : mods)
-            {
-                auto &lua_rt = mod.second->runtime();
-                lua_rt.execute_function("on_gui_render");
-            }
-            gui.render();
-            gui.swap();
-
-            win.swap();
-        }
+#if ST_MODULE_VIDEO
+        run_video_loop(mods);
+#endif
 
         for (auto &mod : mods)
         {
@@ -110,7 +130,7 @@ run(st_int32 argc,
 }
 
 int
-main(st_int32 argc,
+main(st_int32  argc,
      st_char **argv)
 {
     try
