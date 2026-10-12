@@ -12,5 +12,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(libxmp-lite)
 
+target_compile_options(xmp_lite_shared PRIVATE -UDEBUG)
 target_populate_compiler_features(xmp_lite_shared)
 target_populate_linker_features(xmp_lite_shared)
