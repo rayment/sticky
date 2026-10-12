@@ -6,6 +6,7 @@
 #include <vector>
 %}
 
+%include <lua_fnptr.i>
 %include <std_string_view.i>
 %include <std_string.i>
 %include <std_vector.i>
