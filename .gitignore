@@ -4,6 +4,8 @@
 !cmake/**
 !contrib
 !contrib/**
+!doc
+!doc/**
 !lib
 !lib/**
 !src
