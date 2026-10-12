@@ -39,9 +39,16 @@ if(ST_MODULE_VIDEO OR ST_MODULE_AUDIO)
     list(APPEND ST_LIB_PUBLIC_DEPENDENCIES SDL3::SDL3)
 endif()
 
+if(ST_MODULE_AUDIO)
+    list(APPEND ST_LIB_INTERFACES
+        audio/audio.i
+    )
+endif()
+
 if(ST_MODULE_VIDEO)
     list(APPEND ST_LIB_INTERFACES
         gui/gui.i
+        video/video.i
     )
     list(APPEND ST_LIB_SOURCES
         gui/component.cpp
@@ -52,6 +59,8 @@ if(ST_MODULE_VIDEO)
         io/gamepad.cpp
         io/keyboard.cpp
         io/mouse.cpp
+        video/texture.cpp
+        video/texture_handle.cpp
         video/window.cpp
     )
     list(APPEND ST_LIB_PUBLIC_DEPENDENCIES
@@ -66,6 +75,7 @@ if(ST_MODULE_AUDIO)
         audio/client.cpp
         audio/server.cpp
         audio/sound.cpp
+        audio/sound_handle.cpp
         audio/source.cpp
     )
     list(APPEND ST_LIB_PUBLIC_DEPENDENCIES
@@ -83,6 +93,10 @@ set(ST_MODULE_DEFINITIONS
 include(UseSWIG)
 set_property(SOURCE st_lua.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE st_lua.i PROPERTY DEPENDS ${ST_LIB_INTERFACES})
+set_property(SOURCE st_lua.i PROPERTY SWIG_FLAGS
+    -DST_MODULE_AUDIO=$<BOOL:${ST_MODULE_AUDIO}>
+    -DST_MODULE_VIDEO=$<BOOL:${ST_MODULE_VIDEO}>
+)
 swig_add_library(libsticky_lua TYPE STATIC LANGUAGE lua SOURCES st_lua.i)
 set_target_properties(libsticky_lua PROPERTIES
     OUTPUT_NAME sticky_lua

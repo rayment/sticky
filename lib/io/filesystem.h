@@ -35,6 +35,9 @@ namespace st::io::filesystem
                                                    std::error_code             &ec) noexcept;
     [[nodiscard]] std::filesystem::path resolve(const std::filesystem::path &path,
                                                 std::error_code             &ec) noexcept;
+    [[nodiscard]] st::bool_t            resolve_file(const std::filesystem::path &root,
+                                                     const std::filesystem::path &requested,
+                                                     std::filesystem::path       &resolved) noexcept;
 
     [[nodiscard]] std::vector<std::string> list_all(const std::filesystem::path &path,
                                                     st::bool_t                   follow_symlinks = false) noexcept;

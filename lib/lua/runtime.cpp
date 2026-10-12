@@ -43,56 +43,6 @@ struct st::lua::runtime::runtime_impl
 
 [[nodiscard]]
 static bool
-is_within_directory(const std::filesystem::path &root,
-                    const std::filesystem::path &candidate) noexcept
-{
-    auto root_it = root.begin();
-    auto candidate_it = candidate.begin();
-
-    for (; root_it != root.end(); ++root_it, ++candidate_it)
-    {
-        if (candidate_it == candidate.end() || *root_it != *candidate_it)
-            return false;
-    }
-
-    return true;
-}
-
-[[nodiscard]]
-static st::bool_t
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-resolve_path(const std::filesystem::path &root,
-             const std::filesystem::path &requested,
-             std::filesystem::path       &resolved) noexcept
-{
-    std::error_code ec;
-
-    const auto canonical_root = st::io::filesystem::resolve(root, ec);
-    if (ec)
-        return false;
-
-    const auto candidate = requested.is_absolute() ? requested : canonical_root / requested;
-
-    resolved = st::io::filesystem::resolve(candidate, ec);
-
-    return !ec && is_within_directory(canonical_root, resolved);
-}
-
-[[nodiscard]]
-static st::bool_t
-resolve_file(const std::filesystem::path &root,
-             const std::filesystem::path &requested,
-             std::filesystem::path       &resolved) noexcept
-{
-    if (!resolve_path(root, requested, resolved))
-        return false;
-
-    std::error_code ec;
-    return std::filesystem::is_regular_file(resolved, ec) && !ec;
-}
-
-[[nodiscard]]
-static bool
 is_valid_module_name(std::string_view name) noexcept
 {
     if (name.empty() || name.front() == '.' || name.back() == '.')
@@ -195,7 +145,7 @@ resolve_module(std::string_view name,
     relative_name += ".lua";
 
     std::filesystem::path candidate;
-    if (!resolve_file(root, relative_name, candidate))
+    if (!st::io::filesystem::resolve_file(root, relative_name, candidate))
         return false;
 
     const std::string resolved = candidate.string();
@@ -376,7 +326,7 @@ st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
 {
     std::filesystem::path resolved;
 
-    if (!resolve_file(m_impl->root_dir_path, path, resolved))
+    if (!st::io::filesystem::resolve_file(m_impl->root_dir_path, path, resolved))
         return false;
 
     st::lua::set_logger(&m_impl->lua_logger);
@@ -423,4 +373,10 @@ st::lua::runtime::execute_string(std::string_view code) noexcept
         return false;
     }
     return protected_call(m_impl->L, 0);
+}
+
+lua_State *
+st::lua::runtime::state() noexcept
+{
+    return m_impl->L;
 }

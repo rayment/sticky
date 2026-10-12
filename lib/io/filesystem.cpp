@@ -20,6 +20,21 @@ namespace
 
         return st::io::filesystem::resolve(path, ec).empty();
     }
+
+    st::bool_t is_within_directory(const std::filesystem::path &root,
+                                   const std::filesystem::path &candidate) noexcept
+    {
+        auto root_it = root.begin();
+        auto candidate_it = candidate.begin();
+
+        for (; root_it != root.end(); ++root_it, ++candidate_it)
+        {
+            if (candidate_it == candidate.end() || *root_it != *candidate_it)
+                return false;
+        }
+
+        return true;
+    }
 } // namespace
 
 st::bool_t
@@ -182,4 +197,25 @@ st::io::filesystem::list_subdirs(const std::filesystem::path &path,
     }
 
     return dirs;
+}
+
+st::bool_t
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+st::io::filesystem::resolve_file(const std::filesystem::path &root,
+                                 const std::filesystem::path &requested,
+                                 std::filesystem::path       &resolved) noexcept
+{
+    std::error_code ec;
+
+    const auto canonical_root = resolve(root, ec);
+    if (ec)
+        return false;
+
+    const auto candidate = requested.is_absolute() ? requested : canonical_root / requested;
+
+    resolved = resolve(candidate, ec);
+    if (ec || !is_within_directory(canonical_root, resolved))
+        return false;
+
+    return std::filesystem::is_regular_file(resolved, ec) && !ec;
 }

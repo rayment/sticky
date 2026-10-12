@@ -5,6 +5,7 @@ target_sources(sticky_test PRIVATE
     io/test_filesystem.cpp
     io/test_log.cpp
     lua/test_runtime.cpp
+    ${PROJECT_SOURCE_DIR}/src/mod.cpp
 )
 
 if(ST_MODULE_AUDIO)
@@ -18,6 +19,7 @@ endif()
 
 if(ST_MODULE_VIDEO)
     target_sources(sticky_test PRIVATE
+        mod/test_mod_phases.cpp
         video/test_texture.cpp
         video/test_window.cpp
     )
@@ -28,7 +30,7 @@ target_populate_linker_features(sticky_test)
 target_mark_warnings_as_errors(sticky_test)
 target_disable_exceptions(sticky_test)
 target_disable_rtti(sticky_test)
-target_include_directories(sticky_test PUBLIC .)
+target_include_directories(sticky_test PUBLIC . ${PROJECT_SOURCE_DIR}/src)
 target_compile_definitions(sticky_test PRIVATE
     ST_TEST_RES_DIR="$<TARGET_FILE_DIR:sticky_test>/test"
 )

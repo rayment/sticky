@@ -19,6 +19,8 @@
 
 #include "st_macros.h"
 
+struct lua_State;
+
 namespace st::lua
 {
 
@@ -37,6 +39,9 @@ namespace st::lua
         st::bool_t execute_function(std::string_view name) noexcept;
         st::bool_t execute_function(std::string_view name, std::initializer_list<const lua_arg_type> args) noexcept;
         st::bool_t execute_string  (std::string_view code) noexcept;
+
+        // Raw Lua state, for embedders that extend the environment natively.
+        [[nodiscard]] lua_State *state() noexcept;
 
     private:
         struct runtime_impl;

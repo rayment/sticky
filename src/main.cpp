@@ -21,15 +21,43 @@
 #include "argparse.h"
 #include "modloader.h"
 
+template <typename Mods>
+static void
+start_mods(Mods &mods)
+{
+    for (auto it = mods.begin(); it != mods.end();)
+    {
+        auto &mod = *it;
+
+        if (!mod.second->execute_init())
+        {
+            st::io::log::error(fmt::format("Failed to run init phase for mod '{}'.", mod.first));
+            it = mods.erase(it);
+        }
+        else if (!mod.second->execute_runtime())
+        {
+            st::io::log::error(fmt::format("Failed to run runtime phase for mod '{}'.", mod.first));
+            it = mods.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    for (auto &mod : mods)
+    {
+        mod.second->execute_function("on_start");
+    }
+}
+
 #if ST_MODULE_VIDEO
 template <typename Mods>
 static void
-run_video_loop(Mods &mods)
+run_video_loop(st::video::window &win,
+               st::gui::core     &gui,
+               Mods              &mods)
 {
-    st::video::window win;
-    win.set_title(PROGRAM_TITLE " " VERSION_STRING);
-    st::gui::core gui(win);
-    win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
     win.show();
 
     win.reset_accumulator();
@@ -43,15 +71,13 @@ run_video_loop(Mods &mods)
             {
                 for (auto &mod : mods)
                 {
-                    auto &lua_rt = mod.second->runtime();
-                    lua_rt.execute_function("on_fixed_step", {dt});
+                    mod.second->execute_function("on_fixed_step", {dt});
                 }
             });
 
         for (auto &mod : mods)
         {
-            auto &lua_rt = mod.second->runtime();
-            lua_rt.execute_function("on_step", {win.delta_time()});
+            mod.second->execute_function("on_step", {win.delta_time()});
         }
 
         win.clear();
@@ -59,8 +85,7 @@ run_video_loop(Mods &mods)
         gui.clear();
         for (auto &mod : mods)
         {
-            auto &lua_rt = mod.second->runtime();
-            lua_rt.execute_function("on_gui_render");
+            mod.second->execute_function("on_gui_render");
         }
         gui.render();
         gui.swap();
@@ -86,42 +111,30 @@ run(st_int32  argc,
     st::io::log::info(fmt::format("Copyright (c) {} {}.", COPYRIGHT_OWNER, COPYRIGHT_STRING));
 
     {
+#if ST_MODULE_VIDEO
+        // The window owns the GL context, so it must be created before mods
+        // load textures and destroyed after the mods that own them.
+        st::video::window win;
+        win.set_title(PROGRAM_TITLE " " VERSION_STRING);
+        st::gui::core gui(win);
+        win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
+#endif
+
         st::modloader ml;
         auto          mods = args.safe_mode() ? decltype(ml.load_mods()){} : ml.load_mods();
 
         if (args.safe_mode())
             st::os::popup::warn("Safe mode", "Safe mode is enabled. No mods have been loaded.");
 
-        for (auto it = mods.begin(); it != mods.end();)
-        {
-            auto &mod = *it;
-            auto &lua_rt = mod.second->runtime();
-
-            if (!lua_rt.execute_file("main.lua"))
-            {
-                st::io::log::error(fmt::format("Failed to load main.lua for mod '{}'.", mod.first));
-                it = mods.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
-
-        for (auto &mod : mods)
-        {
-            auto &lua_rt = mod.second->runtime();
-            lua_rt.execute_function("on_start");
-        }
+        start_mods(mods);
 
 #if ST_MODULE_VIDEO
-        run_video_loop(mods);
+        run_video_loop(win, gui, mods);
 #endif
 
         for (auto &mod : mods)
         {
-            auto &lua_rt = mod.second->runtime();
-            lua_rt.execute_function("on_quit");
+            mod.second->execute_function("on_quit");
         }
     }
 

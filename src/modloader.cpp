@@ -16,85 +16,9 @@
 
 #include "modloader.h"
 
-struct st::mod::mod_impl
-{
-    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-    mod_impl(std::string_view name,
-             std::string_view display_name,
-             std::string_view version,
-             std::string_view author,
-             std::string_view description,
-             const std::filesystem::path &root_dir) noexcept
-        : m_name(name),
-          m_display_name(display_name),
-          m_version(version),
-          m_author(author),
-          m_description(description),
-          m_runtime(name, root_dir)
-    {}
-    ~mod_impl() noexcept = default;
+st::modloader::modloader() noexcept {}
 
-    std::string      m_name;
-    std::string      m_display_name;
-    std::string      m_version;
-    std::string      m_author;
-    std::string      m_description;
-    st::lua::runtime m_runtime;
-};
-
-st::mod::mod(std::string_view name,
-             std::string_view display_name,
-             std::string_view version,
-             std::string_view author,
-             std::string_view description,
-             const std::filesystem::path &root_dir) noexcept
-    : m_impl{std::make_unique<mod_impl>(name, display_name, version, author, description, root_dir)}
-{}
-
-st::mod::~mod() noexcept
-{}
-
-std::string
-st::mod::author() noexcept
-{
-    return m_impl->m_author;
-}
-
-std::string
-st::mod::description() noexcept
-{
-    return m_impl->m_description;
-}
-
-std::string
-st::mod::display_name() noexcept
-{
-    return m_impl->m_display_name;
-}
-
-std::string
-st::mod::name() noexcept
-{
-    return m_impl->m_name;
-}
-
-st::lua::runtime &
-st::mod::runtime() noexcept
-{
-    return m_impl->m_runtime;
-}
-
-std::string
-st::mod::version() noexcept
-{
-    return m_impl->m_version;
-}
-
-st::modloader::modloader() noexcept
-{}
-
-st::modloader::~modloader() noexcept
-{}
+st::modloader::~modloader() noexcept {}
 
 static std::unique_ptr<st::mod>
 load_mod(const std::string &mod_folder) noexcept
@@ -107,10 +31,13 @@ load_mod(const std::string &mod_folder) noexcept
             st::io::log::info(fmt::format("Ignoring mod folder '{}' because no metadata.json file was found.", mod_folder));
             return nullptr;
         }
-        if (!st::io::filesystem::exists(folder / "lua" / "main.lua"))
+        for (const char *entrypoint : {"init.lua", "runtime.lua"})
         {
-            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no main.lua file was found.", mod_folder));
-            return nullptr;
+            if (!st::io::filesystem::exists(folder / "lua" / entrypoint))
+            {
+                st::io::log::info(fmt::format("Ignoring mod folder '{}' because no {} file was found.", mod_folder, entrypoint));
+                return nullptr;
+            }
         }
 
         std::ifstream metadata_file((folder / "mod.json").string());
