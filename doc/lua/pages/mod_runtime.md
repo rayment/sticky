@@ -34,3 +34,9 @@ event system notifies Lua of a specific event.
 The entrypoint for the runtime phase is the `runtime.lua` file which must be located in the `lua` folder underneath the
 mod root directory. All callbacks and other code that should be executed at runtime must be defined within this file or
 imported with the `require` function.
+
+### Graphical user interface
+
+The engine renders GUI components itself. A mod builds its windows from the `st.gui` classes and shows them, and the
+engine draws them every frame until they are closed, so no render callback exists. Windows are closed by the script or
+by the user, and the engine releases them when that happens. See @ref lua_gui_lifecycle.

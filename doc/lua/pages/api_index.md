@@ -20,3 +20,17 @@ The following API features are only available during the runtime mod phase, and 
 - @subpage lua_api_audio_sound
 - @subpage lua_api_audio_source
 - @subpage lua_api_video_texture
+
+### GUI
+
+The GUI classes are drawn by the engine once they are shown. Start with @ref lua_gui_lifecycle to learn how long they
+live and how to release them.
+
+- @subpage lua_gui_lifecycle
+- @subpage lua_api_gui_component
+- @subpage lua_api_gui_frame
+- @subpage lua_api_gui_button
+- @subpage lua_api_gui_label
+- @subpage lua_api_gui_progress
+- @subpage lua_api_gui_image
+- @subpage lua_api_gui_popup
