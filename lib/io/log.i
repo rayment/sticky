@@ -2,7 +2,6 @@
 #include "lua/log_bindings.h"
 %}
 
-%ignore st::lua::logger;
 %ignore st::lua::set_logger;
 
 %include "lua/log_bindings.h"

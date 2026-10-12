@@ -160,3 +160,8 @@ ST_SWIG_IMPLICIT_CONVERSION_TO_STRING(
     std::filesystem::path,
     std::filesystem::path(lua_tostring(L, $input))
 );
+
+// Lets a bound function receive the Lua state of its caller without taking an argument.
+%typemap(in, numinputs=0) lua_State *state {
+    $1 = L;
+}

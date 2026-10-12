@@ -7,6 +7,7 @@ set(ST_LIB_SOURCES
     io/filesystem.cpp
     io/log.cpp
     lua/log_bindings.cpp
+    lua/resource_bindings.cpp
     lua/runtime.cpp
     os/popup.cpp
     st_init.cpp

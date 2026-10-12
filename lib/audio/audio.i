@@ -1,11 +1,11 @@
 %{
 #include "audio/sound_handle.h"
+#include "lua/resource_bindings.h"
 #include "audio/source.h"
 %}
 
 // Lua only ever sees named sounds loaded during the init phase.
 %ignore st::audio::sound_handle::sound_handle;
-%ignore st::audio::sound_handle::set_registry;
 
 %nspace st::resource_handle<st::audio::sound>;
 %template(sound_resource_handle) st::resource_handle<st::audio::sound>;
@@ -13,6 +13,15 @@
 %rename(sound) st::audio::sound_handle;
 
 %nspace st::audio::sound_handle;
+
+// Names are looked up in the registry of the Lua state that makes the call.
+%extend st::audio::sound_handle {
+    static const st::audio::sound_handle *get(std::string_view name, lua_State *state)
+    {
+        return st::lua::find_sound(state, name);
+    }
+}
+
 %include "audio/sound_handle.h"
 
 // Lua passes positions as components and sounds as named handles.

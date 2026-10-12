@@ -45,10 +45,6 @@
 %rename(show) st::gui::component::show_pinned;
 %rename(set_parent) st::gui::component::set_parent_pinned;
 
-%typemap(in, numinputs=0) lua_State *state {
-    $1 = L;
-}
-
 %extend st::gui::component {
     void show_pinned(lua_State *state)
     {

@@ -291,10 +291,9 @@ st::lua::runtime::runtime(std::string_view             name,
                                        root_dir),
     }
 {
-    st::lua::set_logger(&m_impl->lua_logger);
-
     m_impl->L = luaL_newstate();
     ST_ASSERT(m_impl->L);
+    st::lua::set_logger(m_impl->L, &m_impl->lua_logger);
 
     load_std_libraries(m_impl->L);
 
@@ -363,13 +362,8 @@ st::lua::runtime::runtime(std::string_view             name,
 
 st::lua::runtime::~runtime() noexcept
 {
-    auto *previous = st::lua::logger();
-
-    // Finalizers run during lua_close and may log.
-    st::lua::set_logger(&m_impl->lua_logger);
+    // Finalizers run during lua_close and may log, so the logger outlives the state.
     lua_close(m_impl->L);
-
-    st::lua::set_logger(previous == &m_impl->lua_logger ? nullptr : previous);
 }
 
 st::bool_t
@@ -379,8 +373,6 @@ st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
 
     if (!st::io::filesystem::resolve_file(m_impl->root_dir_path, path, resolved))
         return false;
-
-    st::lua::set_logger(&m_impl->lua_logger);
 
     if (luaL_loadfilex(m_impl->L, resolved.generic_string().c_str(), "t") != LUA_OK)
     {
@@ -401,8 +393,6 @@ st::bool_t
 st::lua::runtime::execute_function(std::string_view                          name,
                                    std::initializer_list<const lua_arg_type> args) noexcept
 {
-    st::lua::set_logger(&m_impl->lua_logger);
-
     function_call call{name, args};
 
     lua_pushcfunction(m_impl->L, call_global);
@@ -415,8 +405,6 @@ st::lua::runtime::execute_function(std::string_view                          nam
 st::bool_t
 st::lua::runtime::execute_string(std::string_view code) noexcept
 {
-    st::lua::set_logger(&m_impl->lua_logger);
-
     if (luaL_loadbufferx(m_impl->L, code.data(), code.size(), "=(string)", "t") != LUA_OK)
     {
         st::io::log::error(lua_tostring(m_impl->L, -1));

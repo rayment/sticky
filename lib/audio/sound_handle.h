@@ -33,12 +33,6 @@ namespace st::audio
         sound_handle(std::string_view                         name,
                      const std::filesystem::path             &path,
                      const std::shared_ptr<st::audio::sound> &sound) noexcept;
-
-        // Looks up a sound in the registry of the executing mod, or nullptr.
-        [[nodiscard]] static const sound_handle *get(std::string_view name) noexcept;
-
-        // Selects the registry used by `get`.
-        static void set_registry(const sound_registry *registry) noexcept;
     };
 
 } // namespace st::audio

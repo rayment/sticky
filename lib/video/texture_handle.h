@@ -35,12 +35,6 @@ namespace st::video
                        const std::filesystem::path               &path,
                        const std::shared_ptr<st::video::texture> &texture) noexcept;
 
-        // Looks up a texture in the registry of the executing mod, or nullptr.
-        [[nodiscard]] static const texture_handle *get(std::string_view name) noexcept;
-
-        // Selects the registry used by `get`.
-        static void set_registry(const texture_registry *registry) noexcept;
-
         [[nodiscard]] st::uint32 width() const noexcept;
         [[nodiscard]] st::uint32 height() const noexcept;
     };

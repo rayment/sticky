@@ -7,11 +7,6 @@
 
 #include "video/texture_handle.h"
 
-namespace
-{
-    const st::video::texture_registry *current_registry = nullptr;
-} // namespace
-
 st::video::texture_handle::texture_handle(std::string_view                           name,
                                           const std::filesystem::path               &path,
                                           const std::shared_ptr<st::video::texture> &texture) noexcept :
@@ -19,20 +14,6 @@ st::video::texture_handle::texture_handle(std::string_view                      
                     path,
                     texture)
 {
-}
-
-const st::video::texture_handle *
-st::video::texture_handle::get(std::string_view name) noexcept
-{
-    if (current_registry == nullptr)
-        return nullptr;
-    return current_registry->find(name);
-}
-
-void
-st::video::texture_handle::set_registry(const texture_registry *registry) noexcept
-{
-    current_registry = registry;
 }
 
 st::uint32
