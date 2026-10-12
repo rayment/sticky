@@ -4,6 +4,7 @@ target_sources(sticky_test PRIVATE
     test_main.cpp
     io/test_filesystem.cpp
     io/test_log.cpp
+    lua/test_runtime.cpp
 )
 
 if(ST_MODULE_AUDIO)
