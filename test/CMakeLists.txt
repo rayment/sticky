@@ -2,6 +2,7 @@ add_executable(sticky_test)
 
 target_sources(sticky_test PRIVATE
     test_main.cpp
+    io/test_log.cpp
     video/test_window.cpp
 )
 
