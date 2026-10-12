@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <functional>
+#include <string_view>
 
 #include <fmt/format.h>
 
@@ -14,22 +16,38 @@
 #include "lua/runtime.h"
 #include "os/popup.h"
 #include "st_init.h"
+#include "util/config.h"
 #if ST_MODULE_VIDEO
 #include "video/window.h"
 #endif
 
 #include "argparse.h"
+#if ST_MODULE_VIDEO
+#include "loading_screen.h"
+#endif
 #include "modloader.h"
+
+using boot_progress = std::function<void(std::string_view, st::float32)>;
+
+static constexpr const char *config_path = "config.json";
 
 template <typename Mods>
 static void
-start_mods(Mods &mods)
+start_mods(Mods                &mods,
+           st::util::config    &config,
+           const boot_progress &progress)
 {
-    for (auto it = mods.begin(); it != mods.end();)
+    const st::float32 mod_count = static_cast<st::float32>(mods.size());
+    st::float32       mods_done = 0.0f;
+
+    for (auto it = mods.begin(); it != mods.end(); mods_done += 1.0f)
     {
         auto &mod = *it;
 
-        if (!mod.second->execute_init())
+        const auto on_init_progress = [&](std::string_view status, st::float32 fraction)
+        { progress(status, (mods_done + fraction) / mod_count); };
+
+        if (!mod.second->execute_init(on_init_progress))
         {
             st::io::log::error(fmt::format("Failed to run init phase for mod '{}'.", mod.first));
             it = mods.erase(it);
@@ -41,14 +59,24 @@ start_mods(Mods &mods)
         }
         else
         {
+            mod.second->register_config(config);
             ++it;
         }
     }
+}
 
-    for (auto &mod : mods)
+static void
+save_config(const st::util::config &config,
+            st::bool_t              loaded)
+{
+    if (!loaded)
     {
-        mod.second->execute_function("on_start");
+        st::io::log::error(fmt::format("Settings were not saved to '{}' because the file could not be read. "
+                                       "Fix or remove the file to restore saving.",
+                                       config_path));
+        return;
     }
+    static_cast<void>(config.save(config_path));
 }
 
 #if ST_MODULE_VIDEO
@@ -58,8 +86,6 @@ run_video_loop(st::video::window &win,
                st::gui::core     &gui,
                Mods              &mods)
 {
-    win.show();
-
     win.reset_accumulator();
     while (!win.close_requested())
     {
@@ -118,6 +144,14 @@ run(st_int32  argc,
         win.set_title(PROGRAM_TITLE " " VERSION_STRING);
         st::gui::core gui(win);
         win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
+        win.show();
+
+        st::loading_screen  loading(win, gui);
+        const boot_progress on_progress = [&](std::string_view status, st::float32 fraction)
+        { loading.update(status, fraction); };
+        on_progress("Discovering mods...", 0.0f);
+#else
+        const boot_progress on_progress = [](std::string_view, st::float32) {};
 #endif
 
         st::modloader ml;
@@ -126,7 +160,17 @@ run(st_int32  argc,
         if (args.safe_mode())
             st::os::popup::warn("Safe mode", "Safe mode is enabled. No mods have been loaded.");
 
-        start_mods(mods);
+        st::util::config config;
+        const st::bool_t config_loaded = config.load(config_path);
+
+        start_mods(mods, config, on_progress);
+        save_config(config, config_loaded);
+        on_progress("Starting...", 1.0f);
+
+        for (auto &mod : mods)
+        {
+            mod.second->execute_function("on_start");
+        }
 
 #if ST_MODULE_VIDEO
         run_video_loop(win, gui, mods);

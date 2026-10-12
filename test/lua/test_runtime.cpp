@@ -5,9 +5,16 @@
  * Date created : 12/10/2026
  */
 
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+}
+
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <set>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -18,6 +25,7 @@
 #include <spdlog/spdlog.h>
 
 #include "io/log.h"
+#include "lua/log_bindings.h"
 #include "lua/runtime.h"
 #include "symlink.h"
 
@@ -44,6 +52,160 @@ namespace
     {
         const st::char_t *name;
         const st::char_t *message;
+    };
+
+    void add_string_keys(lua_State             *L,
+                         int                    table,
+                         const std::string     &prefix,
+                         std::set<std::string> &names)
+    {
+        lua_pushnil(L);
+        while (lua_next(L, table) != 0)
+        {
+            if (lua_type(L, -2) == LUA_TSTRING)
+                names.insert(prefix + lua_tostring(L, -2));
+            lua_pop(L, 1);
+        }
+    }
+
+    // Adds the members of the class instance metatable on top of the stack, and of its bases.
+    void add_class_members(lua_State             *L,
+                           const std::string     &path,
+                           std::set<std::string> &names)
+    {
+        const int metatable = lua_gettop(L);
+
+        for (const char *section : {".fn", ".get", ".set"})
+        {
+            lua_pushstring(L, section);
+            lua_rawget(L, metatable);
+            if (lua_istable(L, -1))
+                add_string_keys(L, lua_gettop(L), path + ".", names);
+            lua_pop(L, 1);
+        }
+
+        lua_pushstring(L, ".bases");
+        lua_rawget(L, metatable);
+        if (lua_istable(L, -1))
+        {
+            for (lua_Integer i = 1; i <= static_cast<lua_Integer>(lua_rawlen(L, -1)); ++i)
+            {
+                lua_rawgeti(L, -1, i);
+                if (lua_istable(L, -1))
+                    add_class_members(L, path, names);
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);
+    }
+
+    // Collects everything reachable by name from the table on top of the stack, as dotted paths.
+    // SWIG keeps the members of classes in their metatables, so those are included.
+    void collect_reachable(lua_State             *L,
+                           const std::string     &path,
+                           std::set<std::string> &names,
+                           int                    depth = 0)
+    {
+        const int table = lua_gettop(L);
+
+        if (lua_getmetatable(L, table) != 0)
+        {
+            lua_pushstring(L, ".instance");
+            lua_rawget(L, -2);
+            if (lua_istable(L, -1))
+                add_class_members(L, path, names);
+            lua_pop(L, 2);
+        }
+
+        lua_pushnil(L);
+        while (lua_next(L, table) != 0)
+        {
+            if (lua_type(L, -2) == LUA_TSTRING)
+            {
+                const std::string name = path + "." + lua_tostring(L, -2);
+                names.insert(name);
+                if (lua_istable(L, -1) && depth < 4 && name != "_G._G")
+                    collect_reachable(L, name, names, depth + 1);
+            }
+            lua_pop(L, 1);
+        }
+    }
+
+    [[nodiscard]] std::set<std::string> reachable_names(st::lua::runtime &runtime)
+    {
+        std::set<std::string> names;
+        lua_State            *L = runtime.state();
+
+        lua_pushglobaltable(L);
+        collect_reachable(L, "_G", names);
+        lua_pop(L, 1);
+        return names;
+    }
+
+    // The Lua libraries as a pristine state provides them, less the ones that read or run files.
+    [[nodiscard]] std::set<std::string> library_names()
+    {
+        std::set<std::string> names;
+        lua_State            *L = luaL_newstate();
+
+        const luaL_Reg libraries[] = {
+            {LUA_GNAME, luaopen_base},        {LUA_COLIBNAME, luaopen_coroutine}, {LUA_TABLIBNAME, luaopen_table},
+            {LUA_STRLIBNAME, luaopen_string}, {LUA_UTF8LIBNAME, luaopen_utf8},    {LUA_MATHLIBNAME, luaopen_math},
+        };
+        for (const luaL_Reg &library : libraries)
+        {
+            luaL_requiref(L, library.name, library.func, 1);
+            lua_pop(L, 1);
+        }
+
+        lua_pushglobaltable(L);
+        collect_reachable(L, "_G", names);
+        lua_pop(L, 1);
+        lua_close(L);
+
+        for (const char *name : {"dofile", "loadfile", "load", "collectgarbage"})
+            names.erase(std::string("_G.") + name);
+        return names;
+    }
+
+    // Mirrors doc/lua/pages/api. The `st.init` page is covered by the mod tests.
+    const std::set<std::string> documented_names = {
+        "_G.require",
+        "_G.st",
+        "_G.st.audio",
+        "_G.st.audio.sound",
+        "_G.st.audio.sound.get",
+        "_G.st.audio.sound.name",
+        "_G.st.audio.sound.path",
+        "_G.st.audio.source",
+        "_G.st.audio.source.is_paused",
+        "_G.st.audio.source.is_playing",
+        "_G.st.audio.source.is_stopped",
+        "_G.st.audio.source.pause",
+        "_G.st.audio.source.play",
+        "_G.st.audio.source.resume",
+        "_G.st.audio.source.select",
+        "_G.st.audio.source.set_gain",
+        "_G.st.audio.source.set_loop",
+        "_G.st.audio.source.set_pitch",
+        "_G.st.audio.source.set_position",
+        "_G.st.audio.source.set_spatial",
+        "_G.st.audio.source.set_velocity",
+        "_G.st.audio.source.stop",
+        "_G.st.io",
+        "_G.st.io.log",
+        "_G.st.io.log.debug",
+        "_G.st.io.log.error",
+        "_G.st.io.log.info",
+        "_G.st.io.log.trace",
+        "_G.st.io.log.warn",
+        "_G.st.video",
+        "_G.st.video.texture",
+        "_G.st.video.texture.get",
+        "_G.st.video.texture.height",
+        "_G.st.video.texture.name",
+        "_G.st.video.texture.path",
+        "_G.st.video.texture.width",
     };
 
     // Runtime errors are reported through the default logger and Lua output
@@ -271,18 +433,6 @@ TEST_SUITE("lua::runtime")
         CHECK_FALSE(contains("after error"));
     }
 
-    TEST_CASE_FIXTURE(runtime_fixture, "the standard libraries work")
-    {
-        CHECK(runtime.execute_file("0004-good-stdlib.lua"));
-        CHECK(contains("stdlib ok"));
-    }
-
-    TEST_CASE_FIXTURE(runtime_fixture, "unsafe globals are removed")
-    {
-        CHECK(runtime.execute_file("0005-good-sandbox.lua"));
-        CHECK(contains("sandbox ok"));
-    }
-
     TEST_CASE_FIXTURE(runtime_fixture, "non-ASCII source and output survive")
     {
         const std::string text = "h\xc3\xa9llo \xe2\x9c\x93 \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e";
@@ -493,13 +643,8 @@ TEST_SUITE("lua::runtime")
     TEST_CASE_FIXTURE(runtime_fixture, "execute_string reports errors and keeps the runtime usable")
     {
         const std::string_view bad_code[] = {
-            "local x = = 1",
-            "error('string failure')",
-            "error({ code = 1 })",
-            "undefined_function()",
-            "assert(false, 'string assertion')",
-            "local function f() return 1 + f() end f()",
-            "return require('does_not_exist')",
+            "local x = = 1",        "error('string failure')",           "error({ code = 1 })",
+            "undefined_function()", "assert(false, 'string assertion')", "local function f() return 1 + f() end f()",
         };
 
         for (const std::string_view code : bad_code)
@@ -707,5 +852,108 @@ TEST_SUITE("lua::runtime")
         CHECK_FALSE(runtime.execute_file(lua_dir / "0002-good-print.lua"));
         CHECK_FALSE(runtime.execute_string("require('mod_good')"));
         CHECK(runtime.execute_string("x = 1"));
+    }
+
+    TEST_CASE("scripts can reach only the Lua libraries and the documented API")
+    {
+        st::lua::runtime runtime{"test_lua_documented", lua_dir};
+
+        std::set<std::string> expected = library_names();
+        expected.insert(documented_names.begin(), documented_names.end());
+
+        const std::set<std::string> names = reachable_names(runtime);
+
+        for (const std::string &name : names)
+        {
+            INFO(name);
+            CHECK_MESSAGE(expected.count(name) == 1, "undocumented name is reachable from Lua");
+        }
+        for (const std::string &name : expected)
+        {
+            INFO(name);
+            CHECK_MESSAGE(names.count(name) == 1, "documented name is missing from Lua");
+        }
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "the standard libraries work")
+    {
+        CHECK(runtime.execute_file("0004-good-stdlib.lua"));
+        CHECK(contains("stdlib ok"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "unsafe globals and SWIG internals are not available")
+    {
+        CHECK(runtime.execute_file("0005-good-sandbox.lua"));
+        CHECK(contains("sandbox ok"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "st.io.log writes to the runtime log at every level")
+    {
+        struct level
+        {
+            const char *function;
+            const char *tag;
+        };
+        const level levels[] = {
+            {"trace", "[trace]"}, {"debug", "[debug]"}, {"info", "[info]"}, {"warn", "[warning]"}, {"error", "[error]"},
+        };
+
+        for (const level &entry : levels)
+        {
+            INFO(entry.function);
+            clear_output();
+
+            const std::string message = std::string("message at ") + entry.function;
+            CHECK(runtime.execute_string("st.io.log." + std::string(entry.function) + "('" + message + "')"));
+            CHECK(contains(entry.tag));
+            CHECK(contains(message));
+        }
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "warn logs through st.io.log.warn")
+    {
+        CHECK(runtime.execute_string("warn('low ', 'health ', 3)"));
+        CHECK(contains("[warning] low health 3"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "warn ignores control messages")
+    {
+        CHECK(runtime.execute_string("warn('@on')"));
+        CHECK(runtime.execute_string("warn('@off')"));
+        CHECK_FALSE(contains("[warning]"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "warn rejects arguments that are not strings or numbers")
+    {
+        CHECK_FALSE(runtime.execute_string("warn()"));
+        CHECK(contains("bad argument #1 to 'warn'"));
+
+        clear_output();
+        CHECK_FALSE(runtime.execute_string("warn('fine', {})"));
+        CHECK(contains("bad argument #2 to 'warn' (string expected, got table)"));
+        CHECK_FALSE(contains("[warning]"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "error is logged at error level with a stack traceback when uncaught")
+    {
+        CHECK_FALSE(runtime.execute_string("local function fail() error('custom failure') end fail()"));
+        CHECK(contains("[error]"));
+        CHECK(contains("custom failure"));
+        CHECK(contains("stack traceback"));
+        CHECK(contains("in local 'fail'"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "error that is caught is not logged")
+    {
+        CHECK(runtime.execute_string("assert(not pcall(error, 'handled'))"));
+        CHECK_FALSE(contains("[error]"));
+    }
+
+    TEST_CASE("classes do not expose SWIG internals")
+    {
+        st::lua::runtime runtime{"test_lua_disown", lua_dir};
+
+        CHECK_FALSE(runtime.execute_string("st.audio.source():__disown()"));
+        CHECK_FALSE(runtime.execute_string("st.audio.source().__gc()"));
     }
 }

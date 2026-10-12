@@ -1,8 +1,28 @@
 %{
-#include "st_types.h"
-%}
+#include <cstdio>
+#include <memory>
 
-%template(StringVector) std::vector<std::string>;
+#include "st_types.h"
+
+// Owns a Lua registry reference for the lifetime of the callback.
+struct st_swig_lua_callback_ref
+{
+    lua_State *L;
+    int ref;
+
+    st_swig_lua_callback_ref(lua_State *state, int reference) noexcept
+        : L(state), ref(reference)
+    {}
+
+    ~st_swig_lua_callback_ref() noexcept
+    {
+        luaL_unref(L, LUA_REGISTRYINDEX, ref);
+    }
+
+    st_swig_lua_callback_ref(const st_swig_lua_callback_ref &) = delete;
+    st_swig_lua_callback_ref &operator=(const st_swig_lua_callback_ref &) = delete;
+};
+%}
 
 #define ST_SWIG_IMPLICIT_CONVERSION_TO_STRING(type, temp_type, conversion) \
     %typemap(typecheck, precedence=SWIG_TYPECHECK_STRING) type { \
@@ -13,6 +33,26 @@
             SWIG_exception(SWIG_TypeError, "expected a string"); \
         } \
         temp = conversion; \
+        $1 = &temp; \
+    }
+
+#define ST_SWIG_IMPLICIT_CONVERSION_TO_FUNCTION(type) \
+    %typemap(typecheck) type & { \
+        $1 = lua_isfunction(L, $input); \
+    } \
+    %typemap(in) type & (type temp) { \
+        lua_pushvalue(L, $input); \
+        const int ref = luaL_ref(L, LUA_REGISTRYINDEX); \
+        auto fn = std::make_shared<st_swig_lua_callback_ref>(L, ref); \
+        temp = [fn]() { \
+            lua_rawgeti(fn->L, LUA_REGISTRYINDEX, fn->ref); \
+            if (lua_pcall(fn->L, 0, 0, 0) != LUA_OK) { \
+                const char *error = lua_tostring(fn->L, -1); \
+                fprintf(stderr, "Lua callback error: %s\n", \
+                    error ? error : "unknown error"); \
+                lua_pop(fn->L, 1); \
+            } \
+        }; \
         $1 = &temp; \
     }
 

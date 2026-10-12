@@ -21,7 +21,10 @@ struct st::gui::frame::frame_impl
           m_frame_title(fmt::format("##{}", id)),
           m_flags(ImGuiWindowFlags_None),
           m_position_set(false),
-          m_size_set(false)
+          m_size_set(false),
+          m_closable(true),
+          m_visible(true),
+          m_window_open(true)
     {}
     ~frame_impl() noexcept = default;
 
@@ -30,6 +33,8 @@ struct st::gui::frame::frame_impl
     ImGuiWindowFlags m_flags;
     st::bool_t m_position_set, m_size_set;
     glm::f32vec2 m_position, m_size;
+    st::bool_t m_closable, m_visible, m_window_open;
+    std::vector<on_close_callback> m_callback_on_close;
 };
 
 st::gui::frame::frame() noexcept
@@ -42,6 +47,12 @@ void
 st::gui::frame::set_auto_resize(st::bool_t auto_resize) noexcept
 {
     SET_FLAG(auto_resize, AlwaysAutoResize);
+}
+
+void
+st::gui::frame::set_closable(st::bool_t closable) noexcept
+{
+    m_impl->m_closable = closable;
 }
 
 void
@@ -103,8 +114,33 @@ st::gui::frame::set_title(std::string_view title) noexcept
 }
 
 void
+st::gui::frame::close() noexcept
+{
+    m_impl->m_window_open = false;
+    m_impl->m_visible = false;
+    for (auto &callback : m_impl->m_callback_on_close)
+        callback();
+}
+
+void
+st::gui::frame::register_on_close(const on_close_callback &callback) noexcept
+{
+    if (callback)
+        m_impl->m_callback_on_close.push_back(callback);
+}
+
+void
+st::gui::frame::clear_on_close() noexcept
+{
+    m_impl->m_callback_on_close.clear();
+}
+
+void
 st::gui::frame::render() noexcept
 {
+    if (!m_impl->m_visible)
+        return;
+
     if (m_impl->m_size_set)
     {
         ImGui::SetNextWindowSize({m_impl->m_size.x, m_impl->m_size.y}, ImGuiCond_Always);
@@ -119,8 +155,16 @@ st::gui::frame::render() noexcept
         );
         m_impl->m_position_set = false;
     }
-    ImGui::Begin(m_impl->m_frame_title.c_str(), nullptr, m_impl->m_flags);
-    for (auto &child : children())
-        child->render();
+    if (ImGui::Begin(
+        m_impl->m_frame_title.c_str(),
+        m_impl->m_closable ? &m_impl->m_window_open : nullptr,
+        m_impl->m_flags
+    ))
+    {
+        for (auto &child : children())
+            child->render();
+    }
     ImGui::End();
+    if (m_impl->m_visible != m_impl->m_window_open)
+        close();
 }

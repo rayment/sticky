@@ -10,6 +10,7 @@ set(ST_LIB_SOURCES
     lua/runtime.cpp
     os/popup.cpp
     st_init.cpp
+    util/config.cpp
 
     $<$<PLATFORM_ID:Linux>:
         io/filesystem_linux.cpp
@@ -47,7 +48,6 @@ endif()
 
 if(ST_MODULE_VIDEO)
     list(APPEND ST_LIB_INTERFACES
-        gui/gui.i
         video/video.i
     )
     list(APPEND ST_LIB_SOURCES
@@ -55,7 +55,10 @@ if(ST_MODULE_VIDEO)
         gui/backend_${ST_GUI_BACKEND}/button.cpp
         gui/backend_${ST_GUI_BACKEND}/core.cpp
         gui/backend_${ST_GUI_BACKEND}/frame.cpp
+        gui/backend_${ST_GUI_BACKEND}/image.cpp
         gui/backend_${ST_GUI_BACKEND}/label.cpp
+        gui/backend_${ST_GUI_BACKEND}/popup.cpp
+        gui/backend_${ST_GUI_BACKEND}/progress.cpp
         io/gamepad.cpp
         io/keyboard.cpp
         io/mouse.cpp

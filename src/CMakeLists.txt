@@ -5,6 +5,10 @@ set(ST_EXE_SOURCES
     modloader.cpp
 )
 
+if(ST_MODULE_VIDEO)
+    list(APPEND ST_EXE_SOURCES loading_screen.cpp)
+endif()
+
 add_executable(sticky)
 set_target_properties(sticky PROPERTIES OUTPUT_NAME "${PROGRAM_EXECUTABLE}")
 target_sources(sticky PRIVATE ${ST_EXE_SOURCES})

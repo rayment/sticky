@@ -5,6 +5,10 @@
  * Date created : 11/10/2026
  */
 
+#include <algorithm>
+
+#include "st_macros.h"
+
 #include "gui/component.h"
 
 st::uint64 next_id = 0;
@@ -47,6 +51,32 @@ st::gui::nestable_component *
 st::gui::component::parent() const
 {
     return m_impl->m_parent;
+}
+
+void
+st::gui::component::set_parent(st::gui::nestable_component *parent) noexcept
+{
+    ST_ASSERT(parent != nullptr);
+    if (parent == m_impl->m_parent)
+    {
+        // Set to the same parent. Move to the end of child list.
+        auto &siblings = parent->m_impl->m_children;
+        auto it = std::find(siblings.begin(), siblings.end(), this);
+        ST_ASSERT(it != siblings.end());
+        std::rotate(it, it + 1, siblings.end());
+        return;
+    }
+    if (m_impl->m_parent != nullptr)
+    {
+        // Remove previous parent linkage
+        auto &siblings = m_impl->m_parent->m_impl->m_children;
+        auto it = std::find(siblings.begin(), siblings.end(), this);
+        ST_ASSERT(it != siblings.end());
+        siblings.erase(it);
+    }
+    // Link to new parent.
+    m_impl->m_parent = parent;
+    parent->m_impl->m_children.push_back(this);
 }
 
 st::gui::nestable_component::nestable_component(st::gui::nestable_component *parent) noexcept

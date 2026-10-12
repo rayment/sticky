@@ -1,45 +1,59 @@
-function check_sounds()
-    local good = st.audio.sound.get('good')
-    assert(good ~= nil)
-    assert(good:name() == 'good')
-    assert(good:path() == 'good.wav')
-
-    local nested = st.audio.sound.get('nested')
-    assert(nested ~= nil)
-    assert(nested:path() == 'sub/nested.wav')
-
-    assert(st.audio.sound.get('missing') == nil)
-    assert(st.audio.sound.get('escape') == nil)
-    assert(st.audio.sound.get('unknown') == nil)
+local function expect(condition)
+    if not condition then
+        expectation_failed()
+    end
 end
 
-function check_init_locked()
-    assert(not pcall(function() return st.init.sounds end))
-    assert(not pcall(function() st.init.sounds = {} end))
+function check_sounds()
+    local good = st.audio.sound.get('good')
+    expect(good ~= nil)
+    expect(good:name() == 'good')
+    expect(good:path() == 'good.wav')
+
+    local nested = st.audio.sound.get('nested')
+    expect(nested ~= nil)
+    expect(nested:path() == 'sub/nested.wav')
+
+    expect(st.audio.sound.get('missing') == nil)
+    expect(st.audio.sound.get('escape') == nil)
+    expect(st.audio.sound.get('unknown') == nil)
+end
+
+function read_init_sounds()
+    return st.init.sounds
+end
+
+function write_init_sounds()
+    st.init.sounds = {}
 end
 
 function check_source()
     local src = st.audio.source()
-    assert(src ~= nil)
-    assert(not src:is_playing())
+    expect(src ~= nil)
+    expect(not src:is_playing())
 
-    assert(src:select(st.audio.sound.get('good')))
-    assert(src:set_position(1.0, 2.0, 3.0))
-    assert(src:set_velocity(0.0, 0.5, 0.0))
-    assert(src:set_pitch(1.5))
-    assert(src:set_gain(0.5))
-    assert(src:set_loop(true))
-    assert(src:set_spatial(true))
+    expect(src:select(st.audio.sound.get('good')))
+    expect(src:set_position(1.0, 2.0, 3.0))
+    expect(src:set_velocity(0.0, 0.5, 0.0))
+    expect(src:set_pitch(1.5))
+    expect(src:set_gain(0.5))
+    expect(src:set_loop(true))
+    expect(src:set_spatial(true))
 
-    assert(src:play())
-    assert(src:is_playing())
-    assert(src:pause())
-    assert(src:is_paused())
-    assert(src:resume())
-    assert(src:is_playing())
-    assert(src:stop())
-    assert(src:is_stopped())
+    expect(src:play())
+    expect(src:is_playing())
+    expect(src:pause())
+    expect(src:is_paused())
+    expect(src:resume())
+    expect(src:is_playing())
+    expect(src:stop())
+    expect(src:is_stopped())
+end
 
-    assert(not pcall(function() src:select(nil) end))
-    assert(not pcall(function() src:set_position(1.0) end))
+function select_nil_sound()
+    st.audio.source():select(nil)
+end
+
+function set_position_without_components()
+    st.audio.source():set_position(1.0)
 end

@@ -37,7 +37,13 @@ namespace
 
     st::char_t st_table_key;
 
-    constexpr const char *init_tables[] = {"textures", "sounds"};
+    struct config_definition
+    {
+        std::string             name;
+        st::util::config::value default_value;
+    };
+
+    constexpr const char *init_tables[] = {"config", "textures", "sounds"};
 
     int init_phase_only(lua_State *L) { return luaL_error(L, "st.init is only available during the init phase"); }
 
@@ -84,11 +90,14 @@ namespace
         return is_string;
     }
 
-    [[nodiscard]] std::vector<resource_definition> collect_definitions(lua_State  *L,
-                                                                       const char *table) noexcept
+    // Calls `read` for each entry of `st.init.<table>` with the entry table on top of the stack,
+    // logging the entries that are not tables or that `read` rejects.
+    template <typename Reader>
+    void for_each_entry(lua_State  *L,
+                        const char *table,
+                        const char *requirement,
+                        Reader      read) noexcept
     {
-        std::vector<resource_definition> definitions;
-
         lua_rawgetp(L, LUA_REGISTRYINDEX, &st_table_key);
         lua_pushstring(L, "init");
         lua_rawget(L, -2);
@@ -106,34 +115,96 @@ namespace
                 for (lua_Unsigned i = 1; i <= count; ++i)
                 {
                     lua_rawgeti(L, -1, static_cast<lua_Integer>(i));
-                    resource_definition definition;
-                    if (lua_type(L, -1) == LUA_TTABLE && read_string_field(L, "name", definition.name) &&
-                        read_string_field(L, "path", definition.path))
-                        definitions.push_back(std::move(definition));
-                    else
-                        st::io::log::error(
-                            fmt::format("st.init.{}[{}] needs string 'name' and 'path' keys.", table, i));
+                    if (lua_type(L, -1) != LUA_TTABLE || !read())
+                        st::io::log::error(fmt::format("st.init.{}[{}] needs {}.", table, i, requirement));
                     lua_pop(L, 1);
                 }
             }
             lua_pop(L, 1);
         }
         lua_pop(L, 2);
+    }
+
+    [[nodiscard]] std::vector<resource_definition> collect_definitions(lua_State  *L,
+                                                                       const char *table) noexcept
+    {
+        std::vector<resource_definition> definitions;
+
+        for_each_entry(L, table, "string 'name' and 'path' keys",
+                       [&]
+                       {
+                           resource_definition definition;
+                           if (!read_string_field(L, "name", definition.name) ||
+                               !read_string_field(L, "path", definition.path))
+                               return false;
+                           definitions.push_back(std::move(definition));
+                           return true;
+                       });
+
+        return definitions;
+    }
+
+    // Reads the `default` key of the table on top of the stack, which must match `type`.
+    [[nodiscard]] st::bool_t read_config_default(lua_State               *L,
+                                                 const std::string       &type,
+                                                 st::util::config::value &out) noexcept
+    {
+        lua_pushstring(L, "default");
+        lua_rawget(L, -2);
+
+        const int  lua_value_type = lua_type(L, -1);
+        st::bool_t matches = true;
+        if (type == "string" && lua_value_type == LUA_TSTRING)
+            out = std::string(lua_tostring(L, -1));
+        else if (type == "number" && lua_value_type == LUA_TNUMBER)
+            out = lua_tonumber(L, -1);
+        else if (type == "boolean" && lua_value_type == LUA_TBOOLEAN)
+            out = lua_toboolean(L, -1) != 0;
+        else
+            matches = false;
+
+        lua_pop(L, 1);
+        return matches;
+    }
+
+    // Collects the valid settings of `st.init.config`, with names prefixed by the mod name.
+    [[nodiscard]] std::vector<config_definition> collect_config(lua_State         *L,
+                                                                const std::string &mod_name) noexcept
+    {
+        std::vector<config_definition> definitions;
+        const std::string prefix = (!mod_name.empty() && mod_name.back() == '.') ? mod_name : mod_name + ".";
+
+        for_each_entry(L, "config", "string 'name' and 'type' keys and a 'default' matching the type",
+                       [&]
+                       {
+                           config_definition definition;
+                           std::string       type;
+                           if (!read_string_field(L, "name", definition.name) || definition.name.empty() ||
+                               !read_string_field(L, "type", type) ||
+                               !read_config_default(L, type, definition.default_value))
+                               return false;
+                           definition.name.insert(0, prefix);
+                           definitions.push_back(std::move(definition));
+                           return true;
+                       });
 
         return definitions;
     }
 
     // Loads each definition into the registry, logging and skipping the ones that fail.
     template <typename Registry,
-              typename Loader>
+              typename Loader,
+              typename Progress>
     void load_resources(Registry                               &registry,
                         const std::filesystem::path            &res_dir,
                         const std::vector<resource_definition> &definitions,
                         const char                             *kind,
-                        Loader                                  load)
+                        Loader                                  load,
+                        Progress                               &progress)
     {
         for (const auto &definition : definitions)
         {
+            progress(kind, definition.name);
             const std::filesystem::path requested(definition.path);
             std::filesystem::path       resolved;
 
@@ -217,6 +288,8 @@ struct st::mod::mod_impl
     std::string m_version;
     std::string m_author;
     std::string m_description;
+    // Settings declared by the last init phase.
+    std::vector<config_definition> m_config;
     // The Lua folder of the mod; the `res` folder sits next to it.
     std::filesystem::path m_root_dir;
     // The registries outlive the runtime, whose scripts hold pointers into them.
@@ -273,35 +346,58 @@ st::mod::name() noexcept
 }
 
 st::bool_t
-st::mod::execute_init()
+st::mod::execute_init(const progress_callback &progress)
 {
     m_impl->activate();
 
+    const auto report = [&](std::string_view status, st::float32 fraction)
+    {
+        if (progress)
+            progress(status, fraction);
+    };
+
     lua_State *L = m_impl->m_runtime.state();
 
+    report(fmt::format("{}: running init.lua", m_impl->m_display_name), 0.0f);
     set_init_table(L, false);
     const st::bool_t ok = m_impl->m_runtime.execute_file("init.lua");
     const auto       textures = ok ? collect_definitions(L, "textures") : std::vector<resource_definition>{};
     const auto       sounds = ok ? collect_definitions(L, "sounds") : std::vector<resource_definition>{};
+    m_impl->m_config = ok ? collect_config(L, m_impl->m_name) : std::vector<config_definition>{};
     set_init_table(L, true);
 
     if (!ok)
         return false;
 
     const std::filesystem::path res_dir = m_impl->m_root_dir.parent_path() / "res";
+    const st::float32           total = static_cast<st::float32>(textures.size() + sounds.size());
+    st::float32                 loaded = 0.0f;
+    [[maybe_unused]] const auto on_resource = [&](const char *kind, const std::string &name)
+    {
+        report(fmt::format("{}: loading {} '{}'", m_impl->m_display_name, kind, name), loaded / total);
+        loaded += 1.0f;
+    };
 #if ST_MODULE_VIDEO
-    load_resources(m_impl->m_textures, res_dir, textures, "Texture", st::video::texture::load_file);
+    load_resources(m_impl->m_textures, res_dir, textures, "texture", st::video::texture::load_file, on_resource);
 #else
     if (!textures.empty())
         st::io::log::warn("Textures were declared but the video module is disabled.");
 #endif
 #if ST_MODULE_AUDIO
-    load_resources(m_impl->m_sounds, res_dir, sounds, "Sound", st::audio::sound::load_file);
+    load_resources(m_impl->m_sounds, res_dir, sounds, "sound", st::audio::sound::load_file, on_resource);
 #else
     if (!sounds.empty())
         st::io::log::warn("Sounds were declared but the audio module is disabled.");
 #endif
+    report(fmt::format("{}: initialised", m_impl->m_display_name), 1.0f);
     return true;
+}
+
+void
+st::mod::register_config(st::util::config &config) const noexcept
+{
+    for (const auto &definition : m_impl->m_config)
+        static_cast<void>(config.set_default(definition.name, definition.default_value));
 }
 
 st::bool_t

@@ -14,6 +14,8 @@ extern "C" {
 
 #include <algorithm>
 #include <cstring>
+#include <iterator>
+#include <type_traits>
 #include <utility>
 
 #include <fmt/format.h>
@@ -40,6 +42,44 @@ struct st::lua::runtime::runtime_impl
     std::filesystem::path root_dir_path;
     lua_State            *L;
 };
+
+namespace
+{
+    // The only globals scripts get: the Lua libraries, minus the ones that read or run files, the sandboxed
+    // `require`, and the engine module. What `st` holds is decided by the SWIG bindings.
+    constexpr const char *permitted_globals[] = {
+        "_G",        "_VERSION",     "assert",   "error",    "getmetatable", "ipairs",  "next",
+        "pairs",     "pcall",        "print",    "rawequal", "rawget",       "rawlen",  "rawset",
+        "select",    "setmetatable", "tonumber", "tostring", "type",         "warn",    "xpcall",
+        "coroutine", "math",         "string",   "table",    "utf8",         "require", "st",
+    };
+
+    [[nodiscard]] st::bool_t is_permitted_global(const char *name) noexcept
+    {
+        return std::any_of(std::begin(permitted_globals), std::end(permitted_globals),
+                           [name](const char *entry) { return std::strcmp(entry, name) == 0; });
+    }
+} // namespace
+
+// Removes every global that is not permitted, such as the SWIG helper functions.
+static void
+remove_unpermitted_globals(lua_State *L) noexcept
+{
+    lua_pushglobaltable(L);
+    const int table = lua_gettop(L);
+
+    lua_pushnil(L);
+    while (lua_next(L, table) != 0)
+    {
+        lua_pop(L, 1);
+        if (lua_type(L, -1) == LUA_TSTRING && is_permitted_global(lua_tostring(L, -1)))
+            continue;
+        lua_pushvalue(L, -1);
+        lua_pushnil(L);
+        lua_rawset(L, table);
+    }
+    lua_pop(L, 1);
+}
 
 [[nodiscard]]
 static bool
@@ -69,30 +109,14 @@ is_valid_module_name(std::string_view name) noexcept
 static void
 load_std_libraries(lua_State *L)
 {
-    luaL_requiref(L, LUA_GNAME, luaopen_base, 1);
-    lua_pop(L, 1);
-    luaL_requiref(L, LUA_COLIBNAME, luaopen_coroutine, 1);
-    lua_pop(L, 1);
-    luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
-    lua_pop(L, 1);
-    luaL_requiref(L, LUA_STRLIBNAME, luaopen_string, 1);
-    lua_pop(L, 1);
-    luaL_requiref(L, LUA_UTF8LIBNAME, luaopen_utf8, 1);
-    lua_pop(L, 1);
-    luaL_requiref(L, LUA_MATHLIBNAME, luaopen_math, 1);
-    lua_pop(L, 1);
-
-    constexpr const char *unsafe_globals[] = {
-        "dofile",
-        "loadfile",
-        "load",
-        "collectgarbage",
+    const luaL_Reg libraries[] = {
+        {LUA_GNAME, luaopen_base},        {LUA_COLIBNAME, luaopen_coroutine}, {LUA_TABLIBNAME, luaopen_table},
+        {LUA_STRLIBNAME, luaopen_string}, {LUA_UTF8LIBNAME, luaopen_utf8},    {LUA_MATHLIBNAME, luaopen_math},
     };
-
-    for (const char *name : unsafe_globals)
+    for (const luaL_Reg &library : libraries)
     {
-        lua_pushnil(L);
-        lua_setglobal(L, name);
+        luaL_requiref(L, library.name, library.func, 1);
+        lua_pop(L, 1);
     }
 }
 
@@ -290,7 +314,9 @@ st::lua::runtime::runtime(std::string_view             name,
     luaL_requiref(m_impl->L, "sticky", luaopen_sticky, 0);
     lua_setglobal(m_impl->L, "st");
 
-    constexpr const char *print_override = R"lua(
+    remove_unpermitted_globals(m_impl->L);
+
+    constexpr const char *base_overrides = R"lua(
         local info = st.io.log.info
         local tostring = tostring
         local concat = table.concat
@@ -302,8 +328,33 @@ st::lua::runtime::runtime(std::string_view             name,
             end
             info(concat(parts, "\t"))
         end
+
+        local warn_log = st.io.log.warn
+        local type = type
+        local error = error
+        local sub = string.sub
+        function warn(...)
+            local count = select('#', ...)
+            if count == 0 then
+                error("bad argument #1 to 'warn' (string expected, got no value)", 2)
+            end
+            local parts = {}
+            for i = 1, count do
+                local value = (select(i, ...))
+                local kind = type(value)
+                if kind ~= 'string' and kind ~= 'number' then
+                    error("bad argument #" .. i .. " to 'warn' (string expected, got " .. kind .. ")", 2)
+                end
+                parts[i] = tostring(value)
+            end
+            -- A lone message starting with '@' is a control message for the warning system, not a warning.
+            if count == 1 and sub(parts[1], 1, 1) == '@' then
+                return
+            end
+            warn_log(concat(parts))
+        end
     )lua";
-    if (luaL_dostring(m_impl->L, print_override) != LUA_OK)
+    if (luaL_dostring(m_impl->L, base_overrides) != LUA_OK)
     {
         st::io::log::error(lua_tostring(m_impl->L, -1));
         lua_pop(m_impl->L, 1);

@@ -1,3 +1,5 @@
+st.io.log.info('log from init phase')
+
 st.init.textures = {
     { name = 'good', path = 'good.png' },
     { name = 'nested', path = 'sub/nested.png' },

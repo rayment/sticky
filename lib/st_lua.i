@@ -40,8 +40,43 @@
     local M = sticky
 
     M.audio = M.st and M.st.audio
-    M.gui = M.st and M.st.gui
     M.video = M.st and M.st.video
 
     M.st = nil
+
+    -- Internals of the bindings that are not part of the API.
+    M.string = nil
+
+    -- SWIG gives every class a `__disown` method. Lua code must never release ownership of an object.
+    local visited = {}
+
+    local function remove_disown(instance)
+        if visited[instance] then
+            return
+        end
+        visited[instance] = true
+
+        if instance['.fn'] then
+            instance['.fn'].__disown = nil
+        end
+        for _, base in ipairs(instance['.bases'] or {}) do
+            remove_disown(base)
+        end
+    end
+
+    local function visit(namespace)
+        for _, member in pairs(namespace) do
+            if type(member) == 'table' then
+                local metatable = getmetatable(member)
+                if metatable and metatable['.instance'] then
+                    remove_disown(metatable['.instance'])
+                elseif not visited[member] then
+                    visited[member] = true
+                    visit(member)
+                end
+            end
+        end
+    end
+
+    visit(M)
 %}

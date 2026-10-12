@@ -5,6 +5,7 @@ target_sources(sticky_test PRIVATE
     io/test_filesystem.cpp
     io/test_log.cpp
     lua/test_runtime.cpp
+    util/test_config.cpp
     ${PROJECT_SOURCE_DIR}/src/mod.cpp
 )
 

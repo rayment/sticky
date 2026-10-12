@@ -61,10 +61,8 @@ namespace
 
 struct st::gui::core::core_impl
 {
-    core_impl() noexcept : m_show_demo(true) {}
+    core_impl() noexcept {}
     ~core_impl() noexcept = default;
-
-    bool m_show_demo;
 };
 
 st::gui::core::core(const st::video::window &window) noexcept : m_impl{std::make_unique<core_impl>()}
@@ -115,10 +113,6 @@ st::gui::core::clear() noexcept
 void
 st::gui::core::render() noexcept
 {
-#ifndef NDEBUG
-    if (m_impl->m_show_demo)
-        ImGui::ShowDemoWindow(&m_impl->m_show_demo);
-#endif
     render_log_overlay();
     ImGui::Render();
 }

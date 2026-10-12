@@ -32,6 +32,8 @@ namespace st::gui
         [[nodiscard]] st::uint64                   id()     const;
         [[nodiscard]] st::gui::nestable_component *parent() const;
 
+        void set_parent(st::gui::nestable_component *parent) noexcept;
+
     private:
         struct component_impl;
         std::unique_ptr<component_impl> m_impl;
@@ -40,6 +42,8 @@ namespace st::gui
     class nestable_component : public component
     {
     public:
+        friend class component;
+
         nestable_component(st::gui::nestable_component *parent = nullptr) noexcept;
         virtual ~nestable_component() noexcept = 0;
 
