@@ -23,15 +23,17 @@ namespace st
     class argparse
     {
     public:
-        explicit argparse(st_int32 argc, st_char **argv) noexcept;
+        explicit argparse(st_int32  argc,
+                          st_char **argv) noexcept;
         ~argparse() noexcept;
 
         [[nodiscard]] st_size   num_non_args() const noexcept;
-        [[nodiscard]] st_char **non_args    () const noexcept;
-        [[nodiscard]] st_bool   should_exit () const noexcept;
-        [[nodiscard]] st_int32  exit_code   () const noexcept;
+        [[nodiscard]] st_char **non_args() const noexcept;
+        [[nodiscard]] st_bool   safe_mode() const noexcept;
+        [[nodiscard]] st_bool   should_exit() const noexcept;
+        [[nodiscard]] st_int32  exit_code() const noexcept;
 
-        void print_help   () const noexcept;
+        void print_help() const noexcept;
         void print_version() const noexcept;
 
     private:

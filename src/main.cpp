@@ -12,6 +12,7 @@
 #include "io/filesystem.h"
 #include "io/log.h"
 #include "lua/runtime.h"
+#include "os/popup.h"
 #include "st_init.h"
 #if ST_MODULE_VIDEO
 #include "video/window.h"
@@ -86,7 +87,10 @@ run(st_int32  argc,
 
     {
         st::modloader ml;
-        auto          mods = ml.load_mods();
+        auto          mods = args.safe_mode() ? decltype(ml.load_mods()){} : ml.load_mods();
+
+        if (args.safe_mode())
+            st::os::popup::warn("Safe mode", "Safe mode is enabled. No mods have been loaded.");
 
         for (auto it = mods.begin(); it != mods.end();)
         {

@@ -15,17 +15,18 @@
 
 struct st::argparse::argparse_impl
 {
-    st_int32   argc;
-    st_char  **argv;
-    st_size    num_non_args;
-    st_char  **non_args;
-    st_bool    should_exit;
-    st_int32   exit_code;
+    st_int32  argc;
+    st_char **argv;
+    st_size   num_non_args;
+    st_char **non_args;
+    st_bool   should_exit;
+    st_bool   safe_mode;
+    st_int32  exit_code;
 };
 
-st::argparse::argparse(st_int32 argc,
-                       st_char **argv) noexcept
-    : m_impl(std::make_unique<argparse_impl>())
+st::argparse::argparse(st_int32  argc,
+                       st_char **argv) noexcept :
+    m_impl(std::make_unique<argparse_impl>())
 {
 
     m_impl->exit_code = EXIT_SUCCESS;
@@ -34,12 +35,14 @@ st::argparse::argparse(st_int32 argc,
 
     option long_options[] = {
         {"help", no_argument, nullptr, 'h'},
+        {"safe-mode", no_argument, nullptr, 's'},
         {"version", no_argument, nullptr, 'v'},
+        {nullptr, 0, nullptr, 0},
     };
 
     while (true)
     {
-        int c = getopt_long(argc, argv, "hv", long_options, nullptr);
+        int c = getopt_long(argc, argv, "hsv", long_options, nullptr);
         if (c == -1)
             break;
         switch (c)
@@ -49,6 +52,9 @@ st::argparse::argparse(st_int32 argc,
         case 'h':
             print_help();
             m_impl->should_exit = true;
+            break;
+        case 's':
+            m_impl->safe_mode = true;
             break;
         case 'v':
             print_version();
@@ -71,6 +77,7 @@ st::argparse::print_help() const noexcept
     std::cout << "Options:" << '\n';
     ;
     std::cout << "  -h, --help               Display this help message." << '\n';
+    std::cout << "  -s, --safe-mode          Start without loading any mods." << '\n';
     std::cout << "  -v, --version            Display version information." << '\n';
 }
 
@@ -96,6 +103,12 @@ st_bool
 st::argparse::should_exit() const noexcept
 {
     return m_impl->should_exit;
+}
+
+st_bool
+st::argparse::safe_mode() const noexcept
+{
+    return m_impl->safe_mode;
 }
 
 st_int32
