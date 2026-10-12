@@ -1,5 +1,3 @@
-option(ST_ENABLE_COVERAGE "Instrument lib/ and enable the coverage target" OFF)
-
 function(target_enable_coverage TARGET)
     if(NOT ST_ENABLE_COVERAGE)
         return()
@@ -9,6 +7,11 @@ function(target_enable_coverage TARGET)
 endfunction()
 
 if(NOT ST_ENABLE_COVERAGE)
+    return()
+endif()
+
+if(NOT ST_BUILD_TESTS)
+    message(STATUS "ST_BUILD_TESTS is OFF: coverage target disabled")
     return()
 endif()
 

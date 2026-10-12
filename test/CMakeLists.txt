@@ -13,5 +13,7 @@ target_include_directories(sticky_test PUBLIC .)
 
 target_link_libraries(sticky_test PRIVATE
     doctest
-#    libsticky
+    libsticky
 )
+
+add_test(NAME sticky_test COMMAND sticky_test)

@@ -5,7 +5,9 @@ set(ST_EXE_SOURCES
 )
 
 add_executable(sticky)
+set_target_properties(sticky PROPERTIES OUTPUT_NAME "${PROGRAM_EXECUTABLE}")
 target_sources(sticky PRIVATE ${ST_EXE_SOURCES})
+target_compile_definitions(sticky PRIVATE PROGRAM_TITLE="${PROGRAM_TITLE}")
 target_populate_compiler_features(sticky)
 target_populate_linker_features(sticky)
 target_populate_compiler_warnings(sticky)

@@ -48,6 +48,7 @@ main(st_int32 argc,
         }
 
         st::video::window win;
+        win.set_title(PROGRAM_TITLE " " VERSION_STRING);
         st::gui::core gui(win);
         win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
         win.show();

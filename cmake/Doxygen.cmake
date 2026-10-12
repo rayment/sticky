@@ -1,3 +1,7 @@
+if(NOT ST_ENABLE_DOCS)
+    return()
+endif()
+
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
 if(NOT DOXYGEN_FOUND)
     message(STATUS "Doxygen not found: documentation targets disabled")

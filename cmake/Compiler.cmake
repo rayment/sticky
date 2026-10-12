@@ -28,7 +28,6 @@ check_cxx_compiler_flag("-fno-rtti"                     HAVE_FNO_RTTI)
 
 # Expose project meta variables to compiler.
 add_compile_definitions(
-    PROGRAM_TITLE="${PROGRAM_TITLE}"
     VERSION_MAJOR="${VERSION_MAJOR}"
     VERSION_MINOR="${VERSION_MINOR}"
     VERSION_PATCH="${VERSION_PATCH}"
@@ -198,7 +197,7 @@ function(target_link_resource_file TARGET PATH)
         endif()
 
         if(${TARGET_TYPE} STREQUAL "EXECUTABLE")
-            set(OUTPUT_NAME "${PROJECT_NAME}")
+            set(OUTPUT_NAME "${PROGRAM_EXECUTABLE}")
             set(OUTPUT_FILENAME "${OUTPUT_NAME}.exe")
         else()
             set(OUTPUT_NAME ${TARGET})

@@ -7,7 +7,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(PROGRAM_TITLE "sticky")
+include(cmake/Options.cmake)
+
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
 set(VERSION_PATCH 1)
@@ -39,8 +40,10 @@ include(cmake/Dependencies.cmake)
 include(cmake/Doxygen.cmake)
 include(cmake/Coverage.cmake)
 
-enable_testing()
-
 add_subdirectory(lib)
 add_subdirectory(src)
-add_subdirectory(test)
+
+if(ST_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
