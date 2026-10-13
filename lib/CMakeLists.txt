@@ -111,7 +111,7 @@ set_property(SOURCE st_lua.i PROPERTY SWIG_FLAGS
     -DST_MODULE_AUDIO=$<BOOL:${ST_MODULE_AUDIO}>
     -DST_MODULE_VIDEO=$<BOOL:${ST_MODULE_VIDEO}>
 )
-swig_add_library(libsticky_lua TYPE STATIC LANGUAGE lua SOURCES st_lua.i)
+swig_add_library(libsticky_lua TYPE OBJECT LANGUAGE lua SOURCES st_lua.i)
 set_target_properties(libsticky_lua PROPERTIES
     OUTPUT_NAME sticky_lua
     SWIG_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR};${sdl3_SOURCE_DIR}/include"
@@ -124,7 +124,7 @@ target_disable_rtti(libsticky_lua)
 
 add_library(libsticky)
 set_target_properties(libsticky PROPERTIES OUTPUT_NAME sticky)
-target_sources(libsticky PRIVATE ${ST_LIB_SOURCES})
+target_sources(libsticky PRIVATE ${ST_LIB_SOURCES} $<TARGET_OBJECTS:libsticky_lua>)
 target_populate_compiler_features(libsticky)
 target_populate_linker_features(libsticky)
 target_export_all_symbols(libsticky)
@@ -135,5 +135,5 @@ target_disable_exceptions(libsticky)
 target_disable_rtti(libsticky)
 target_compile_definitions(libsticky PUBLIC ${ST_MODULE_DEFINITIONS})
 target_include_directories(libsticky PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(libsticky PUBLIC ${ST_LIB_PUBLIC_DEPENDENCIES} PRIVATE libsticky_lua)
+target_link_libraries(libsticky PUBLIC ${ST_LIB_PUBLIC_DEPENDENCIES})
 target_link_resource_file(libsticky lib.rc.in)

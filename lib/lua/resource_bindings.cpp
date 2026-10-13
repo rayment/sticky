@@ -14,8 +14,12 @@ extern "C" {
 #if ST_MODULE_VIDEO || ST_MODULE_AUDIO
 namespace
 {
+#if ST_MODULE_VIDEO
     char texture_registry_key;
+#endif
+#if ST_MODULE_AUDIO
     char sound_registry_key;
+#endif
 
     void store(lua_State  *L,
                const char *key,
