@@ -117,6 +117,10 @@ function(target_populate_compiler_features TARGET)
         set_target_properties(${TARGET} PROPERTIES
             POSITION_INDEPENDENT_CODE ON
         )
+        if(WIN32)
+            # Prevent console from spawning in release builds.
+            set_property(TARGET ${TARGET} PROPERTY WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug,DebugWithSanitizer>>)
+        endif()
     endif()
     if(TARGET_TYPE MATCHES "_LIBRARY$")
         # Library-specific features.
