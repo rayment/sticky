@@ -84,7 +84,9 @@ function(target_populate_compiler_features TARGET)
         >
     )
     target_compile_definitions(${TARGET} PRIVATE
-        _FORTIFY_SOURCE=3 # aggressive libc hardening
+        $<$<NOT:$<CONFIG:Debug,DebugWithSanitizer>>:
+            _FORTIFY_SOURCE=3 # aggressive libc hardening, which glibc rejects without optimisation
+        >
 
         $<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugWithSanitizer>>:
             STICKY_DEBUG=1
@@ -104,10 +106,9 @@ function(target_populate_compiler_features TARGET)
         >
     )
 
-    set_target_properties(${TARGET} PROPERTIES
-        $<$<PLATFORM_ID:Windows>:
-            # Prevent console from spawning in release builds.
-            WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug,DebugWithSanitizer>>
+    target_link_options(${TARGET} PRIVATE
+        $<$<CONFIG:DebugWithSanitizer>:
+            -fsanitize=address,undefined # link the address/UB sanitiser runtimes
         >
     )
 
