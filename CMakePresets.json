@@ -24,7 +24,7 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/DebugWithSanitizer",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "DebugWithSanitizer"
       }
     },
     {
