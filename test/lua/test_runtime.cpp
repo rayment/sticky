@@ -168,6 +168,20 @@ namespace
         return names;
     }
 
+#if !ST_MODULE_AUDIO || !ST_MODULE_VIDEO
+    void erase_prefixed(std::set<std::string> &names,
+                        const std::string     &prefix)
+    {
+        for (auto it = names.begin(); it != names.end();)
+        {
+            if (it->compare(0, prefix.size(), prefix) == 0)
+                it = names.erase(it);
+            else
+                ++it;
+        }
+    }
+#endif
+
     // Mirrors doc/lua/api. The `st.init` page is covered by the mod tests.
     const std::set<std::string> documented_names = {
         "_G.require",
@@ -1059,6 +1073,14 @@ TEST_SUITE("lua::runtime")
 
         std::set<std::string> expected = library_names();
         expected.insert(documented_names.begin(), documented_names.end());
+#if !ST_MODULE_AUDIO
+        erase_prefixed(expected, "_G.st.audio");
+#endif
+#if !ST_MODULE_VIDEO
+        erase_prefixed(expected, "_G.st.video");
+        erase_prefixed(expected, "_G.st.gui");
+        erase_prefixed(expected, "_G.st.io.mouse");
+#endif
 
         const std::set<std::string> names = reachable_names(runtime);
 
@@ -1170,6 +1192,7 @@ TEST_SUITE("lua::runtime")
         CHECK_FALSE(contains("[error]"));
     }
 
+#if ST_MODULE_VIDEO
     namespace
     {
         // Runs a full collection, which also finalizes everything that became unreachable.
@@ -1320,6 +1343,9 @@ TEST_SUITE("lua::runtime")
         CHECK(runtime.execute_string("x = 1"));
     }
 
+#endif // ST_MODULE_VIDEO
+
+#if ST_MODULE_AUDIO
     TEST_CASE("classes do not expose SWIG internals")
     {
         st::lua::runtime runtime{"test_lua_disown", lua_dir};
@@ -1327,4 +1353,5 @@ TEST_SUITE("lua::runtime")
         CHECK_FALSE(runtime.execute_string("st.audio.source():__disown()"));
         CHECK_FALSE(runtime.execute_string("st.audio.source().__gc()"));
     }
+#endif // ST_MODULE_AUDIO
 }

@@ -11,6 +11,8 @@ assert(type(require) == "function")
 assert(type(st) == "table")
 assert(type(st.io.log.info) == "function")
 assert(st.string == nil)
-assert(st.audio.source().__disown == nil)
+if st.audio then
+    assert(st.audio.source().__disown == nil)
+end
 
 print("sandbox ok")
