@@ -1,0 +1,53 @@
+/**
+ * @defgroup core Core
+ * @brief Library start-up, primitive types, macros and assertions.
+ *
+ * Call st::lib_init() before using anything else, and st::lib_free() at the end.
+ */
+
+/**
+ * @defgroup io Input and output
+ * @brief Logging, files, keyboard, mouse and gamepads.
+ */
+
+/**
+ * @defgroup os Operating system
+ * @brief Native message boxes.
+ */
+
+/**
+ * @defgroup util Utilities
+ * @brief Persistent settings.
+ */
+
+/**
+ * @defgroup resource Resources
+ * @brief Named resources that mods declare in their init phase.
+ */
+
+/**
+ * @defgroup audio Audio
+ * @brief Sounds, sources and the listener. Built when `ST_MODULE_AUDIO` is on.
+ */
+
+/**
+ * @defgroup video Video
+ * @brief The window, its frame timer and textures. Built when `ST_MODULE_VIDEO` is on.
+ */
+
+/**
+ * @defgroup gui GUI
+ * @brief Retained-mode components drawn by the engine. Built when `ST_MODULE_VIDEO` is on.
+ */
+
+/**
+ * @defgroup lua Lua
+ * @brief The sandboxed Lua runtime and the native parts of the Lua API.
+ *
+ * The API that scripts see is documented in the separate Lua manual.
+ */
+
+/**
+ * @defgroup app Application
+ * @brief The executable: command line, mod loading and the main menu (`src/`).
+ */

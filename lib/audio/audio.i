@@ -25,7 +25,7 @@
 %include "audio/sound_handle.h"
 
 // Lua passes positions as components and sounds as named handles.
-%ignore st::audio::source::select(const st::audio::sound &);
+%ignore st::audio::source::set_sound(const std::shared_ptr<st::audio::sound> &);
 %ignore st::audio::source::set_position(glm::f64vec3);
 %ignore st::audio::source::set_velocity(glm::f64vec3);
 

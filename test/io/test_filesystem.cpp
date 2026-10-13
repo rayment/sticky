@@ -26,20 +26,20 @@ namespace
     using st::test::make_symlink;
     using st::test::remove_link;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "io";
 
-    const fs::path good_empty = res_dir / "0001-good-empty.txt";
-    const fs::path good_text = res_dir / "0002-good-text.txt";
-    const fs::path good_multi = res_dir / "0003-good-multi.tar.gz";
-    const fs::path good_noext = res_dir / "0004-good-noext";
-    const fs::path good_tree = res_dir / "0005-good-tree";
-    const fs::path tree_file_a = good_tree / "0001-good-file.txt";
-    const fs::path tree_file_b = good_tree / "0002-good-file.dat";
-    const fs::path tree_sub_a = good_tree / "0003-good-subdir";
-    const fs::path tree_sub_b = good_tree / "0004-good-subdir";
+    const fs::path good_empty = res_dir / "good_empty.txt";
+    const fs::path good_text = res_dir / "good_text.txt";
+    const fs::path good_multi = res_dir / "good_multi.tar.gz";
+    const fs::path good_noext = res_dir / "good_noext";
+    const fs::path good_tree = res_dir / "good_tree";
+    const fs::path tree_file_a = good_tree / "good_file.txt";
+    const fs::path tree_file_b = good_tree / "good_file.dat";
+    const fs::path tree_sub_a = good_tree / "good_subdir_a";
+    const fs::path tree_sub_b = good_tree / "good_subdir_b";
 
     // Never created on disk.
-    const fs::path bad_missing = res_dir / "0099-bad-missing.txt";
+    const fs::path bad_missing = res_dir / "bad_missing.txt";
 
     [[nodiscard]] std::vector<std::string> sorted(std::vector<std::string> values)
     {
@@ -69,13 +69,13 @@ namespace
     {
         fs::path root = fs::temp_directory_path() / "sticky_test_filesystem";
 
-        fs::path real_file = root / "0001-good-real.txt";
-        fs::path real_dir = root / "0002-good-real-dir";
-        fs::path file_link = root / "0003-good-file-link.txt";
-        fs::path dir_link = root / "0004-good-dir-link";
-        fs::path broken = root / "0005-bad-broken-link.txt";
-        fs::path loop_a = root / "0006-bad-loop-a";
-        fs::path loop_b = root / "0007-bad-loop-b";
+        fs::path real_file = root / "good_real.txt";
+        fs::path real_dir = root / "good_real_dir";
+        fs::path file_link = root / "good_file_link.txt";
+        fs::path dir_link = root / "good_dir_link";
+        fs::path broken = root / "bad_broken_link.txt";
+        fs::path loop_a = root / "bad_loop_a";
+        fs::path loop_b = root / "bad_loop_b";
 
         bool        symlinks_available = false;
         std::string symlink_error;
@@ -97,7 +97,7 @@ namespace
 
             symlinks_available = true;
             make_symlink(good_tree, dir_link, true, ec);
-            make_symlink(root / "0099-missing.txt", broken, false, ec);
+            make_symlink(root / "missing.txt", broken, false, ec);
             make_symlink(loop_b.filename(), loop_a, false, ec);
             make_symlink(loop_a.filename(), loop_b, false, ec);
         }
@@ -148,8 +148,8 @@ TEST_SUITE("io::filesystem")
     TEST_CASE("exists is false for missing paths")
     {
         CHECK_FALSE(stfs::exists(bad_missing));
-        CHECK_FALSE(stfs::exists(good_tree / "0099-bad-missing"));
-        CHECK_FALSE(stfs::exists(good_text / "0099-bad-below-file"));
+        CHECK_FALSE(stfs::exists(good_tree / "bad_missing"));
+        CHECK_FALSE(stfs::exists(good_text / "bad_below_file"));
         CHECK_FALSE(stfs::exists(""));
     }
 
@@ -206,8 +206,8 @@ TEST_SUITE("io::filesystem")
 
     TEST_CASE("basename returns the final path component")
     {
-        CHECK_EQ("0002-good-text.txt", stfs::basename(good_text));
-        CHECK_EQ("0005-good-tree", stfs::basename(good_tree));
+        CHECK_EQ("good_text.txt", stfs::basename(good_text));
+        CHECK_EQ("good_tree", stfs::basename(good_tree));
         CHECK_EQ("file.txt", stfs::basename("file.txt"));
         CHECK_EQ("file.txt", stfs::basename("a/b/file.txt"));
         CHECK_EQ(".hidden", stfs::basename("a/.hidden"));
@@ -252,9 +252,9 @@ TEST_SUITE("io::filesystem")
 
     TEST_CASE("stem strips only the last suffix")
     {
-        CHECK_EQ("0002-good-text", stfs::stem(good_text));
-        CHECK_EQ("0003-good-multi.tar", stfs::stem(good_multi));
-        CHECK_EQ("0004-good-noext", stfs::stem(good_noext));
+        CHECK_EQ("good_text", stfs::stem(good_text));
+        CHECK_EQ("good_multi.tar", stfs::stem(good_multi));
+        CHECK_EQ("good_noext", stfs::stem(good_noext));
         CHECK_EQ(".hidden", stfs::stem(".hidden"));
         CHECK_EQ("", stfs::stem(""));
     }
@@ -356,5 +356,15 @@ TEST_SUITE("io::filesystem")
             CHECK_EQ(all.end(), std::find(all.begin(), all.end(), bad.string()));
         }
         CHECK_EQ(4u, all.size());
+    }
+
+    TEST_CASE("executable_dir is the directory of the test executable")
+    {
+        const fs::path dir = st::io::filesystem::executable_dir();
+
+        CHECK(dir.is_absolute());
+        CHECK(st::io::filesystem::is_directory(dir));
+        CHECK(
+            (st::io::filesystem::is_file(dir / "sticky_test") || st::io::filesystem::is_file(dir / "sticky_test.exe")));
     }
 }

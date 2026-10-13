@@ -6,7 +6,7 @@ set(ST_EXE_SOURCES
 )
 
 if(ST_MODULE_VIDEO)
-    list(APPEND ST_EXE_SOURCES loading_screen.cpp)
+    list(APPEND ST_EXE_SOURCES loading_screen.cpp main_menu.cpp)
 endif()
 
 add_executable(sticky)
@@ -17,7 +17,7 @@ target_populate_compiler_features(sticky)
 target_populate_linker_features(sticky)
 target_populate_compiler_warnings(sticky)
 target_mark_warnings_as_errors(sticky)
-#target_disable_exceptions(sticky)
+target_disable_exceptions(sticky)
 target_disable_rtti(sticky)
 target_include_directories(sticky PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(sticky PRIVATE libsticky)

@@ -13,8 +13,11 @@ extern "C" {
 }
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <iterator>
+#include <string>
 #include <type_traits>
 #include <utility>
 
@@ -40,7 +43,7 @@ struct st::lua::runtime::runtime_impl
     std::string           logger_name;
     st::io::log::logger   lua_logger;
     std::filesystem::path root_dir_path;
-    lua_State            *L;
+    lua_State            *L = nullptr;
 };
 
 namespace
@@ -134,6 +137,15 @@ traceback_handler(lua_State *L)
     return 1;
 }
 
+// Logs the error object on top of the stack and pops it.
+static void
+log_error(lua_State *L) noexcept
+{
+    const char *message = lua_tostring(L, -1);
+    st::io::log::error(message != nullptr ? message : "(error object is not a string)");
+    lua_pop(L, 1);
+}
+
 static st::bool_t
 protected_call(lua_State *L,
                st::int32  arg_count) noexcept
@@ -144,39 +156,60 @@ protected_call(lua_State *L,
 
     const st::bool_t ok = lua_pcall(L, arg_count, 0, base) == LUA_OK;
     if (!ok)
-        st::io::log::error(lua_tostring(L, -1));
+        log_error(L);
     lua_settop(L, base - 1);
     return ok;
 }
 
+// Reads through std::filesystem rather than fopen, which cannot open non-ASCII paths on Windows. Like luaL_loadfile,
+// skips a UTF-8 byte order mark and a first line starting with '#', keeping its line break so line numbers match.
+[[nodiscard]] static st::bool_t
+read_file(const std::filesystem::path &path,
+          std::string                 &contents) noexcept
+{
+    std::ifstream file(path, std::ios::binary);
+    if (!file.is_open())
+        return false;
+    contents.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    if (file.bad())
+        return false;
+
+    constexpr std::string_view byte_order_mark = "\xEF\xBB\xBF";
+    if (contents.compare(0, byte_order_mark.size(), byte_order_mark) == 0)
+        contents.erase(0, byte_order_mark.size());
+    if (!contents.empty() && contents.front() == '#')
+        contents.erase(0, contents.find('\n'));
+    return true;
+}
+
 static st::char_t require_cache_key;
 
-constexpr st::size module_path_capacity = 4096;
-
-// Lua is built as C, so a Lua error is a longjmp. Nothing with a destructor may
-// be alive when a Lua API call that can raise is made, which is why the C++
-// work is kept in functions like this one that never touch the Lua API.
+// Lua is built as C, so a Lua error is a longjmp. Nothing with a destructor may be alive when a Lua API call that can
+// raise is made, which is why the C++ work is kept in functions like this one that never touch the Lua API. The
+// source is returned in a buffer from std::malloc, which the caller frees before raising.
 [[nodiscard]]
 static st::bool_t
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-resolve_module(std::string_view name,
-               const char      *root,
-               char            *out,
-               st::size         out_size) noexcept
+read_module(std::string_view name,
+            const char      *root,
+            char           **source,
+            st::size        *size) noexcept
 {
     std::string relative_name(name);
     std::replace(relative_name.begin(), relative_name.end(), '.', '/');
     relative_name += ".lua";
 
-    std::filesystem::path candidate;
-    if (!st::io::filesystem::resolve_file(root, relative_name, candidate))
+    std::filesystem::path resolved;
+    std::string           contents;
+    if (!st::io::filesystem::resolve_file(std::filesystem::u8path(root), relative_name, resolved) ||
+        !read_file(resolved, contents))
         return false;
 
-    const std::string resolved = candidate.string();
-    if (resolved.size() >= out_size)
+    *source = static_cast<char *>(std::malloc(contents.size() + 1));
+    if (*source == nullptr)
         return false;
-
-    std::memcpy(out, resolved.c_str(), resolved.size() + 1);
+    std::memcpy(*source, contents.c_str(), contents.size() + 1);
+    *size = contents.size();
     return true;
 }
 
@@ -206,12 +239,17 @@ require_mod(lua_State *L)
     if (root == nullptr)
         return luaL_error(L, "missing Lua root directory");
 
-    // The path lives on the Lua heap so that an error below frees it.
-    char *path = static_cast<char *>(lua_newuserdatauv(L, module_path_capacity, 0));
-    if (!resolve_module(std::string_view(name, name_length), root, path, module_path_capacity))
+    luaL_gsub(L, name, ".", "/");
+    const char *chunk_name = lua_pushfstring(L, "@%s.lua", lua_tostring(L, -1));
+
+    char    *source = nullptr;
+    st::size source_size = 0;
+    if (!read_module(std::string_view(name, name_length), root, &source, &source_size))
         return luaL_error(L, "module '%s' could not be resolved within the Lua directory", name);
 
-    if (luaL_loadfilex(L, path, "t") != LUA_OK)
+    const int status = luaL_loadbufferx(L, source, source_size, chunk_name, "t");
+    std::free(source);
+    if (status != LUA_OK)
         return lua_error(L);
 
     lua_call(L, 0, 1);
@@ -292,7 +330,11 @@ st::lua::runtime::runtime(std::string_view             name,
     }
 {
     m_impl->L = luaL_newstate();
-    ST_ASSERT(m_impl->L);
+    if (m_impl->L == nullptr)
+    {
+        st::io::log::error(fmt::format("Cannot allocate the Lua state of '{}'.", name));
+        return;
+    }
     st::lua::set_logger(m_impl->L, &m_impl->lua_logger);
 
     load_std_libraries(m_impl->L);
@@ -301,12 +343,13 @@ st::lua::runtime::runtime(std::string_view             name,
     auto            lua_root = st::io::filesystem::resolve(root_dir, ec);
     if (ec)
     {
-        st::io::log::error(fmt::format("Cannot resolve Lua root directory '{}': {}", root_dir.string(), ec.message()));
+        st::io::log::error(
+            fmt::format("Cannot resolve Lua root directory '{}': {}", root_dir.u8string(), ec.message()));
         lua_root = root_dir;
     }
     lua_newtable(m_impl->L);
     lua_rawsetp(m_impl->L, LUA_REGISTRYINDEX, &require_cache_key);
-    lua_pushstring(m_impl->L, lua_root.generic_string().c_str());
+    lua_pushstring(m_impl->L, lua_root.generic_u8string().c_str());
     lua_pushcclosure(m_impl->L, require_mod, 1);
     lua_setglobal(m_impl->L, "require");
 
@@ -354,30 +397,31 @@ st::lua::runtime::runtime(std::string_view             name,
         end
     )lua";
     if (luaL_dostring(m_impl->L, base_overrides) != LUA_OK)
-    {
-        st::io::log::error(lua_tostring(m_impl->L, -1));
-        lua_pop(m_impl->L, 1);
-    }
+        log_error(m_impl->L);
 }
 
 st::lua::runtime::~runtime() noexcept
 {
     // Finalizers run during lua_close and may log, so the logger outlives the state.
-    lua_close(m_impl->L);
+    if (m_impl->L != nullptr)
+        lua_close(m_impl->L);
 }
 
 st::bool_t
 st::lua::runtime::execute_file(const std::filesystem::path &path) noexcept
 {
-    std::filesystem::path resolved;
-
-    if (!st::io::filesystem::resolve_file(m_impl->root_dir_path, path, resolved))
+    if (m_impl->L == nullptr)
         return false;
 
-    if (luaL_loadfilex(m_impl->L, resolved.generic_string().c_str(), "t") != LUA_OK)
+    std::filesystem::path resolved;
+    std::string           source;
+    if (!st::io::filesystem::resolve_file(m_impl->root_dir_path, path, resolved) || !read_file(resolved, source))
+        return false;
+
+    const std::string chunk_name = "@" + path.generic_u8string();
+    if (luaL_loadbufferx(m_impl->L, source.data(), source.size(), chunk_name.c_str(), "t") != LUA_OK)
     {
-        st::io::log::error(lua_tostring(m_impl->L, -1));
-        lua_pop(m_impl->L, 1);
+        log_error(m_impl->L);
         return false;
     }
     return protected_call(m_impl->L, 0);
@@ -393,6 +437,9 @@ st::bool_t
 st::lua::runtime::execute_function(std::string_view                          name,
                                    std::initializer_list<const lua_arg_type> args) noexcept
 {
+    if (m_impl->L == nullptr)
+        return false;
+
     function_call call{name, args};
 
     lua_pushcfunction(m_impl->L, call_global);
@@ -405,10 +452,12 @@ st::lua::runtime::execute_function(std::string_view                          nam
 st::bool_t
 st::lua::runtime::execute_string(std::string_view code) noexcept
 {
+    if (m_impl->L == nullptr)
+        return false;
+
     if (luaL_loadbufferx(m_impl->L, code.data(), code.size(), "=(string)", "t") != LUA_OK)
     {
-        st::io::log::error(lua_tostring(m_impl->L, -1));
-        lua_pop(m_impl->L, 1);
+        log_error(m_impl->L);
         return false;
     }
     return protected_call(m_impl->L, 0);

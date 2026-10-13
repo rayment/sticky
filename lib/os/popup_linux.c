@@ -1,5 +1,5 @@
 /*
- * popup_linux.cpp
+ * popup_linux.c
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 27/08/2026
@@ -20,10 +20,9 @@
 static st_bool
 _st_os_popup_impl(const st_char *title,
                   const st_char *message,
-                  st_enum        type)
+                  st_uint32      type)
 {
-    return ST_LIKELY(
-        SDL_ShowSimpleMessageBox((SDL_MessageBoxFlags) type, (const char *) title, (const char *) message, nullptr));
+    return SDL_ShowSimpleMessageBox((SDL_MessageBoxFlags) type, (const char *) title, (const char *) message, nullptr);
 }
 #else
 #define TYPE_INFO 0
@@ -33,7 +32,7 @@ _st_os_popup_impl(const st_char *title,
 static st_bool
 _st_os_popup_impl(const st_char *title,
                   const st_char *message,
-                  st_enum        type)
+                  st_uint32      type)
 {
     (void) title;
     (void) message;
@@ -42,23 +41,20 @@ _st_os_popup_impl(const st_char *title,
 }
 #endif // ST_MODULE_VIDEO
 
-st_bool
-_st_os_popup_impl_info(const st_char *title,
-                       const st_char *message)
+ST_EXTERN_PROTOTYPE(st_bool _st_os_popup_impl_info(const st_char *title,
+                                                   const st_char *message))
 {
     return _st_os_popup_impl(title, message, TYPE_INFO);
 }
 
-st_bool
-_st_os_popup_impl_warn(const st_char *title,
-                       const st_char *message)
+ST_EXTERN_PROTOTYPE(st_bool _st_os_popup_impl_warn(const st_char *title,
+                                                   const st_char *message))
 {
     return _st_os_popup_impl(title, message, TYPE_WARNING);
 }
 
-st_bool
-_st_os_popup_impl_error(const st_char *title,
-                        const st_char *message)
+ST_EXTERN_PROTOTYPE(st_bool _st_os_popup_impl_error(const st_char *title,
+                                                    const st_char *message))
 {
     return _st_os_popup_impl(title, message, TYPE_ERROR);
 }

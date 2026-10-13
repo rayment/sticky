@@ -9,55 +9,80 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <fmt/format.h>
 
 #include "audio/server.h"
 #include "io/log.h"
 
-static ALCdevice *device;
-static ALCcontext *context;
-
-static void list_audio_devices(const ALCchar* devices)
+namespace
 {
-    const ALCchar *dev = devices;
-    const ALCchar *next = devices + 1;
-    size_t len = 0;
+    ALCdevice  *device = nullptr;
+    ALCcontext *context = nullptr;
+    st::bool_t  mixer_ready = false;
 
-    st::io::log::debug("Devices list:");
-    st::io::log::debug("-------------");
-    while ((dev != nullptr) && *dev != '\0' && (next != nullptr) && *next != '\0')
+    // The specifier is a list of strings, each terminated by a null character, ending with an empty string.
+    void list_audio_devices(const ALCchar *devices) noexcept
     {
-        st::io::log::debug(fmt::format("{}", dev));
-        len = strlen(dev);
-        dev += (len + 1);
-        next += (len + 2);
+        if (devices == nullptr)
+            return;
+
+        st::io::log::debug("Audio devices:");
+        for (const ALCchar *it = devices; *it != '\0'; it += std::strlen(it) + 1)
+            st::io::log::debug(fmt::format("  {}", it));
     }
-    st::io::log::debug("-------------");
-}
+
+    void close_device() noexcept
+    {
+        alcMakeContextCurrent(nullptr);
+        if (context != nullptr)
+            alcDestroyContext(context);
+        if (device != nullptr)
+            alcCloseDevice(device);
+        context = nullptr;
+        device = nullptr;
+    }
+} // namespace
 
 st::bool_t
-st::audio::server::init()
+st::audio::server::init() noexcept
 {
-    // TODO: Make calls safe.
+    if (device != nullptr)
+        return true;
+
+    if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATION_EXT") != ALC_FALSE)
+        list_audio_devices(alcGetString(nullptr, ALC_DEVICE_SPECIFIER));
+
     device = alcOpenDevice(nullptr);
-    if (alcIsExtensionPresent(device, "ALC_ENUMERATION_EXT") == 0)
+    if (device == nullptr)
+        return false;
+
+    context = alcCreateContext(device, nullptr);
+    if (context == nullptr || alcMakeContextCurrent(context) == ALC_FALSE)
     {
-        st::io::log::debug("alcIsExtensionPresent(): enumeration not enabled");
+        close_device();
         return false;
     }
-    list_audio_devices(alcGetString(nullptr, ALC_DEVICE_SPECIFIER));
-    context = alcCreateContext(device, nullptr);
-    alcMakeContextCurrent(context);
     alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+
+    mixer_ready = MIX_Init();
+    if (!mixer_ready)
+        st::io::log::warn(fmt::format("Sound files cannot be decoded: {}", SDL_GetError()));
     return true;
 }
 
 st::bool_t
-st::audio::server::free()
+st::audio::server::free() noexcept
 {
-    // TODO: Make calls safe.
-    alcMakeContextCurrent(nullptr);
-    alcDestroyContext(context);
-    alcCloseDevice(device);
+    if (mixer_ready)
+        MIX_Quit();
+    mixer_ready = false;
+    close_device();
     return true;
+}
+
+st::bool_t
+st::audio::server::is_available() noexcept
+{
+    return device != nullptr;
 }

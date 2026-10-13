@@ -34,7 +34,7 @@ struct st::loading_screen::loading_screen_impl
         m_frame.set_closable(false);
         m_frame.set_movable(false);
         m_frame.set_resizable(false);
-        m_frame.set_collapsable(false);
+        m_frame.set_collapsible(false);
         m_label.set_parent(&m_frame);
         m_progress.set_parent(&m_frame);
     }

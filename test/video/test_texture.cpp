@@ -21,19 +21,19 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "video";
 
-    const fs::path good_empty = res_dir / "0001-good-empty.txt";
-    const fs::path good_text = res_dir / "0002-good-text.txt";
-    const fs::path good_tree = res_dir / "0005-good-tree";
-    const fs::path good_wav = res_dir / "0006-good-wav.wav";
-    const fs::path good_rgb8 = res_dir / "0009-good-rgb8.png";
-    const fs::path good_rgb16 = res_dir / "0010-good-rgb16.png";
-    const fs::path good_rgba8 = res_dir / "0011-good-rgba8.png";
-    const fs::path good_rgba16 = res_dir / "0012-good-rgba16.png";
+    const fs::path good_empty = res_dir / "good_empty.txt";
+    const fs::path good_text = res_dir / "good_text.txt";
+    const fs::path good_tree = res_dir / "good_tree";
+    const fs::path good_wav = res_dir / "good_wav.wav";
+    const fs::path good_rgb8 = res_dir / "good_rgb8.png";
+    const fs::path good_rgb16 = res_dir / "good_rgb16.png";
+    const fs::path good_rgba8 = res_dir / "good_rgba8.png";
+    const fs::path good_rgba16 = res_dir / "good_rgba16.png";
 
     // Never created on disk.
-    const fs::path bad_missing = res_dir / "0099-bad-missing.png";
+    const fs::path bad_missing = res_dir / "bad_missing.png";
 
     // Exceptions are disabled, so doctest's REQUIRE is unavailable.
 #define REQUIRE_LOADED(ptr)                                                                                            \
@@ -183,7 +183,7 @@ TEST_SUITE("video::texture")
     {
         CHECK_EQ(nullptr, st::video::texture::load_file(bad_missing));
         CHECK_EQ(nullptr, st::video::texture::load_file(fs::path{}));
-        CHECK_EQ(nullptr, st::video::texture::load_file(good_rgb8 / "0099-bad-below-file.png"));
+        CHECK_EQ(nullptr, st::video::texture::load_file(good_rgb8 / "bad_below_file.png"));
     }
 
     TEST_CASE_FIXTURE(texture_fixture, "load_file returns null for directories")

@@ -5,17 +5,15 @@
  * Date created : 27/08/2026
  */
 
+/**
+ * @file
+ * @brief Compiler attribute wrappers, class helpers and assertions.
+ */
+
 #ifndef STICKY_ST_MACROS_H
 #define STICKY_ST_MACROS_H
 
-#ifdef __cplusplus
-#include <cassert>
-#include <type_traits>
-#else // __cplusplus
-#include <assert.h>
-#endif // __cplusplus
-
-#include "os/popup.h"
+#include "st_types.h"
 
 #if !defined(__GNUC__) && !defined(__clang__)
 #error "Unsupported compiler: GCC or Clang required!"
@@ -37,6 +35,10 @@
 #endif // !__has_builtin(__builtin_choose_expr)
 #endif // __cplusplus
 
+/** @addtogroup core
+ *  @{
+ */
+
 #if __has_attribute(hot)
 #define ST_HOT __attribute__((hot))
 #else // __has_attribute(hot)
@@ -53,8 +55,8 @@
 #define ST_LIKELY(x) __builtin_expect(!!(x), 1)
 #define ST_UNLIKELY(x) __builtin_expect(!!(x), 0)
 #else // __has_builtin(__builtin_expect)
-#define ST_LIKELY(x)
-#define ST_UNLIKELY(x)
+#define ST_LIKELY(x) (x)
+#define ST_UNLIKELY(x) (x)
 #endif // __has_builtin(__builtin_expect)
 
 #if __has_attribute(aligned)
@@ -117,33 +119,63 @@
 #define ST_TYPEOF(x) __typeof__(x)
 #endif // __cplusplus
 
+/** Expands `x` and turns the result into a string literal. */
 #define ST_STRINGIFY(x) ST_STRINGIFY_IMPL(x)
 #define ST_STRINGIFY_IMPL(x) #x
 
-#define ST_EXTERN_PROTOTYPE(prototype) \
-    prototype; prototype
+/** Declares a function and opens its definition, so that C files with `-Wmissing-prototypes` need no header. */
+#define ST_EXTERN_PROTOTYPE(prototype)                                                                                 \
+    prototype;                                                                                                         \
+    prototype
 
 #ifdef __cplusplus
 // NOLINTBEGIN(bugprone-macro-parentheses)
-#define ST_DELETE_COPY_CTORS(classname) \
-    classname(const classname&) = delete; \
-    classname& operator=(const classname&) = delete
-#define ST_DELETE_MOVE_CTORS(classname) \
-    classname(classname&&) = delete; \
-    classname& operator=(classname&&) = delete
+/** Deletes the copy constructor and copy assignment operator of `classname`. */
+#define ST_DELETE_COPY_CTORS(classname)                                                                                \
+    classname(const classname &) = delete;                                                                             \
+    classname &operator=(const classname &) = delete
+/** Deletes the move constructor and move assignment operator of `classname`. */
+#define ST_DELETE_MOVE_CTORS(classname)                                                                                \
+    classname(classname &&) = delete;                                                                                  \
+    classname &operator=(classname &&) = delete
 // NOLINTEND(bugprone-macro-parentheses)
 #endif // __cplusplus
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief Reports a failed assertion and aborts the program.
+ *
+ * Called by #ST_ASSERT, not intended to be called directly.
+ */
+ST_NORETURN void st_assert_fail(const st_char *expression,
+                                const st_char *file,
+                                st_int32       line);
+
+#ifdef __cplusplus
+}
+#endif
+
+/**
+ * @brief Checks an invariant that only a programming error can break.
+ *
+ * In debug builds a failed check reports the expression and aborts. In release builds the expression is not evaluated.
+ * Conditions that depend on input, files or the system must be handled and reported instead.
+ */
 #ifdef NDEBUG
-#define ST_ASSERT(expr) ((void)(expr))
+#define ST_ASSERT(expr) ((void) 0)
 #else // NDEBUG
-#define ST_ASSERT(expr) \
-    if (!(expr)) \
-        st_os_popup_error( \
-            "Assertion failed", \
-            "Expression failed in " __FILE__ \
-            " on line " ST_STRINGIFY(__LINE__) \
-            ":\n\n" #expr);
+#define ST_ASSERT(expr)                                                                                                \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (ST_UNLIKELY(!(expr)))                                                                                      \
+            st_assert_fail(#expr, __FILE__, __LINE__);                                                                 \
+    }                                                                                                                  \
+    while (0)
 #endif // NDEBUG
+
+/** @} */
 
 #endif // STICKY_ST_MACROS_H

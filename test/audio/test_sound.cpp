@@ -18,17 +18,18 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "audio";
 
-    const fs::path good_empty = res_dir / "0001-good-empty.txt";
-    const fs::path good_text = res_dir / "0002-good-text.txt";
-    const fs::path good_multi = res_dir / "0003-good-multi.tar.gz";
-    const fs::path good_tree = res_dir / "0005-good-tree";
-    const fs::path good_wav = res_dir / "0006-good-wav.wav";
-    const fs::path good_modfile = res_dir / "0007-good-modfile.it";
+    const fs::path good_empty = res_dir / "good_empty.txt";
+    const fs::path good_text = res_dir / "good_text.txt";
+    const fs::path good_multi = res_dir / "good_multi.tar.gz";
+    const fs::path good_tree = res_dir / "good_tree";
+    const fs::path good_wav = res_dir / "good_wav.wav";
+    const fs::path good_mono = res_dir / "good_mono.wav";
+    const fs::path good_modfile = res_dir / "good_modfile.it";
 
     // Never created on disk.
-    const fs::path bad_missing = res_dir / "0099-bad-missing.wav";
+    const fs::path bad_missing = res_dir / "bad_missing.wav";
 
     struct sound_fixture
     {
@@ -42,7 +43,10 @@ TEST_SUITE("audio::sound")
 {
     TEST_CASE_FIXTURE(sound_fixture, "load_file loads WAV files")
     {
-        for (const fs::path &path : {good_wav, })
+        for (const fs::path &path : {
+                 good_wav,
+                 good_mono,
+             })
         {
             const std::shared_ptr<st::audio::sound> sound = st::audio::sound::load_file(path);
 
@@ -56,6 +60,23 @@ TEST_SUITE("audio::sound")
         const std::shared_ptr<st::audio::sound> sound = st::audio::sound::load_file(good_modfile);
 
         CHECK_NE(nullptr, sound);
+        CHECK_EQ(AL_NO_ERROR, alGetError());
+    }
+
+    TEST_CASE_FIXTURE(sound_fixture, "mono files stay mono and other files decode as stereo")
+    {
+        const std::shared_ptr<st::audio::sound> mono = st::audio::sound::load_file(good_mono);
+        const std::shared_ptr<st::audio::sound> stereo = st::audio::sound::load_file(good_wav);
+        const std::shared_ptr<st::audio::sound> module = st::audio::sound::load_file(good_modfile);
+        CHECK_NE(nullptr, mono);
+        CHECK_NE(nullptr, stereo);
+        CHECK_NE(nullptr, module);
+        if (!mono || !stereo || !module)
+            return;
+
+        CHECK_EQ(1, mono->channels());
+        CHECK_EQ(2, stereo->channels());
+        CHECK_EQ(2, module->channels());
         CHECK_EQ(AL_NO_ERROR, alGetError());
     }
 
@@ -73,7 +94,7 @@ TEST_SUITE("audio::sound")
     {
         CHECK_EQ(nullptr, st::audio::sound::load_file(bad_missing));
         CHECK_EQ(nullptr, st::audio::sound::load_file(fs::path{}));
-        CHECK_EQ(nullptr, st::audio::sound::load_file(good_text / "0099-bad-below-file.wav"));
+        CHECK_EQ(nullptr, st::audio::sound::load_file(good_text / "bad_below_file.wav"));
     }
 
     TEST_CASE_FIXTURE(sound_fixture, "load_file returns null for directories")

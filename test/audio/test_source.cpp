@@ -21,12 +21,13 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "audio";
 
     // About one second of stereo 44.1kHz PCM.
-    const fs::path good_wav = res_dir / "0006-good-wav.wav";
+    const fs::path good_wav = res_dir / "good_wav.wav";
+    const fs::path good_mono = res_dir / "good_mono.wav";
     // Around 35 seconds long: only ever played briefly, then stopped.
-    const fs::path good_modfile = res_dir / "0007-good-modfile.it";
+    const fs::path good_modfile = res_dir / "good_modfile.it";
 
     constexpr st::uint32 clip_length_ms = 1000;
     constexpr st::uint32 poll_step_ms = 50;
@@ -45,7 +46,7 @@ namespace
             alGetError();
             CHECK_NE(nullptr, piano);
             if (piano)
-                CHECK(source.select(*piano));
+                CHECK(source.set_sound(piano));
         }
     };
 
@@ -83,6 +84,20 @@ TEST_SUITE("audio::source")
         CHECK(source.is_playing());
         CHECK_FALSE(source.is_paused());
         CHECK_FALSE(source.is_stopped());
+        CHECK_EQ(AL_NO_ERROR, alGetError());
+    }
+
+    TEST_CASE_FIXTURE(source_fixture, "mono sounds play with and without spatialisation")
+    {
+        const std::shared_ptr<st::audio::sound> mono = st::audio::sound::load_file(good_mono);
+        CHECK_NE(nullptr, mono);
+        CHECK(source.set_sound(mono));
+        CHECK(source.set_loop(true));
+
+        CHECK(source.play());
+        CHECK(source.is_playing());
+        CHECK(source.set_spatial(false));
+        CHECK(source.is_playing());
         CHECK_EQ(AL_NO_ERROR, alGetError());
     }
 
@@ -159,27 +174,27 @@ TEST_SUITE("audio::source")
         CHECK(source.is_stopped());
     }
 
-    TEST_CASE_FIXTURE(source_fixture, "select swaps the sound a source plays")
+    TEST_CASE_FIXTURE(source_fixture, "set_sound swaps the sound a source plays")
     {
         const std::shared_ptr<st::audio::sound> other = st::audio::sound::load_file(good_wav);
         CHECK_NE(nullptr, other);
         if (!other)
             return;
 
-        CHECK(source.select(*other));
+        CHECK(source.set_sound(other));
         CHECK(source.play());
         CHECK(source.is_playing());
 
         // Detach the sound that is about to go out of scope.
         CHECK(source.stop());
-        CHECK(source.select(*piano));
+        CHECK(source.set_sound(piano));
         CHECK_EQ(AL_NO_ERROR, alGetError());
     }
 
     TEST_CASE_FIXTURE(source_fixture, "sources play the same sound independently")
     {
         st::audio::source second;
-        CHECK(second.select(*piano));
+        CHECK(second.set_sound(piano));
 
         CHECK(source.play());
         CHECK(source.is_playing());
@@ -235,7 +250,7 @@ TEST_SUITE("audio::source")
             return;
 
         st::audio::source module_source;
-        CHECK(module_source.select(*module));
+        CHECK(module_source.set_sound(module));
         CHECK(module_source.play());
         CHECK(module_source.is_playing());
 

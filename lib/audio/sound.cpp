@@ -5,157 +5,138 @@
  * Date created : 21/08/2026
  */
 
-#include "st_macros.h"
+#include <algorithm>
+
+#include <AL/al.h>
+#include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
+#include <fmt/format.h>
+
+#include "audio/server.h"
 #include "audio/sound.h"
 #include "io/log.h"
 
-#include <SDL3/SDL.h>
-#include <SDL3_mixer/SDL_mixer.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-
-static st_bool
-load_mod_to_openal_buffer(const std::filesystem::path &path, ALuint *out_buffer)
+namespace
 {
-    MIX_AudioDecoder *decoder = nullptr;
-    SDL_AudioSpec spec;
-    SDL_AudioSpec decoder_spec;
-    void *pcm = nullptr;
-    st::size pcm_size = 0;
-    st::size pcm_capacity = 0;
-    ALuint buffer = 0;
+    constexpr st::int32 sample_rate = 44100;
+    constexpr st::int32 chunk_size = 64 * 1024;
 
-    if (!MIX_Init())
-        return false;
-
-    /*
-     * This causes SDL3_mixer to select the appropriate decoder,
-     * which should be libxmp for MOD files when XMP support is enabled.
-     */
-    decoder = MIX_CreateAudioDecoder(path.u8string().c_str(), 0);
-    if (decoder == nullptr)
-        goto fail;
-
-    /*
-     * We don't actually need the source format, but this can be useful
-     * for debugging.
-     */
-    if (!MIX_GetAudioDecoderFormat(decoder, &decoder_spec))
-        goto fail;
-
-    /*
-     * Ask SDL3_mixer to give us exactly the PCM format OpenAL wants.
-     */
-    SDL_zero(spec);
-    spec.format = SDL_AUDIO_S16;
-    spec.channels = 2;
-    spec.freq = 44100;
-
-    /*
-     * Decode in chunks because the final size of the MOD isn't
-     * necessarily known to us up front.
-     */
-    for (;;)
+    struct pcm_data
     {
-        const st::uint32 chunk_size = 64 * 1024;
-        const st::size required = pcm_size + chunk_size;
+        void     *data = nullptr;
+        st::size  size = 0;
+        st::uint8 channels = 0;
+    };
 
-        if (required > pcm_capacity)
+    // Decodes the whole file to 16-bit PCM, keeping mono files mono and mixing anything else down to stereo, which
+    // matches AL_FORMAT_MONO16 and AL_FORMAT_STEREO16. The caller frees the returned data with SDL_free.
+    [[nodiscard]] pcm_data decode_file(const std::filesystem::path &path) noexcept
+    {
+        MIX_AudioDecoder *decoder = MIX_CreateAudioDecoder(path.u8string().c_str(), 0);
+        if (decoder == nullptr)
+            return {};
+
+        SDL_AudioSpec spec;
+        SDL_zero(spec);
+        if (!MIX_GetAudioDecoderFormat(decoder, &spec))
         {
-            st::size new_capacity = (pcm_capacity != 0u) ? pcm_capacity * 2 : chunk_size;
+            MIX_DestroyAudioDecoder(decoder);
+            return {};
+        }
+        const st::uint8 channels = spec.channels == 1 ? 1 : 2;
+        spec.format = SDL_AUDIO_S16;
+        spec.channels = channels;
+        spec.freq = sample_rate;
 
-            while (new_capacity < required)
-                new_capacity *= 2;
+        void    *pcm = nullptr;
+        st::size capacity = 0;
+        st::size size = 0;
 
-            void *new_pcm = SDL_realloc(pcm, new_capacity);
-            if (new_pcm == nullptr)
-                goto fail;
+        // The decoded size is not known up front, so the buffer grows as chunks arrive. Zero means end of file.
+        for (;;)
+        {
+            const st::size required = size + chunk_size;
+            if (required > capacity)
+            {
+                const st::size new_capacity = capacity == 0 ? required : std::max(capacity * 2, required);
+                void          *grown = SDL_realloc(pcm, new_capacity);
+                if (grown == nullptr)
+                    break;
+                pcm = grown;
+                capacity = new_capacity;
+            }
 
-            pcm = new_pcm;
-            pcm_capacity = new_capacity;
+            const st::int32 decoded = MIX_DecodeAudio(decoder, static_cast<Uint8 *>(pcm) + size, chunk_size, &spec);
+            if (decoded < 0)
+                break;
+            if (decoded == 0)
+            {
+                MIX_DestroyAudioDecoder(decoder);
+                return {pcm, size, channels};
+            }
+            size += static_cast<st::size>(decoded);
         }
 
-        const st_int32 decoded = MIX_DecodeAudio(
-            decoder,
-            static_cast<Uint8 *>(pcm) + pcm_size,
-            chunk_size,
-            &spec
-        );
-
-        if (decoded < 0)
-            goto fail;
-
-        pcm_size += decoded;
-
-        /*
-         * SDL3_mixer defines zero as end-of-file.
-         */
-        if (decoded == 0)
-            break;
+        MIX_DestroyAudioDecoder(decoder);
+        SDL_free(pcm);
+        return {};
     }
 
-    MIX_DestroyAudioDecoder(decoder);
-    decoder = nullptr;
+    [[nodiscard]] ALuint upload(const pcm_data &pcm) noexcept
+    {
+        // Clears errors left by earlier calls, so that only this upload is checked.
+        static_cast<void>(alGetError());
 
-    /*
-     * Now pcm contains:
-     *
-     *   S16
-     *   stereo
-     *   44100 Hz
-     *
-     * exactly what AL_FORMAT_STEREO16 expects.
-     */
-    alGenBuffers(1, &buffer);
+        ALuint buffer = 0;
+        alGenBuffers(1, &buffer);
+        if (alGetError() != AL_NO_ERROR)
+            return 0;
 
-    if (alGetError() != AL_NO_ERROR)
-        goto fail;
+        const ALenum format = pcm.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+        alBufferData(buffer, format, pcm.data, static_cast<ALsizei>(pcm.size), sample_rate);
+        if (alGetError() != AL_NO_ERROR)
+        {
+            alDeleteBuffers(1, &buffer);
+            return 0;
+        }
+        return buffer;
+    }
+} // namespace
 
-    alBufferData(
-        buffer,
-        AL_FORMAT_STEREO16,
-        pcm,
-        static_cast<ALsizei>(pcm_size),
-        44100
-    );
+st::audio::sound::sound(st::uint32 buffer) noexcept : m_buffer(buffer) {}
 
-    if (alGetError() != AL_NO_ERROR)
-        goto fail;
-
-    SDL_free(pcm);
-
-    *out_buffer = buffer;
-    return true;
-
-fail:
-    if (buffer != 0)
-        alDeleteBuffers(1, &buffer);
-
-    if (decoder != nullptr)
-        MIX_DestroyAudioDecoder(decoder);
-
-    SDL_free(pcm);
-
-    return false;
-}
-
-st::audio::sound::sound(st::uint32 buffer) noexcept
-    : m_buffer(buffer)
-{}
-
-st::audio::sound::~sound() noexcept
-{
-    alDeleteBuffers(1, &m_buffer);
-}
+st::audio::sound::~sound() noexcept { alDeleteBuffers(1, &m_buffer); }
 
 std::shared_ptr<st::audio::sound>
 st::audio::sound::load_file(const std::filesystem::path &path) noexcept
 {
-    ALuint buffer;
-    if (load_mod_to_openal_buffer(path, &buffer))
+    if (!st::audio::server::is_available())
     {
-        sound *ptr = new sound(buffer);
-        return std::shared_ptr<sound>(ptr);
+        st::io::log::error(fmt::format("Cannot load sound '{}' without an audio device.", path.u8string()));
+        return nullptr;
     }
-    return nullptr;
+
+    const pcm_data pcm = decode_file(path);
+    if (pcm.data == nullptr)
+    {
+        st::io::log::error(fmt::format("Failed to decode sound '{}': {}", path.u8string(), SDL_GetError()));
+        return nullptr;
+    }
+
+    const ALuint buffer = upload(pcm);
+    SDL_free(pcm.data);
+    if (buffer == 0)
+    {
+        st::io::log::error(fmt::format("Failed to upload sound '{}' to the audio device.", path.u8string()));
+        return nullptr;
+    }
+    return std::shared_ptr<sound>(new sound(buffer));
+}
+
+st::uint8
+st::audio::sound::channels() const noexcept
+{
+    ALint channels = 0;
+    alGetBufferi(m_buffer, AL_CHANNELS, &channels);
+    return static_cast<st::uint8>(channels);
 }

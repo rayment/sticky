@@ -33,8 +33,8 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
-    const fs::path lua_dir = res_dir / "0008-lua";
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "lua";
+    const fs::path lua_dir = res_dir / "scripts";
 
     void capture_into(const std::string  &logger_name,
                       std::ostringstream &output)
@@ -168,7 +168,7 @@ namespace
         return names;
     }
 
-    // Mirrors doc/lua/pages/api. The `st.init` page is covered by the mod tests.
+    // Mirrors doc/lua/api. The `st.init` page is covered by the mod tests.
     const std::set<std::string> documented_names = {
         "_G.require",
         "_G.st",
@@ -186,11 +186,11 @@ namespace
         "_G.st.audio.source.pause",
         "_G.st.audio.source.play",
         "_G.st.audio.source.resume",
-        "_G.st.audio.source.select",
         "_G.st.audio.source.set_gain",
         "_G.st.audio.source.set_loop",
         "_G.st.audio.source.set_pitch",
         "_G.st.audio.source.set_position",
+        "_G.st.audio.source.set_sound",
         "_G.st.audio.source.set_spatial",
         "_G.st.audio.source.set_velocity",
         "_G.st.audio.source.stop",
@@ -216,7 +216,7 @@ namespace
         "_G.st.gui.frame.register_on_close",
         "_G.st.gui.frame.set_auto_resize",
         "_G.st.gui.frame.set_closable",
-        "_G.st.gui.frame.set_collapsable",
+        "_G.st.gui.frame.set_collapsible",
         "_G.st.gui.frame.set_min_size",
         "_G.st.gui.frame.set_movable",
         "_G.st.gui.frame.set_parent",
@@ -342,20 +342,20 @@ namespace
         "_G.st.gui.root_component.show",
         "_G.st.gui.textedit",
         "_G.st.gui.textedit.close",
-        "_G.st.gui.textedit.has_horizontal_scrollbar",
         "_G.st.gui.textedit.has_vertical_scrollbar",
         "_G.st.gui.textedit.is_closed",
         "_G.st.gui.textedit.is_enabled",
+        "_G.st.gui.textedit.is_word_wrapped",
         "_G.st.gui.textedit.is_masked",
         "_G.st.gui.textedit.is_read_only",
         "_G.st.gui.textedit.set_enabled",
-        "_G.st.gui.textedit.set_horizontal_scrollbar",
         "_G.st.gui.textedit.set_masked",
         "_G.st.gui.textedit.set_parent",
         "_G.st.gui.textedit.set_read_only",
         "_G.st.gui.textedit.set_size",
         "_G.st.gui.textedit.set_text",
         "_G.st.gui.textedit.set_vertical_scrollbar",
+        "_G.st.gui.textedit.set_word_wrap",
         "_G.st.gui.textedit.show",
         "_G.st.gui.textedit.text",
         "_G.st.util",
@@ -442,24 +442,24 @@ namespace
 
     // An empty message only checks that something was reported.
     const bad_script bad_scripts[] = {
-        {"0101-bad-syntax.lua", "unexpected symbol"},
-        {"0102-bad-runtime-error.lua", "runtime failure"},
-        {"0103-bad-error-table.lua", "error object is a table value"},
-        {"0104-bad-nil-call.lua", "undefined_function"},
-        {"0105-bad-assert.lua", "assertion message"},
-        {"0106-bad-stack-overflow.lua", "stack overflow"},
-        {"0107-bad-require-missing.lua", "could not be resolved"},
-        {"0108-bad-require-syntax.lua", "expected"},
-        {"0109-bad-require-error.lua", "module failure"},
-        {"0110-bad-require-cycle.lua", ""},
-        {"0111-bad-require-invalid.lua", "invalid module name"},
-        {"0112-bad-not-lua.txt", ""},
-        {"0113-bad-bytecode.luac", "binary chunk"},
-        {"0114-bad-error-meta.lua", ""},
-        {"0115-bad-error-in-coroutine.lua", "inside coroutine"},
-        {"0116-bad-out-of-memory.lua", ""},
-        {"0117-bad-valid-bytecode.luac", "binary chunk"},
-        {"0118-bad-require-bytecode.lua", "binary chunk"},
+        {"bad_syntax.lua", "unexpected symbol"},
+        {"bad_runtime_error.lua", "runtime failure"},
+        {"bad_error_table.lua", "error object is a table value"},
+        {"bad_nil_call.lua", "undefined_function"},
+        {"bad_assert.lua", "assertion message"},
+        {"bad_stack_overflow.lua", "stack overflow"},
+        {"bad_require_missing.lua", "could not be resolved"},
+        {"bad_require_syntax.lua", "expected"},
+        {"bad_require_error.lua", "module failure"},
+        {"bad_require_cycle.lua", ""},
+        {"bad_require_invalid.lua", "invalid module name"},
+        {"bad_not_lua.txt", ""},
+        {"bad_bytecode.luac", "binary chunk"},
+        {"bad_error_meta.lua", ""},
+        {"bad_error_in_coroutine.lua", "inside coroutine"},
+        {"bad_out_of_memory.lua", ""},
+        {"bad_valid_bytecode.luac", "binary chunk"},
+        {"bad_require_bytecode.lua", "binary chunk"},
     };
 
     const bad_function bad_functions[] = {
@@ -506,7 +506,7 @@ namespace
             }
 
             symlinks_available = true;
-            st::test::make_symlink(fs::canonical(lua_dir / "0002-good-print.lua"), escape_link, false, ec);
+            st::test::make_symlink(fs::canonical(lua_dir / "good_print.lua"), escape_link, false, ec);
             st::test::make_symlink(fs::canonical(lua_dir), escape_dir_link, true, ec);
             st::test::make_symlink(fs::canonical(lua_dir / "mod_good.lua"), module_link, false, ec);
         }
@@ -546,12 +546,12 @@ TEST_SUITE("lua::runtime")
 {
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file runs an empty script")
     {
-        CHECK(runtime.execute_file("0001-good-empty.lua"));
+        CHECK(runtime.execute_file("good_empty.lua"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file runs a script and print reaches the log")
     {
-        CHECK(runtime.execute_file("0002-good-print.lua"));
+        CHECK(runtime.execute_file("good_print.lua"));
 
         CHECK(contains("[test_lua]"));
         CHECK(contains("[info] hello from lua"));
@@ -559,56 +559,56 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file accepts relative and absolute paths inside the root")
     {
-        CHECK(runtime.execute_file("0002-good-print.lua"));
-        CHECK(runtime.execute_file("./0002-good-print.lua"));
-        CHECK(runtime.execute_file("sub/0001-good-nested.lua"));
-        CHECK(runtime.execute_file("sub/../0002-good-print.lua"));
-        CHECK(runtime.execute_file("../0008-lua/0002-good-print.lua"));
-        CHECK(runtime.execute_file(lua_dir / "0002-good-print.lua"));
-        CHECK(runtime.execute_file(lua_dir / "sub" / "0001-good-nested.lua"));
+        CHECK(runtime.execute_file("good_print.lua"));
+        CHECK(runtime.execute_file("./good_print.lua"));
+        CHECK(runtime.execute_file("sub/good_nested.lua"));
+        CHECK(runtime.execute_file("sub/../good_print.lua"));
+        CHECK(runtime.execute_file("../scripts/good_print.lua"));
+        CHECK(runtime.execute_file(lua_dir / "good_print.lua"));
+        CHECK(runtime.execute_file(lua_dir / "sub" / "good_nested.lua"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file rejects paths that are not files inside the root")
     {
-        CHECK_FALSE(runtime.execute_file("0099-bad-missing.lua"));
+        CHECK_FALSE(runtime.execute_file("bad_missing.lua"));
         CHECK_FALSE(runtime.execute_file(""));
         CHECK_FALSE(runtime.execute_file("."));
         CHECK_FALSE(runtime.execute_file("sub"));
-        CHECK_FALSE(runtime.execute_file("../0002-good-text.txt"));
-        CHECK_FALSE(runtime.execute_file("sub/../../0002-good-text.txt"));
+        CHECK_FALSE(runtime.execute_file("../good_text.txt"));
+        CHECK_FALSE(runtime.execute_file("sub/../../good_text.txt"));
         CHECK_FALSE(runtime.execute_file(res_dir));
-        CHECK_FALSE(runtime.execute_file(res_dir / "0002-good-text.txt"));
-        CHECK_FALSE(runtime.execute_file(lua_dir.root_path() / "0099-bad-missing.lua"));
+        CHECK_FALSE(runtime.execute_file(res_dir / "good_text.txt"));
+        CHECK_FALSE(runtime.execute_file(lua_dir.root_path() / "bad_missing.lua"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file does not run a rejected script")
     {
-        CHECK_FALSE(runtime.execute_file("../0099-bad-missing.lua"));
+        CHECK_FALSE(runtime.execute_file("../bad_missing.lua"));
         CHECK_FALSE(contains("[error]"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file can run the same script repeatedly")
     {
         for (st::int32 i = 0; i < 3; ++i)
-            CHECK(runtime.execute_file("0002-good-print.lua"));
+            CHECK(runtime.execute_file("good_print.lua"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_file reports failures and keeps the runtime usable")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         for (const bad_script &script : bad_scripts)
             check_script_fails(script);
 
         clear_output();
-        CHECK(runtime.execute_file("0002-good-print.lua"));
+        CHECK(runtime.execute_file("good_print.lua"));
         CHECK(runtime.execute_function("on_counter"));
         CHECK(contains("counter 1"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "a runtime error includes a stack traceback")
     {
-        CHECK_FALSE(runtime.execute_file("0102-bad-runtime-error.lua"));
+        CHECK_FALSE(runtime.execute_file("bad_runtime_error.lua"));
 
         CHECK(contains("before error"));
         CHECK(contains("runtime failure"));
@@ -620,25 +620,42 @@ TEST_SUITE("lua::runtime")
     {
         const std::string text = "h\xc3\xa9llo \xe2\x9c\x93 \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e";
 
-        CHECK(runtime.execute_file("0008-good-utf8.lua"));
+        CHECK(runtime.execute_file("good_utf8.lua"));
         CHECK(contains(text));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "a byte order mark and a first line starting with '#' are skipped")
+    {
+        CHECK(runtime.execute_file("good_bom.lua"));
+        CHECK(contains("bom ok"));
+
+        CHECK_FALSE(runtime.execute_file("good_shebang.lua"));
+        CHECK(contains("shebang ok"));
+        CHECK(contains("good_shebang.lua:3: line check"));
+    }
+
+    TEST_CASE_FIXTURE(runtime_fixture, "errors name the file relative to the Lua directory")
+    {
+        CHECK_FALSE(runtime.execute_file("bad_syntax.lua"));
+        CHECK(contains("bad_syntax.lua:1:"));
+        CHECK_FALSE(contains(lua_dir.generic_u8string()));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "scripts cannot break print or the runtime by overwriting globals")
     {
-        CHECK(runtime.execute_file("0009-good-tamper.lua"));
+        CHECK(runtime.execute_file("good_tamper.lua"));
         CHECK(contains("print survives tampering"));
 
         CHECK(runtime.execute_function("on_tampered"));
         CHECK(contains("function survives tampering"));
 
-        CHECK_FALSE(runtime.execute_file("0102-bad-runtime-error.lua"));
+        CHECK_FALSE(runtime.execute_file("bad_runtime_error.lua"));
         CHECK(contains("runtime failure"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "print joins its arguments with tabs")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_function("on_print_values"));
 
         CHECK(contains("[info] a\t1\t2.5\ttrue\tnil"));
@@ -646,13 +663,13 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "print with no arguments logs an empty line")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_function("on_print_empty"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "print honours __tostring")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_function("on_print_meta"));
 
         CHECK(contains("custom tostring"));
@@ -660,19 +677,19 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "require loads cached modules from the root")
     {
-        CHECK(runtime.execute_file("0006-good-require.lua"));
+        CHECK(runtime.execute_file("good_require.lua"));
         CHECK(contains("require ok"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "require rejects invalid and unresolvable module names")
     {
-        CHECK(runtime.execute_file("0007-good-require-invalid.lua"));
+        CHECK(runtime.execute_file("good_require_invalid.lua"));
         CHECK(contains("require invalid ok"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function calls a global function")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_function("on_start"));
 
         CHECK(contains("on_start called"));
@@ -680,7 +697,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function keeps state between calls")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK(runtime.execute_function("on_counter"));
         CHECK(runtime.execute_function("on_counter"));
@@ -691,7 +708,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function converts every argument type")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK(runtime.execute_function(
             "on_args",
@@ -702,7 +719,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function passes floats such as delta time")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_function("on_step", {st::float64{0.25}}));
 
         CHECK(contains("on_step 0.25"));
@@ -710,7 +727,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function fails when the script rejects an argument")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK_FALSE(runtime.execute_function("on_step", {st::int64{1}}));
         CHECK(contains("dt must be a float"));
@@ -718,7 +735,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function passes nil arguments positionally")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK(runtime.execute_function("on_arg_count"));
         CHECK(contains("arg_count 0"));
@@ -732,7 +749,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function keeps string length with embedded NULs")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK(runtime.execute_function("on_string_length", {std::string_view{"a\0b", 3}}));
         CHECK(contains("string_length 3"));
@@ -745,7 +762,7 @@ TEST_SUITE("lua::runtime")
     {
         CHECK_FALSE(runtime.execute_function("on_start"));
 
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         CHECK_FALSE(runtime.execute_function("on_missing"));
         CHECK_FALSE(runtime.execute_function(""));
@@ -759,7 +776,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function reports errors and keeps the runtime usable")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         for (const bad_function &function : bad_functions)
             check_function_fails(function);
@@ -771,7 +788,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "execute_function survives many successful and failing calls")
     {
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
 
         for (st::int32 i = 0; i < 1000; ++i)
             CHECK(runtime.execute_function("on_noop"));
@@ -817,7 +834,7 @@ TEST_SUITE("lua::runtime")
         CHECK(runtime.execute_function("on_string"));
         CHECK(contains("shared 5"));
 
-        CHECK(runtime.execute_file("0003-good-functions.lua"));
+        CHECK(runtime.execute_file("good_functions.lua"));
         CHECK(runtime.execute_string("on_counter()"));
         CHECK(contains("counter 1"));
     }
@@ -860,14 +877,14 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "valid bytecode is rejected and never executed")
     {
-        CHECK_FALSE(runtime.execute_file("0117-bad-valid-bytecode.luac"));
+        CHECK_FALSE(runtime.execute_file("bad_valid_bytecode.luac"));
         CHECK(contains("attempt to load a binary chunk"));
         CHECK_FALSE(contains("bytecode executed"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "valid bytecode is rejected as a required module")
     {
-        CHECK_FALSE(runtime.execute_file("0118-bad-require-bytecode.lua"));
+        CHECK_FALSE(runtime.execute_file("bad_require_bytecode.lua"));
         CHECK(contains("attempt to load a binary chunk"));
 
         CHECK(runtime.execute_string("assert(bytecode_module_ran == nil)"));
@@ -875,7 +892,7 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "a metatable on the globals cannot crash execute_function")
     {
-        CHECK(runtime.execute_file("0010-good-global-metatable.lua"));
+        CHECK(runtime.execute_file("good_global_metatable.lua"));
 
         CHECK(runtime.execute_function("on_after_metatable"));
         CHECK(contains("function found despite metatable"));
@@ -905,7 +922,7 @@ TEST_SUITE("lua::runtime")
             st::lua::runtime runtime{"test_lua_close", lua_dir};
             capture_into("test_lua_close", output);
 
-            CHECK(runtime.execute_file("0011-good-finalizers.lua"));
+            CHECK(runtime.execute_file("good_finalizers.lua"));
             CHECK_EQ(std::string::npos, output.str().find("finalizer ran"));
         }
 
@@ -920,7 +937,7 @@ TEST_SUITE("lua::runtime")
         capture_into("test_lua_survivor_log", output);
         {
             st::lua::runtime short_lived{"test_lua_short_log", lua_dir};
-            CHECK(short_lived.execute_file("0011-good-finalizers.lua"));
+            CHECK(short_lived.execute_file("good_finalizers.lua"));
         }
 
         CHECK(survivor.execute_function("on_missing") == false);
@@ -938,11 +955,11 @@ TEST_SUITE("lua::runtime")
         capture_into("test_lua_a", output_a);
         capture_into("test_lua_b", output_b);
 
-        CHECK(a.execute_file("0003-good-functions.lua"));
+        CHECK(a.execute_file("good_functions.lua"));
         CHECK(a.execute_function("on_noop"));
         CHECK_FALSE(b.execute_function("on_noop"));
 
-        CHECK(b.execute_file("0003-good-functions.lua"));
+        CHECK(b.execute_file("good_functions.lua"));
         CHECK(a.execute_function("on_counter"));
         CHECK(a.execute_function("on_counter"));
         CHECK(b.execute_function("on_counter"));
@@ -962,10 +979,10 @@ TEST_SUITE("lua::runtime")
         capture_into("test_lua_survivor", output);
         {
             st::lua::runtime short_lived{"test_lua_short", lua_dir};
-            CHECK(short_lived.execute_file("0002-good-print.lua"));
+            CHECK(short_lived.execute_file("good_print.lua"));
         }
 
-        CHECK(survivor.execute_file("0002-good-print.lua"));
+        CHECK(survivor.execute_file("good_print.lua"));
         CHECK_NE(std::string::npos, output.str().find("hello from lua"));
     }
 
@@ -985,7 +1002,7 @@ TEST_SUITE("lua::runtime")
 
         st::lua::runtime runtime{"test_lua_link_root", escape_dir_link};
 
-        CHECK(runtime.execute_file("0002-good-print.lua"));
+        CHECK(runtime.execute_file("good_print.lua"));
         CHECK(runtime.execute_file("main.lua"));
     }
 
@@ -1005,12 +1022,12 @@ TEST_SUITE("lua::runtime")
     {
         SKIP_WITHOUT_SYMLINKS();
 
-        CHECK(fs::exists(escape_dir_link / "0002-good-print.lua"));
+        CHECK(fs::exists(escape_dir_link / "good_print.lua"));
 
         st::lua::runtime runtime{"test_lua_link", root};
 
-        CHECK_FALSE(runtime.execute_file("escape_dir/0002-good-print.lua"));
-        CHECK_FALSE(runtime.execute_file(root / "escape_dir" / "0002-good-print.lua"));
+        CHECK_FALSE(runtime.execute_file("escape_dir/good_print.lua"));
+        CHECK_FALSE(runtime.execute_file(root / "escape_dir" / "good_print.lua"));
     }
 
     TEST_CASE_FIXTURE(link_fixture, "require rejects modules reached through symlinks that escape the root")
@@ -1028,10 +1045,10 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE("a runtime with an unresolvable root fails to load anything")
     {
-        st::lua::runtime runtime{"test_lua_no_root", res_dir / "0099-bad-missing-dir"};
+        st::lua::runtime runtime{"test_lua_no_root", res_dir / "bad_missing_dir"};
 
-        CHECK_FALSE(runtime.execute_file("0002-good-print.lua"));
-        CHECK_FALSE(runtime.execute_file(lua_dir / "0002-good-print.lua"));
+        CHECK_FALSE(runtime.execute_file("good_print.lua"));
+        CHECK_FALSE(runtime.execute_file(lua_dir / "good_print.lua"));
         CHECK_FALSE(runtime.execute_string("require('mod_good')"));
         CHECK(runtime.execute_string("x = 1"));
     }
@@ -1059,13 +1076,13 @@ TEST_SUITE("lua::runtime")
 
     TEST_CASE_FIXTURE(runtime_fixture, "the standard libraries work")
     {
-        CHECK(runtime.execute_file("0004-good-stdlib.lua"));
+        CHECK(runtime.execute_file("good_stdlib.lua"));
         CHECK(contains("stdlib ok"));
     }
 
     TEST_CASE_FIXTURE(runtime_fixture, "unsafe globals and SWIG internals are not available")
     {
-        CHECK(runtime.execute_file("0005-good-sandbox.lua"));
+        CHECK(runtime.execute_file("good_sandbox.lua"));
         CHECK(contains("sandbox ok"));
     }
 

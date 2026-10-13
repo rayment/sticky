@@ -7,6 +7,8 @@
 
 #include <system_error>
 
+#include <SDL3/SDL.h>
+
 #include "io/filesystem.h"
 
 namespace
@@ -43,7 +45,8 @@ st::io::filesystem::exists(const std::filesystem::path &path) noexcept
     if (is_dangling_symlink(path))
         return false;
 
-    return std::filesystem::exists(path);
+    std::error_code ec;
+    return std::filesystem::exists(path, ec) && !ec;
 }
 
 st::bool_t
@@ -52,7 +55,8 @@ st::io::filesystem::is_directory(const std::filesystem::path &path) noexcept
     if (is_dangling_symlink(path))
         return false;
 
-    return std::filesystem::is_directory(path);
+    std::error_code ec;
+    return std::filesystem::is_directory(path, ec) && !ec;
 }
 
 st::bool_t
@@ -61,31 +65,32 @@ st::io::filesystem::is_file(const std::filesystem::path &path) noexcept
     if (is_dangling_symlink(path))
         return false;
 
-    return std::filesystem::is_regular_file(path);
+    std::error_code ec;
+    return std::filesystem::is_regular_file(path, ec) && !ec;
 }
 
 std::string
 st::io::filesystem::basename(const std::filesystem::path &path) noexcept
 {
-    return path.filename().string();
+    return path.filename().u8string();
 }
 
 std::string
 st::io::filesystem::dirname(const std::filesystem::path &path) noexcept
 {
-    return path.parent_path().string();
+    return path.parent_path().u8string();
 }
 
 std::string
 st::io::filesystem::extension(const std::filesystem::path &path) noexcept
 {
-    return path.extension().string();
+    return path.extension().u8string();
 }
 
 std::string
 st::io::filesystem::stem(const std::filesystem::path &path) noexcept
 {
-    return path.stem().string();
+    return path.stem().u8string();
 }
 
 std::vector<std::string>
@@ -99,8 +104,8 @@ st::io::filesystem::list_all(const std::filesystem::path &path,
     {
         const std::filesystem::path entry = it->path();
 
-        std::error_code type_ec;
-        const bool      symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
+        std::error_code  type_ec;
+        const st::bool_t symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
 
         if (type_ec)
             continue;
@@ -116,11 +121,11 @@ st::io::filesystem::list_all(const std::filesystem::path &path,
             if (canonical_ec)
                 continue;
 
-            entries.push_back(resolved.string());
+            entries.push_back(resolved.u8string());
         }
         else
         {
-            entries.push_back(entry.string());
+            entries.push_back(entry.u8string());
         }
     }
 
@@ -136,8 +141,8 @@ st::io::filesystem::list_files(const std::filesystem::path &path,
     std::error_code ec;
     for (std::filesystem::directory_iterator it(path, ec), end; !ec && it != end; it.increment(ec))
     {
-        std::error_code type_ec;
-        const bool      symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
+        std::error_code  type_ec;
+        const st::bool_t symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
 
         if (type_ec || (symlink && !follow_symlinks))
             continue;
@@ -152,11 +157,11 @@ st::io::filesystem::list_files(const std::filesystem::path &path,
 
             std::error_code status_ec;
             if (std::filesystem::is_regular_file(resolved, status_ec) && !status_ec)
-                files.push_back(resolved.string());
+                files.push_back(resolved.u8string());
         }
         else if (it->is_regular_file(type_ec) && !type_ec)
         {
-            files.push_back(it->path().string());
+            files.push_back(it->path().u8string());
         }
     }
 
@@ -172,8 +177,8 @@ st::io::filesystem::list_subdirs(const std::filesystem::path &path,
     std::error_code ec;
     for (std::filesystem::directory_iterator it(path, ec), end; !ec && it != end; it.increment(ec))
     {
-        std::error_code type_ec;
-        const bool      symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
+        std::error_code  type_ec;
+        const st::bool_t symlink = st::io::filesystem::is_symlink(it->path(), type_ec);
 
         if (type_ec || (symlink && !follow_symlinks))
             continue;
@@ -188,11 +193,11 @@ st::io::filesystem::list_subdirs(const std::filesystem::path &path,
 
             std::error_code status_ec;
             if (std::filesystem::is_directory(resolved, status_ec) && !status_ec)
-                dirs.push_back(resolved.string());
+                dirs.push_back(resolved.u8string());
         }
         else if (it->is_directory(type_ec) && !type_ec)
         {
-            dirs.push_back(it->path().string());
+            dirs.push_back(it->path().u8string());
         }
     }
 
@@ -218,4 +223,14 @@ st::io::filesystem::resolve_file(const std::filesystem::path &root,
         return false;
 
     return std::filesystem::is_regular_file(resolved, ec) && !ec;
+}
+
+std::filesystem::path
+st::io::filesystem::executable_dir() noexcept
+{
+    // SDL caches the result and owns the string. It ends with a separator.
+    const char *base = SDL_GetBasePath();
+    if (base == nullptr)
+        return ".";
+    return std::filesystem::u8path(base);
 }

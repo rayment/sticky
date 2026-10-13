@@ -187,4 +187,18 @@ TEST_SUITE("io::log")
 
         CHECK_EQ(nullptr, spdlog::get("test_log_scoped"));
     }
+
+    TEST_CASE("loggers may share a name")
+    {
+        {
+            st::io::log::logger first{"test_log_shared"};
+            {
+                st::io::log::logger second{"test_log_shared"};
+                second.info("from the second logger");
+            }
+            CHECK_NE(nullptr, spdlog::get("test_log_shared"));
+            first.info("from the first logger");
+        }
+        CHECK_EQ(nullptr, spdlog::get("test_log_shared"));
+    }
 }

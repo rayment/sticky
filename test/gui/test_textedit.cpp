@@ -21,7 +21,7 @@ TEST_SUITE("gui::textedit")
         CHECK_FALSE(edit.is_read_only());
         CHECK_FALSE(edit.is_masked());
         CHECK(edit.has_vertical_scrollbar());
-        CHECK_FALSE(edit.has_horizontal_scrollbar());
+        CHECK(edit.is_word_wrapped());
     }
 
     TEST_CASE("set_text keeps new lines")
@@ -55,11 +55,11 @@ TEST_SUITE("gui::textedit")
 
         edit.set_vertical_scrollbar(false);
         CHECK_FALSE(edit.has_vertical_scrollbar());
-        CHECK_FALSE(edit.has_horizontal_scrollbar());
+        CHECK(edit.is_word_wrapped());
 
-        edit.set_horizontal_scrollbar(true);
+        edit.set_word_wrap(false);
         CHECK_FALSE(edit.has_vertical_scrollbar());
-        CHECK(edit.has_horizontal_scrollbar());
+        CHECK_FALSE(edit.is_word_wrapped());
     }
 
     TEST_CASE("an editor is a child of a frame")

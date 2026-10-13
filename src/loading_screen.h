@@ -5,6 +5,11 @@
  * Date created : 12/10/2026
  */
 
+/**
+ * @file
+ * @brief The progress display shown while mods start.
+ */
+
 #ifndef STICKY_LOADING_SCREEN_H
 #define STICKY_LOADING_SCREEN_H
 
@@ -24,13 +29,22 @@ namespace st::video
     class window; // forward-declare
 }
 
+/** @addtogroup app
+ *  @{
+ */
+
 namespace st
 {
 
-    // Draws a status line and progress bar on the window while the engine boots.
+    /** @brief Draws a status line and a progress bar on the window while the engine boots. */
     class loading_screen
     {
     public:
+        /**
+         * @brief Prepares the display. Nothing is drawn until update().
+         * @param window The window, which must outlive the screen.
+         * @param gui The GUI of the window, which must outlive the screen.
+         */
         loading_screen(st::video::window &window,
                        st::gui::core     &gui) noexcept;
         ~loading_screen() noexcept;
@@ -38,7 +52,11 @@ namespace st
         ST_DELETE_COPY_CTORS(loading_screen);
         ST_DELETE_MOVE_CTORS(loading_screen);
 
-        // Renders one frame. `fraction` is clamped to [0, 1].
+        /**
+         * @brief Renders and presents one frame.
+         * @param status Line of text describing the current step.
+         * @param fraction Fraction of the boot completed, clamped to the range 0 to 1.
+         */
         void update(std::string_view status,
                     st::float32      fraction) noexcept;
 
@@ -48,5 +66,7 @@ namespace st
     };
 
 } // namespace st
+
+/** @} */
 
 #endif // STICKY_LOADING_SCREEN_H

@@ -7,9 +7,12 @@
 
 #include <array>
 #include <chrono>
+#include <cstdio>
 #include <ctime>
 #include <filesystem>
+#include <fstream>
 #include <mutex>
+#include <system_error>
 #include <vector>
 
 #include <fmt/format.h>
@@ -18,10 +21,10 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include "io/filesystem.h"
 #include "io/log.h"
 #include "st_macros.h"
 
-#ifndef NDEBUG
 void
 st_io_log_trace(const st_char *message)
 {
@@ -33,7 +36,6 @@ st_io_log_debug(const st_char *message)
 {
     st::io::log::debug(message);
 }
-#endif // NDEBUG
 
 void
 st_io_log_info(const st_char *message)
@@ -55,7 +57,7 @@ st_io_log_error(const st_char *message)
 
 namespace
 {
-    constexpr st_bool is_debug_level(spdlog::level::level_enum lvl) noexcept
+    constexpr st::bool_t is_debug_level(spdlog::level::level_enum lvl) noexcept
     {
         return lvl == spdlog::level::trace || lvl == spdlog::level::debug;
     }
@@ -151,30 +153,48 @@ namespace
     }
 } // namespace
 
-struct st::io::log::logger::logger_impl
+namespace
 {
-    logger_impl() noexcept = default;
-    ~logger_impl() noexcept = default;
-
-    std::shared_ptr<spdlog::logger> logger;
-
-    ST_INLINE static std::string sink_file_log_path()
+    // The file is opened up front, because spdlog aborts when it cannot open it and exceptions are disabled.
+    [[nodiscard]] spdlog::sink_ptr make_file_sink() noexcept
     {
-        std::filesystem::create_directory("log");
+        const std::filesystem::path dir = st::io::filesystem::executable_dir() / "log";
+        std::error_code             ec;
+        std::filesystem::create_directories(dir, ec);
+
         std::array<char, 32> buffer{};
         const std::time_t    now = std::time(nullptr);
         const std::tm       *local = std::localtime(&now);
-        std::strftime(buffer.data(), buffer.size(), "%Y-%m-%d_%H-%M-%S", local);
-        return (std::filesystem::path("log") / (std::string{buffer.data()} + ".log")).string();
+        if (local == nullptr || std::strftime(buffer.data(), buffer.size(), "%Y-%m-%d_%H-%M-%S", local) == 0)
+            return nullptr;
+
+        const std::filesystem::path path = dir / (std::string(buffer.data()) + ".log");
+        if (!std::ofstream(path, std::ios::app).is_open())
+        {
+            std::fprintf(stderr, "Cannot open log file '%s'. Logging to the console only.\n", path.u8string().c_str());
+            return nullptr;
+        }
+        return std::make_shared<spdlog::sinks::basic_file_sink_mt>(path.u8string(), false);
     }
 
-    static std::vector<spdlog::sink_ptr> sinks;
-};
+    // Created on first use rather than during static initialisation of the library.
+    const std::vector<spdlog::sink_ptr> &sinks() noexcept
+    {
+        static const std::vector<spdlog::sink_ptr> instance = []
+        {
+            std::vector<spdlog::sink_ptr> result{std::make_shared<spdlog::sinks::stdout_color_sink_mt>(), overlay()};
+            if (auto file = make_file_sink())
+                result.push_back(std::move(file));
+            return result;
+        }();
+        return instance;
+    }
+} // namespace
 
-std::vector<spdlog::sink_ptr> st::io::log::logger::logger_impl::sinks = {
-    std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
-    std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink_file_log_path(), false),
-    overlay(),
+struct st::io::log::logger::logger_impl
+{
+    std::shared_ptr<spdlog::logger> logger;
+    st::bool_t                      registered = false;
 };
 
 std::vector<st::io::log::overlay_line>
@@ -185,13 +205,24 @@ st::io::log::overlay_lines() noexcept
 
 st::io::log::logger::logger(std::string_view name) noexcept : m_impl{std::make_unique<logger_impl>()}
 {
-    m_impl->logger =
-        std::make_shared<spdlog::logger>(std::string(name), logger_impl::sinks.begin(), logger_impl::sinks.end());
+    const auto &all_sinks = sinks();
+    m_impl->logger = std::make_shared<spdlog::logger>(std::string(name), all_sinks.begin(), all_sinks.end());
     m_impl->logger->set_level(default_log_level());
-    spdlog::register_logger(m_impl->logger);
+
+    // spdlog refuses a second logger of the same name, which mods must not be able to cause.
+    if (spdlog::get(m_impl->logger->name()) == nullptr)
+    {
+        spdlog::register_logger(m_impl->logger);
+        m_impl->registered = true;
+    }
 }
 
-st::io::log::logger::~logger() noexcept { spdlog::drop(m_impl->logger->name()); }
+st::io::log::logger::~logger() noexcept
+{
+    // The default logger stays registered, so that late messages still have somewhere to go.
+    if (m_impl->registered && spdlog::default_logger_raw() != m_impl->logger.get())
+        spdlog::drop(m_impl->logger->name());
+}
 
 void
 st::io::log::logger::set_default() noexcept

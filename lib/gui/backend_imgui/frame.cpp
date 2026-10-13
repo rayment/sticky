@@ -71,9 +71,9 @@ st::gui::frame::set_closable(st::bool_t closable) noexcept
 }
 
 void
-st::gui::frame::set_collapsable(st::bool_t collapsable) noexcept
+st::gui::frame::set_collapsible(st::bool_t collapsible) noexcept
 {
-    SET_FLAG(!collapsable, NoCollapse);
+    SET_FLAG(!collapsible, NoCollapse);
 }
 
 void

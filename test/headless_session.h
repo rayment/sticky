@@ -5,6 +5,11 @@
  * Date created : 12/10/2026
  */
 
+/**
+ * @file
+ * @brief The library session shared by every test.
+ */
+
 #ifndef STICKY_TEST_HEADLESS_SESSION_H
 #define STICKY_TEST_HEADLESS_SESSION_H
 
@@ -16,11 +21,15 @@
 
 namespace st::test
 {
-    // OpenAL's null backend avoids needing an audio device.
-    // The library can only be initialized once per process, so every test
-    // file shares this single session.
+    /**
+     * @brief Initialises the library once for the whole test binary, without popups.
+     *
+     * OpenAL's null backend avoids needing an audio device. The library can only be initialised once per process, so
+     * every test file shares this single session.
+     */
     struct headless_session
     {
+        /** @brief The session, initialising the library on first use. */
         static headless_session &instance()
         {
             static headless_session session;

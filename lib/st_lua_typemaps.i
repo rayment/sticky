@@ -154,11 +154,11 @@ inline void st_swig_lua_invoke_bool(const st_swig_lua_callback_ref &callback, bo
     SWIG_arg++;
 }
 
-// allow implicit conversion of Lua strings to std::filesystem::path
+// allow implicit conversion of Lua strings, which are UTF-8, to std::filesystem::path
 ST_SWIG_IMPLICIT_CONVERSION_TO_STRING(
     const std::filesystem::path &,
     std::filesystem::path,
-    std::filesystem::path(lua_tostring(L, $input))
+    std::filesystem::u8path(lua_tostring(L, $input))
 );
 
 // Lets a bound function receive the Lua state of its caller without taking an argument.

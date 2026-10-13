@@ -27,7 +27,7 @@ struct st::gui::textedit::textedit_impl
     st::bool_t  m_read_only = false;
     st::bool_t  m_masked = false;
     st::bool_t  m_vertical_scrollbar = true;
-    st::bool_t  m_horizontal_scrollbar = false;
+    st::bool_t  m_word_wrap = true;
     st::float32 m_width = 0.0f;
     st::float32 m_height = 0.0f;
     std::string m_label;
@@ -69,9 +69,9 @@ st::gui::textedit::has_vertical_scrollbar() const noexcept
 }
 
 st::bool_t
-st::gui::textedit::has_horizontal_scrollbar() const noexcept
+st::gui::textedit::is_word_wrapped() const noexcept
 {
-    return m_impl->m_horizontal_scrollbar;
+    return m_impl->m_word_wrap;
 }
 
 void
@@ -105,9 +105,9 @@ st::gui::textedit::set_vertical_scrollbar(st::bool_t visible) noexcept
 }
 
 void
-st::gui::textedit::set_horizontal_scrollbar(st::bool_t visible) noexcept
+st::gui::textedit::set_word_wrap(st::bool_t wrap) noexcept
 {
-    m_impl->m_horizontal_scrollbar = visible;
+    m_impl->m_word_wrap = wrap;
 }
 
 void
@@ -127,7 +127,7 @@ st::gui::textedit::render() noexcept
         flags |= ImGuiInputTextFlags_ReadOnly;
     if (m_impl->m_masked)
         flags |= ImGuiInputTextFlags_Password;
-    if (!m_impl->m_horizontal_scrollbar)
+    if (m_impl->m_word_wrap)
         flags |= ImGuiInputTextFlags_WordWrap;
 
     const ImVec2 size{m_impl->m_width > 0.0f ? m_impl->m_width : -FLT_MIN,

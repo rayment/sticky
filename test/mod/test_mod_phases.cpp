@@ -30,7 +30,7 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "mod";
 
     st::mod make_mod(const char *folder)
     {
@@ -80,7 +80,7 @@ namespace
 TEST_CASE_FIXTURE(phase_fixture,
                   "execute_init loads declared textures for the runtime phase")
 {
-    st::mod mod = make_mod("0013-mod-textures");
+    st::mod mod = make_mod("mod_textures");
 
     CHECK(mod.execute_init());
     CHECK(mod.execute_runtime());
@@ -90,7 +90,7 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "st.init is locked outside of the init phase")
 {
-    st::mod mod = make_mod("0013-mod-textures");
+    st::mod mod = make_mod("mod_textures");
 
     constexpr std::string_view message = "only available during the init phase";
 
@@ -105,8 +105,8 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "st.io.log is available in the init and runtime phases")
 {
-    st::mod mod = make_mod("0013-mod-textures");
-    spdlog::get("0013-mod-textures")->sinks().push_back(std::make_shared<spdlog::sinks::ostream_sink_mt>(output));
+    st::mod mod = make_mod("mod_textures");
+    spdlog::get("mod_textures")->sinks().push_back(std::make_shared<spdlog::sinks::ostream_sink_mt>(output));
 
     CHECK(mod.execute_init());
     CHECK(contains("[info] log from init phase"));
@@ -119,7 +119,7 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "execute_init fails when init.lua is broken")
 {
-    st::mod mod = make_mod("0014-mod-bad-init");
+    st::mod mod = make_mod("mod_bad_init");
 
     CHECK_FALSE(mod.execute_init());
 }
@@ -127,7 +127,7 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "execute_init fails when init.lua is missing")
 {
-    st::mod mod = make_mod("0015-mod-no-init");
+    st::mod mod = make_mod("mod_no_init");
 
     CHECK_FALSE(mod.execute_init());
     CHECK(mod.execute_runtime());
@@ -136,24 +136,24 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "bind_config adds declared settings without overwriting existing ones")
 {
-    st::mod          mod = make_mod("0017-mod-config");
+    st::mod          mod = make_mod("mod_config");
     st::util::config config;
-    config.set("0017-mod-config.seed", 99.0);
+    config.set("mod_config.seed", 99.0);
 
     CHECK(mod.execute_init());
     mod.bind_config(config);
 
-    CHECK(std::get<st::bool_t>(*config.get("0017-mod-config.fullscreen")) == false);
-    CHECK(std::get<std::string>(*config.get("0017-mod-config.player")) == "John Smith");
-    CHECK(std::get<st::float64>(*config.get("0017-mod-config.seed")) == 99.0);
-    CHECK_FALSE(config.get("0017-mod-config.wrong").has_value());
-    CHECK_FALSE(config.get("0017-mod-config.unknown").has_value());
+    CHECK(config.get("mod_config.fullscreen") == st::util::config::value{st::bool_t(false)});
+    CHECK(config.get("mod_config.player") == st::util::config::value{std::string("John Smith")});
+    CHECK(config.get("mod_config.seed") == st::util::config::value{st::float64(99.0)});
+    CHECK_FALSE(config.get("mod_config.wrong").has_value());
+    CHECK_FALSE(config.get("mod_config.unknown").has_value());
 }
 
 TEST_CASE_FIXTURE(phase_fixture,
                   "bind_config does not double the fullstop of a mod name that ends with one")
 {
-    st::mod          mod{"core.", "core", "0.0.0", "test", "test", res_dir / "0017-mod-config" / "lua"};
+    st::mod          mod{"core.", "core", "0.0.0", "test", "test", res_dir / "mod_config" / "lua"};
     st::util::config config;
 
     CHECK(mod.execute_init());
@@ -166,20 +166,20 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "bind_config adds nothing when init fails")
 {
-    st::mod          mod = make_mod("0014-mod-bad-init");
+    st::mod          mod = make_mod("mod_bad_init");
     st::util::config config;
 
     CHECK_FALSE(mod.execute_init());
     mod.bind_config(config);
 
-    CHECK_FALSE(config.get("0014-mod-bad-init.anything").has_value());
+    CHECK_FALSE(config.get("mod_bad_init.anything").has_value());
 }
 
 #if ST_MODULE_AUDIO
 TEST_CASE_FIXTURE(phase_fixture,
                   "execute_init loads declared sounds for the runtime phase")
 {
-    st::mod mod = make_mod("0016-mod-sounds");
+    st::mod mod = make_mod("mod_sounds");
 
     CHECK(mod.execute_init());
     CHECK(mod.execute_runtime());
@@ -189,7 +189,7 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "audio sources can be created and driven from Lua")
 {
-    st::mod mod = make_mod("0016-mod-sounds");
+    st::mod mod = make_mod("mod_sounds");
 
     CHECK(mod.execute_init());
     CHECK(mod.execute_runtime());
@@ -199,7 +199,7 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "st.init.sounds is locked outside of the init phase")
 {
-    st::mod mod = make_mod("0016-mod-sounds");
+    st::mod mod = make_mod("mod_sounds");
 
     constexpr std::string_view message = "only available during the init phase";
 
@@ -214,19 +214,19 @@ TEST_CASE_FIXTURE(phase_fixture,
 TEST_CASE_FIXTURE(phase_fixture,
                   "audio sources reject invalid arguments from Lua")
 {
-    st::mod mod = make_mod("0016-mod-sounds");
+    st::mod mod = make_mod("mod_sounds");
 
     CHECK(mod.execute_init());
     CHECK(mod.execute_runtime());
-    check_function_fails(mod, "select_nil_sound", "select");
+    check_function_fails(mod, "set_nil_sound", "set_sound");
     check_function_fails(mod, "set_position_without_components", "set_position");
 }
 #endif // ST_MODULE_AUDIO
 
 namespace
 {
-    constexpr const char *runtime_config_mod = "0018-mod-config-runtime";
-    constexpr const char *other_config_mod = "0019-mod-config-other";
+    constexpr const char *runtime_config_mod = "mod_config_runtime";
+    constexpr const char *other_config_mod = "mod_config_other";
 
     template <typename T>
     [[nodiscard]] T setting_as(const st::util::config &config,
@@ -373,12 +373,12 @@ TEST_CASE_FIXTURE(phase_fixture,
 {
     st::video::texture_registry registry;
     st::video::texture_registry empty;
-    const auto texture = st::video::texture::load_file(res_dir / "0013-mod-textures" / "res" / "good.png");
+    const auto                  texture = st::video::texture::load_file(res_dir / "mod_textures" / "res" / "good.png");
     CHECK(texture != nullptr);
     CHECK(registry.add("good", "good.png", texture));
 
-    st::lua::runtime owner{"texture_owner", res_dir / "0013-mod-textures" / "lua"};
-    st::lua::runtime other{"texture_other", res_dir / "0013-mod-textures" / "lua"};
+    st::lua::runtime owner{"texture_owner", res_dir / "mod_textures" / "lua"};
+    st::lua::runtime other{"texture_other", res_dir / "mod_textures" / "lua"};
     st::lua::set_texture_registry(owner.state(), &registry);
     st::lua::set_texture_registry(other.state(), &empty);
 
@@ -395,12 +395,12 @@ TEST_CASE_FIXTURE(phase_fixture,
 {
     st::audio::sound_registry registry;
     st::audio::sound_registry empty;
-    const auto                sound = st::audio::sound::load_file(res_dir / "0016-mod-sounds" / "res" / "good.wav");
+    const auto                sound = st::audio::sound::load_file(res_dir / "mod_sounds" / "res" / "good.wav");
     CHECK(sound != nullptr);
     CHECK(registry.add("good", "good.wav", sound));
 
-    st::lua::runtime owner{"sound_owner", res_dir / "0016-mod-sounds" / "lua"};
-    st::lua::runtime other{"sound_other", res_dir / "0016-mod-sounds" / "lua"};
+    st::lua::runtime owner{"sound_owner", res_dir / "mod_sounds" / "lua"};
+    st::lua::runtime other{"sound_other", res_dir / "mod_sounds" / "lua"};
     st::lua::set_sound_registry(owner.state(), &registry);
     st::lua::set_sound_registry(other.state(), &empty);
 

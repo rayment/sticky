@@ -5,6 +5,7 @@
  * Date created : 31/08/2026
  */
 
+#include <cstdlib>
 #include <getopt.h>
 #include <iostream>
 
@@ -15,22 +16,20 @@
 
 struct st::argparse::argparse_impl
 {
-    st_int32  argc;
-    st_char **argv;
-    st_size   num_non_args;
-    st_char **non_args;
-    st_bool   should_exit;
-    st_bool   safe_mode;
-    st_bool   developer_mode;
-    st_int32  exit_code;
+    st::int32    argc = 0;
+    st::char_t **argv = nullptr;
+    st::size     num_non_args = 0;
+    st::char_t **non_args = nullptr;
+    st::bool_t   should_exit = false;
+    st::bool_t   safe_mode = false;
+    st::bool_t   developer_mode = false;
+    st::int32    exit_code = EXIT_SUCCESS;
 };
 
-st::argparse::argparse(st_int32  argc,
-                       st_char **argv) noexcept :
+st::argparse::argparse(st::int32    argc,
+                       st::char_t **argv) noexcept :
     m_impl(std::make_unique<argparse_impl>())
 {
-
-    m_impl->exit_code = EXIT_SUCCESS;
     m_impl->argc = argc;
     m_impl->argv = argv;
 
@@ -49,8 +48,6 @@ st::argparse::argparse(st_int32  argc,
             break;
         switch (c)
         {
-        default:
-        case 0:
         case 'h':
             print_help();
             m_impl->should_exit = true;
@@ -65,11 +62,15 @@ st::argparse::argparse(st_int32  argc,
             print_version();
             m_impl->should_exit = true;
             break;
+        default:
+            print_help();
+            m_impl->should_exit = true;
+            m_impl->exit_code = EXIT_FAILURE;
+            break;
         }
     }
 
-    ST_ASSERT(optind <= argc);
-    m_impl->num_non_args = static_cast<st_size>(argc - optind);
+    m_impl->num_non_args = optind < argc ? static_cast<st::size>(argc - optind) : 0;
     m_impl->non_args = argv + optind;
 }
 
@@ -80,7 +81,6 @@ st::argparse::print_help() const noexcept
 {
     std::cout << fmt::format("Usage: {} [options]", m_impl->argv[0]) << '\n';
     std::cout << "Options:" << '\n';
-    ;
     std::cout << "  -d, --developer          Enable developer mode." << '\n';
     std::cout << "  -h, --help               Display this help message." << '\n';
     std::cout << "  -s, --safe-mode          Start without loading any mods." << '\n';
@@ -93,37 +93,37 @@ st::argparse::print_version() const noexcept
     std::cout << fmt::format("{} {}", PROGRAM_TITLE, VERSION_STRING) << '\n';
 }
 
-st_size
+st::size
 st::argparse::num_non_args() const noexcept
 {
     return m_impl->num_non_args;
 }
 
-st_char **
+st::char_t **
 st::argparse::non_args() const noexcept
 {
     return m_impl->non_args;
 }
 
-st_bool
+st::bool_t
 st::argparse::should_exit() const noexcept
 {
     return m_impl->should_exit;
 }
 
-st_bool
+st::bool_t
 st::argparse::developer_mode() const noexcept
 {
     return m_impl->developer_mode;
 }
 
-st_bool
+st::bool_t
 st::argparse::safe_mode() const noexcept
 {
     return m_impl->safe_mode;
 }
 
-st_int32
+st::int32
 st::argparse::exit_code() const noexcept
 {
     return m_impl->exit_code;

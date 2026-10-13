@@ -5,6 +5,11 @@
  * Date created : 12/10/2026
  */
 
+/**
+ * @file
+ * @brief Creation and removal of symbolic links for the filesystem tests.
+ */
+
 #ifndef STICKY_TEST_SYMLINK_H
 #define STICKY_TEST_SYMLINK_H
 
@@ -17,7 +22,13 @@
 
 namespace st::test
 {
-    // libstdc++ on MinGW doesn't implement create_symlink.
+    /**
+     * @brief Creates a symbolic link. libstdc++ on MinGW does not implement std::filesystem::create_symlink.
+     * @param target What the link points to.
+     * @param link Path of the new link.
+     * @param directory Whether the target is a directory.
+     * @param ec Set on failure, such as when the user may not create links.
+     */
     inline void make_symlink(const std::filesystem::path &target,
                              const std::filesystem::path &link,
                              bool                         directory,
@@ -39,6 +50,7 @@ namespace st::test
 #endif
     }
 
+    /** @brief Removes a link created by make_symlink(), leaving its target alone. @param link Path of the link. */
     inline void remove_link(const std::filesystem::path &link)
     {
 #ifdef _WIN32

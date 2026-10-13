@@ -1,36 +1,50 @@
-# Doxygen configuration for the sticky C++ engine library (lib/).
+# Doxygen configuration for the sticky C++ engine (lib/ and src/).
 # Only non-default settings are listed. Configured by cmake/Doxygen.cmake.
+#
+# The reference covers the documented declarations in headers, grouped by module (see groups.dox). Implementation
+# files, private members and undocumented symbols are left out to keep it to the API.
 
 PROJECT_NAME           = "sticky"
 PROJECT_NUMBER         = "@VERSION_STRING@"
-PROJECT_BRIEF          = "C++ engine library reference"
+PROJECT_BRIEF          = "C++ engine reference"
 OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doc/cpp"
 QUIET                  = YES
 
-# Input
-INPUT                  = "@CMAKE_SOURCE_DIR@/lib" \
-                         "@CMAKE_SOURCE_DIR@/doc/cpp/mainpage.md"
-FILE_PATTERNS          = *.h *.cpp *.c
+# Input: headers only
+INPUT                  = "@CMAKE_SOURCE_DIR@/doc/cpp/mainpage.md" \
+                         "@CMAKE_SOURCE_DIR@/doc/cpp/groups.dox" \
+                         "@CMAKE_SOURCE_DIR@/lib" \
+                         "@CMAKE_SOURCE_DIR@/src"
+FILE_PATTERNS          = *.h
 RECURSIVE              = YES
-STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/lib"
-STRIP_FROM_INC_PATH    = "@CMAKE_SOURCE_DIR@/lib"
+STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/lib" \
+                         "@CMAKE_SOURCE_DIR@/src"
+STRIP_FROM_INC_PATH    = "@CMAKE_SOURCE_DIR@/lib" \
+                         "@CMAKE_SOURCE_DIR@/src"
 USE_MDFILE_AS_MAINPAGE = "@CMAKE_SOURCE_DIR@/doc/cpp/mainpage.md"
-OPTIMIZE_OUTPUT_FOR_C  = NO
 
-# Extraction: document everything, even without comments
-EXTRACT_ALL            = YES
+# Extraction: documented public API only
+EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
-EXTRACT_STATIC         = YES
+EXTRACT_STATIC         = NO
 EXTRACT_ANON_NSPACES   = NO
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = YES
+HIDE_FRIEND_COMPOUNDS  = YES
 CASE_SENSE_NAMES       = YES
+SORT_MEMBER_DOCS       = NO
+GROUP_NESTED_COMPOUNDS = YES
 EXCLUDE_SYMBOLS        = *_impl \
-                         *_impl::*
+                         *_impl::* \
+                         ST_STRINGIFY_IMPL
 
-# Preprocessing: neutralise attribute macros and expose C++ branches
+# Preprocessing: neutralise attribute macros and build every module
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 PREDEFINED             = __cplusplus=201703L \
+                         ST_MODULE_AUDIO=1 \
+                         ST_MODULE_VIDEO=1 \
                          ST_HOT= \
                          ST_COLD= \
                          ST_LIKELY(x)=x \
@@ -46,15 +60,16 @@ PREDEFINED             = __cplusplus=201703L \
                          "ST_DELETE_COPY_CTORS(x)=" \
                          "ST_DELETE_MOVE_CTORS(x)="
 
-# Warnings
-WARN_IF_UNDOCUMENTED   = NO
+# Warnings: report anything public that lacks documentation
+WARN_IF_UNDOCUMENTED   = YES
 WARN_NO_PARAMDOC       = NO
+WARN_LOGFILE           = "@CMAKE_BINARY_DIR@/doc/cpp/warnings.log"
 
-# Source browsing
-SOURCE_BROWSER         = YES
-INLINE_SOURCES         = NO
-REFERENCED_BY_RELATION = YES
-REFERENCES_RELATION    = YES
+# No source listings or cross-references
+SOURCE_BROWSER         = NO
+VERBATIM_HEADERS       = NO
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
 
 # HTML output
 GENERATE_HTML          = YES
@@ -65,15 +80,17 @@ HTML_COLORSTYLE        = AUTO_LIGHT
 GENERATE_TREEVIEW      = YES
 FULL_SIDEBAR           = NO
 SEARCHENGINE           = YES
+SHOW_FILES             = NO
+SHOW_INCLUDE_FILES     = YES
 FULL_PATH_NAMES        = YES
 
-# Diagrams (requires Graphviz dot)
+# Diagrams (requires Graphviz dot): class inheritance only
 HAVE_DOT               = @ST_DOXYGEN_HAVE_DOT@
 DOT_PATH               = "@ST_DOXYGEN_DOT_PATH@"
 CLASS_GRAPH            = YES
-COLLABORATION_GRAPH    = YES
-INCLUDE_GRAPH          = YES
-INCLUDED_BY_GRAPH      = YES
+COLLABORATION_GRAPH    = NO
+INCLUDE_GRAPH          = NO
+INCLUDED_BY_GRAPH      = NO
 CALL_GRAPH             = NO
 CALLER_GRAPH           = NO
 DOT_IMAGE_FORMAT       = svg

@@ -119,6 +119,8 @@ set_target_properties(libsticky_lua PROPERTIES
 target_include_directories(libsticky_lua PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(libsticky_lua PRIVATE STATIC_LINKED ${ST_MODULE_DEFINITIONS})
 target_link_libraries(libsticky_lua PRIVATE ${ST_LIB_PUBLIC_DEPENDENCIES})
+target_disable_exceptions(libsticky_lua)
+target_disable_rtti(libsticky_lua)
 
 add_library(libsticky)
 set_target_properties(libsticky PROPERTIES OUTPUT_NAME sticky)

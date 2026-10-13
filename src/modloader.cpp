@@ -1,13 +1,14 @@
-﻿/*
+/*
  * modloader.cpp
  *
  * Author       : Finn Rayment <finn@rayment.fr>
  * Date created : 11/10/2026
  */
 
-#include <exception>
+#include <algorithm>
 #include <fstream>
-#include <stdexcept>
+#include <optional>
+#include <utility>
 #include <vector>
 
 #include <fmt/format.h>
@@ -19,89 +20,123 @@
 
 #include "modloader.h"
 
+namespace
+{
+    constexpr st::size max_name_length = 64;
+
+    struct metadata
+    {
+        std::string name;
+        std::string display_name;
+        std::string version;
+        std::string author;
+        std::string description;
+    };
+
+    // Reads mod.json, logging why it is unusable.
+    [[nodiscard]] std::optional<metadata> read_metadata(const std::filesystem::path &folder) noexcept
+    {
+        const std::string    folder_name = folder.u8string();
+        std::ifstream        file(folder / "mod.json");
+        const nlohmann::json json = nlohmann::json::parse(file, nullptr, false);
+        if (!file.is_open() || json.is_discarded() || !json.is_object())
+        {
+            st::io::log::error(
+                fmt::format("Skipping mod in folder '{}': mod.json is unreadable or not a JSON object.", folder_name));
+            return std::nullopt;
+        }
+
+        metadata                                     result;
+        const std::pair<const char *, std::string *> fields[] = {
+            {"name", &result.name},     {"display_name", &result.display_name}, {"version", &result.version},
+            {"author", &result.author}, {"description", &result.description},
+        };
+        for (const auto &[key, out] : fields)
+        {
+            const auto it = json.find(key);
+            if (it == json.end() || !it->is_string())
+            {
+                st::io::log::error(
+                    fmt::format("Skipping mod in folder '{}': mod.json needs a string '{}'.", folder_name, key));
+                return std::nullopt;
+            }
+            *out = it->get<std::string>();
+        }
+
+        if (!st::modloader::is_valid_name(result.name))
+        {
+            st::io::log::error(fmt::format("Skipping mod in folder '{}': '{}' is not a valid mod name. Use 1 to {} "
+                                           "lowercase letters, digits or underscores.",
+                                           folder_name, result.name, max_name_length));
+            return std::nullopt;
+        }
+        return result;
+    }
+
+    [[nodiscard]] st::bool_t has_entrypoints(const std::filesystem::path &folder) noexcept
+    {
+        if (!st::io::filesystem::exists(folder / "mod.json"))
+        {
+            st::io::log::info(
+                fmt::format("Ignoring mod folder '{}' because no mod.json file was found.", folder.u8string()));
+            return false;
+        }
+        for (const char *entrypoint : {"init.lua", "runtime.lua"})
+        {
+            if (!st::io::filesystem::is_file(folder / "lua" / entrypoint))
+            {
+                st::io::log::info(fmt::format("Ignoring mod folder '{}' because no {} file was found.",
+                                              folder.u8string(), entrypoint));
+                return false;
+            }
+        }
+        return true;
+    }
+} // namespace
+
 st::modloader::modloader() noexcept {}
 
 st::modloader::~modloader() noexcept {}
 
-using mod_map = std::unordered_map<std::string, std::unique_ptr<st::mod>>;
-
-static std::unique_ptr<st::mod>
-load_mod(const std::string        &mod_folder,
-         const mod_map            &loaded,
-         std::vector<std::string> &duplicates) noexcept
+st::bool_t
+st::modloader::is_valid_name(std::string_view name) noexcept
 {
-    try
-    {
-        const std::filesystem::path folder(mod_folder);
-        if (!st::io::filesystem::exists(folder / "mod.json"))
-        {
-            st::io::log::info(fmt::format("Ignoring mod folder '{}' because no mod.json file was found.", mod_folder));
-            return nullptr;
-        }
-        for (const char *entrypoint : {"init.lua", "runtime.lua"})
-        {
-            if (!st::io::filesystem::exists(folder / "lua" / entrypoint))
-            {
-                st::io::log::info(
-                    fmt::format("Ignoring mod folder '{}' because no {} file was found.", mod_folder, entrypoint));
-                return nullptr;
-            }
-        }
-
-        std::ifstream        metadata_file((folder / "mod.json").string());
-        const nlohmann::json metadata = nlohmann::json::parse(metadata_file);
-        for (const char *key : {"name", "display_name", "version", "author", "description"})
-        {
-            if (!metadata.contains(key) || !metadata[key].is_string())
-                throw std::runtime_error(fmt::format("missing or non-string key '{}'", key));
-        }
-        const std::string name = metadata["name"].get<std::string>();
-        if (loaded.find(name) != loaded.end())
-        {
-            st::io::log::warn(
-                fmt::format("Mod with name '{}' already loaded. Skipping mod in folder '{}'.", name, mod_folder));
-            duplicates.push_back(mod_folder);
-            return nullptr;
-        }
-        return std::make_unique<st::mod>(name, metadata["display_name"].get<std::string>(),
-                                         metadata["version"].get<std::string>(), metadata["author"].get<std::string>(),
-                                         metadata["description"].get<std::string>(), folder / "lua");
-    }
-    catch (const std::exception &e)
-    {
-        st::io::log::error(
-            fmt::format("Skipping mod in folder '{}': invalid or unreadable mod.json ({}).", mod_folder, e.what()));
-    }
-    catch (...)
-    {
-        st::io::log::error(
-            fmt::format("Skipping mod in folder '{}': unknown error while reading mod.json.", mod_folder));
-    }
-    return nullptr;
+    if (name.empty() || name.size() > max_name_length)
+        return false;
+    return std::all_of(name.begin(), name.end(),
+                       [](const char c) { return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'; });
 }
 
-std::unordered_map<std::string,
-                   std::unique_ptr<st::mod>>
+st::mod_map
 st::modloader::load_mods() noexcept
 {
     mod_map                  mods;
     std::vector<std::string> duplicates;
 
-    try
+    st::io::log::info("Loading mods...");
+    // Sorted, so that the same folder wins a name clash on every platform.
+    auto folders = st::io::filesystem::list_subdirs("mod");
+    std::sort(folders.begin(), folders.end());
+    for (const auto &folder_name : folders)
     {
-        st::io::log::info("Loading mods...");
-        for (const auto &mod_folder : st::io::filesystem::list_subdirs("mod"))
+        const std::filesystem::path folder = std::filesystem::u8path(folder_name);
+        if (!has_entrypoints(folder))
+            continue;
+
+        const auto meta = read_metadata(folder);
+        if (!meta)
+            continue;
+
+        if (mods.find(meta->name) != mods.end())
         {
-            auto loaded = load_mod(mod_folder, mods, duplicates);
-            if (!loaded)
-                continue;
-            const std::string mod_name = loaded->name();
-            mods.emplace(mod_name, std::move(loaded));
+            st::io::log::warn(fmt::format("Mod with name '{}' already loaded. Skipping mod in folder '{}'.", meta->name,
+                                          folder_name));
+            duplicates.push_back(folder_name);
+            continue;
         }
-    }
-    catch (...)
-    {
-        st::io::log::error("Failed while loading mods. Remaining mods were skipped.");
+        mods.emplace(meta->name,
+                     std::make_unique<st::mod>(meta->name, meta->display_name, meta->version, meta->author,
+                                               meta->description, folder / "lua"));
     }
     st::io::log::info("Finished loading mods.");
 

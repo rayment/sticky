@@ -1,19 +1,25 @@
+/*
+ * main.cpp
+ *
+ * Author       : Finn Rayment <finn@rayment.fr>
+ * Date created : 27/08/2026
+ */
+
 #include <cstdlib>
+#include <filesystem>
 #include <functional>
+#include <iterator>
 #include <string_view>
+#include <vector>
 
 #include <fmt/format.h>
 
-#if ST_MODULE_AUDIO
-#include "audio/client.h"
-#include "audio/source.h"
-#endif
 #if ST_MODULE_VIDEO
 #include "gui/core.h"
 #endif
 #include "io/filesystem.h"
 #include "io/log.h"
-#include "lua/runtime.h"
+#include "lua/app_bindings.h"
 #include "os/popup.h"
 #include "st_init.h"
 #include "util/config.h"
@@ -24,20 +30,25 @@
 #include "argparse.h"
 #if ST_MODULE_VIDEO
 #include "loading_screen.h"
+#include "main_menu.h"
 #endif
 #include "modloader.h"
 
 using boot_progress = std::function<void(std::string_view, st::float32)>;
 
-static constexpr const char *config_path = "config.json";
+// Settings live next to the executable rather than in the user profile.
+static std::filesystem::path
+config_path()
+{
+    return st::io::filesystem::executable_dir() / "config.json";
+}
 
 // Runs a phase for every mod, dropping the mods that fail it.
-template <typename Mods,
-          typename Phase>
+template <typename Phase>
 static void
-run_phase(Mods       &mods,
-          const char *phase_name,
-          Phase       run)
+run_phase(st::mod_map &mods,
+          const char  *phase_name,
+          Phase        run)
 {
     for (auto it = mods.begin(); it != mods.end();)
     {
@@ -53,9 +64,8 @@ run_phase(Mods       &mods,
 
 // Every mod finishes its init phase and declares its settings before any runtime phase starts, so a mod can read the
 // settings of every other mod from the first line of its runtime code.
-template <typename Mods>
 static void
-start_mods(Mods                &mods,
+start_mods(st::mod_map         &mods,
            st::util::config    &config,
            const boot_progress &progress)
 {
@@ -80,7 +90,7 @@ start_mods(Mods                &mods,
     run_phase(mods, "runtime", [](st::mod &mod) { return mod.execute_runtime(); });
 }
 
-static void
+static st::bool_t
 save_config(const st::util::config &config,
             st::bool_t              loaded)
 {
@@ -88,21 +98,33 @@ save_config(const st::util::config &config,
     {
         st::io::log::error(fmt::format("Settings were not saved to '{}' because the file could not be read. "
                                        "Fix or remove the file to restore saving.",
-                                       config_path));
-        return;
+                                       config_path().u8string()));
+        return false;
     }
-    static_cast<void>(config.save(config_path));
+    return config.save(config_path());
 }
 
 #if ST_MODULE_VIDEO
-template <typename Mods>
+[[nodiscard]] static std::vector<st::config_setting>
+collect_settings(const st::mod_map &mods)
+{
+    std::vector<st::config_setting> settings;
+    for (const auto &mod : mods)
+    {
+        auto declared = mod.second->config_settings();
+        settings.insert(settings.end(), std::make_move_iterator(declared.begin()),
+                        std::make_move_iterator(declared.end()));
+    }
+    return settings;
+}
+
 static void
 run_video_loop(st::video::window &win,
                st::gui::core     &gui,
-               Mods              &mods)
+               st::mod_map       &mods)
 {
     win.reset_accumulator();
-    while (!win.close_requested())
+    while (!win.close_requested() && !st::lua::app::quit_requested())
     {
         win.accumulate();
         win.poll();
@@ -133,13 +155,13 @@ run_video_loop(st::video::window &win,
 #endif // ST_MODULE_VIDEO
 
 static int
-run(st_int32  argc,
-    st_char **argv)
+run(st::int32    argc,
+    st::char_t **argv)
 {
     st::argparse args(argc, argv);
 
     if (args.should_exit())
-        return EXIT_SUCCESS;
+        return args.exit_code();
 
     if (!st::lib_init())
         return EXIT_FAILURE;
@@ -152,6 +174,11 @@ run(st_int32  argc,
         // The window owns the GL context, so it must be created before mods
         // load textures and destroyed after the mods that own them.
         st::video::window win;
+        if (!win.is_valid())
+        {
+            static_cast<void>(st::lib_free());
+            return EXIT_FAILURE;
+        }
         win.set_title(PROGRAM_TITLE " " VERSION_STRING);
         st::gui::core gui(win);
         win.attach_gui(gui); // TODO: This should be irrelevant once the event bus is set up.
@@ -167,16 +194,16 @@ run(st_int32  argc,
 
         // Declared before the mods, which hold pointers into it, so that it is destroyed after them.
         st::util::config config;
-        const st::bool_t config_loaded = config.load(config_path);
+        const st::bool_t config_loaded = config.load(config_path());
 
         st::modloader ml;
-        auto          mods = args.safe_mode() ? decltype(ml.load_mods()){} : ml.load_mods();
+        st::mod_map   mods = args.safe_mode() ? st::mod_map{} : ml.load_mods();
 
         if (args.safe_mode())
             st::os::popup::warn("Safe mode", "Safe mode is enabled. No mods have been loaded.");
 
         start_mods(mods, config, on_progress);
-        save_config(config, config_loaded);
+        static_cast<void>(save_config(config, config_loaded));
         on_progress("Starting...", 1.0f);
 
         for (auto &mod : mods)
@@ -185,6 +212,8 @@ run(st_int32  argc,
         }
 
 #if ST_MODULE_VIDEO
+        st::main_menu menu(win, config, collect_settings(mods),
+                           [&config, config_loaded] { return save_config(config, config_loaded); });
         run_video_loop(win, gui, mods);
 #endif
 
@@ -194,7 +223,7 @@ run(st_int32  argc,
         }
 
         if (config_loaded)
-            save_config(config, config_loaded);
+            static_cast<void>(save_config(config, config_loaded));
     }
 
     st::io::log::info("Goodbye.");
@@ -202,20 +231,12 @@ run(st_int32  argc,
     if (!st::lib_free())
         return EXIT_FAILURE;
 
-    return EXIT_SUCCESS;
+    return st::lua::app::exit_code();
 }
 
 int
-main(st_int32  argc,
-     st_char **argv)
+main(st::int32    argc,
+     st::char_t **argv)
 {
-    try
-    {
-        return run(argc, argv);
-    }
-    catch (...)
-    {
-        st::io::log::error("Unhandled exception. Exiting.");
-    }
-    return EXIT_FAILURE;
+    return run(argc, argv);
 }

@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <fstream>
+#include <system_error>
 #include <unordered_set>
 
 #include <fmt/format.h>
@@ -63,14 +64,14 @@ st::util::config::load(const std::filesystem::path &path) noexcept
     std::ifstream file(path);
     if (!file.is_open())
     {
-        st::io::log::error(fmt::format("Could not open config file '{}'.", path.string()));
+        st::io::log::error(fmt::format("Could not open config file '{}'.", path.u8string()));
         return false;
     }
 
     nlohmann::json parsed = nlohmann::json::parse(file, nullptr, false);
     if (!parsed.is_object())
     {
-        st::io::log::error(fmt::format("Config file '{}' is not a valid JSON object.", path.string()));
+        st::io::log::error(fmt::format("Config file '{}' is not a valid JSON object.", path.u8string()));
         return false;
     }
     m_impl->m_data = std::move(parsed);
@@ -80,15 +81,25 @@ st::util::config::load(const std::filesystem::path &path) noexcept
 st::bool_t
 st::util::config::save(const std::filesystem::path &path) const noexcept
 {
-    std::ofstream file(path, std::ios::trunc);
-    if (file.is_open())
+    // Written next to the target and then moved over it, so that a failed write never loses the previous settings.
+    std::filesystem::path temporary = path;
+    temporary += ".tmp";
     {
-        file << m_impl->m_data.dump(json_indent, ' ', false, nlohmann::json::error_handler_t::replace) << '\n';
-        file.flush();
-        if (file.good())
-            return true;
+        std::ofstream file(temporary, std::ios::trunc);
+        if (file.is_open())
+            file << m_impl->m_data.dump(json_indent, ' ', false, nlohmann::json::error_handler_t::replace) << '\n';
+        file.close();
+        if (!file.fail())
+        {
+            std::error_code ec;
+            std::filesystem::rename(temporary, path, ec);
+            if (!ec)
+                return true;
+        }
     }
-    st::io::log::error(fmt::format("Could not write config file '{}'.", path.string()));
+    std::error_code ignored;
+    std::filesystem::remove(temporary, ignored);
+    st::io::log::error(fmt::format("Could not write config file '{}'.", path.u8string()));
     return false;
 }
 
@@ -163,7 +174,7 @@ st::util::config_scope::~config_scope() noexcept {}
 std::string
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 st::util::config_scope::key_for(std::string_view owner,
-                                std::string_view name)
+                                std::string_view name) noexcept
 {
     std::string key(owner);
     if (key.empty() || key.back() != '.')

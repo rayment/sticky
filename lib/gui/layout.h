@@ -5,6 +5,11 @@
  * Date created : 13/10/2026
  */
 
+/**
+ * @file
+ * @brief Horizontal and vertical arrangements of components.
+ */
+
 #ifndef STICKY_GUI_LAYOUT_H
 #define STICKY_GUI_LAYOUT_H
 
@@ -12,9 +17,13 @@
 
 #include "gui/component.h"
 
+/** @addtogroup gui
+ *  @{
+ */
+
 namespace st::gui
 {
-    // A layout arranges its children as one item, and can be nested in a frame or in another layout.
+    /** @brief Arranges its children as one item. It can be nested in a frame or in another layout. */
     class layout : public nestable_component
     {
     public:
@@ -24,10 +33,11 @@ namespace st::gui
         ST_DELETE_COPY_CTORS(layout);
         ST_DELETE_MOVE_CTORS(layout);
 
-        // The gap between children, in pixels. A negative value restores the default spacing of the theme.
+        /** @brief Sets the gap between children. @param spacing Pixels, or a negative value for the theme default. */
         void set_spacing(st::float32 spacing) noexcept;
 
     protected:
+        /** @brief Renders the children as a group. @param horizontal Whether to place them side by side. */
         void render_group(st::bool_t horizontal) noexcept;
 
     private:
@@ -35,7 +45,7 @@ namespace st::gui
         std::unique_ptr<layout_impl> m_impl;
     };
 
-    // Places its children side by side, from left to right.
+    /** @brief Places its children side by side, from left to right. */
     class hlayout : public layout
     {
     public:
@@ -45,7 +55,7 @@ namespace st::gui
         void render() noexcept override;
     };
 
-    // Places its children on top of each other, from top to bottom.
+    /** @brief Places its children on top of each other, from top to bottom. */
     class vlayout : public layout
     {
     public:
@@ -55,5 +65,7 @@ namespace st::gui
         void render() noexcept override;
     };
 } // namespace st::gui
+
+/** @} */
 
 #endif // STICKY_GUI_LAYOUT_H

@@ -5,6 +5,11 @@
  * Date created : 12/10/2026
  */
 
+/**
+ * @file
+ * @brief Persistent settings and the per-owner view of them.
+ */
+
 #ifndef STICKY_UTIL_CONFIG_H
 #define STICKY_UTIL_CONFIG_H
 
@@ -22,13 +27,18 @@
 #include "st_macros.h"
 #include "st_types.h"
 
+/** @addtogroup util
+ *  @{
+ */
+
 namespace st::util
 {
 
-    // A flat set of named settings backed by a JSON file.
+    /** @brief A flat set of named settings backed by a JSON file. */
     class config
     {
     public:
+        /** @brief The value of a setting: a string, a number or a boolean. */
         using value = std::variant<std::string, st::float64, st::bool_t>;
 
         config() noexcept;
@@ -37,23 +47,46 @@ namespace st::util
         ST_DELETE_COPY_CTORS(config);
         ST_DELETE_MOVE_CTORS(config);
 
-        // Replaces the settings with the contents of the file. A missing file is not an error and leaves the config
-        // empty. An unreadable or malformed file is logged, leaves the config empty and returns false.
+        /**
+         * @brief Replaces the settings with the contents of a JSON file.
+         * @param path The file.
+         * @return True if the file was read or does not exist, which leaves the config empty. False, with the config
+         *         empty and the reason logged, if it is unreadable or not a JSON object.
+         */
         [[nodiscard]] st::bool_t load(const std::filesystem::path &path) noexcept;
-        // Writes the settings to the file. Failure is logged and returns false.
+        /**
+         * @brief Writes the settings to a JSON file.
+         *
+         * The file is replaced in one step, so a failed write leaves the previous file intact.
+         *
+         * @param path The file.
+         * @return False, with the reason logged, if the file could not be written.
+         */
         [[nodiscard]] st::bool_t save(const std::filesystem::path &path) const noexcept;
 
-        // Returns nothing if the key is missing or does not hold a string, number or boolean.
+        /**
+         * @brief The value of a key, or nothing if it is missing or not a string, number or boolean.
+         * @param key The key.
+         */
         [[nodiscard]] std::optional<value> get(std::string_view key) const noexcept;
-        void                               set(std::string_view key,
-                                               const value     &setting) noexcept;
-        // Stores the fallback unless the key already holds a value of the same type. Returns true if it was stored.
+        /** @brief Stores a value. @param key The key. @param setting The value. */
+        void set(std::string_view key,
+                 const value     &setting) noexcept;
+        /**
+         * @brief Stores a fallback unless the key already holds a value of the same type.
+         * @param key The key. @param fallback The value to store.
+         * @return True if the fallback was stored.
+         */
         st::bool_t set_default(std::string_view key,
                                const value     &fallback) noexcept;
-        // Claims the key for a single owner and applies `set_default`. Returns false and changes nothing if the key
-        // was already claimed.
-        st::bool_t               declare(std::string_view key,
-                                         const value     &fallback) noexcept;
+        /**
+         * @brief Claims a key for a single owner and applies set_default().
+         * @param key The key. @param fallback The default value.
+         * @return False, changing nothing, if the key was already claimed.
+         */
+        st::bool_t declare(std::string_view key,
+                           const value     &fallback) noexcept;
+        /** @brief Whether a key was claimed with declare(). @param key The key. */
         [[nodiscard]] st::bool_t is_declared(std::string_view key) const noexcept;
 
     private:
@@ -61,10 +94,16 @@ namespace st::util
         std::unique_ptr<config_impl> m_impl;
     };
 
-    // The settings one owner may use: it reads any declared setting but only writes the ones it declared itself.
+    /**
+     * @brief The settings one owner, such as a mod, may use.
+     *
+     * An owner reads any declared setting but only writes the ones it declared itself. Settings are stored under the
+     * key `<owner>.<name>`.
+     */
     class config_scope
     {
     public:
+        /** @brief Creates a view. @param config The settings, which must outlive the view. @param owner Owner name. */
         config_scope(config          &config,
                      std::string_view owner) noexcept;
         ~config_scope() noexcept;
@@ -72,23 +111,38 @@ namespace st::util
         ST_DELETE_COPY_CTORS(config_scope);
         ST_DELETE_MOVE_CTORS(config_scope);
 
-        // Declares one of the owner's settings by its short name. Returns false and logs if another owner declared the
-        // key.
+        /**
+         * @brief Declares one of the owner's settings.
+         * @param name Short name of the setting. @param fallback Default value, which also fixes its type.
+         * @return False, with the reason logged, if another owner declared the key.
+         */
         st::bool_t declare(std::string_view     name,
                            const config::value &fallback) noexcept;
-        // Returns nothing if the owner did not declare the setting.
+        /** @brief A setting of the owner, or nothing if it did not declare it. @param name Short name. */
         [[nodiscard]] std::optional<config::value> get(std::string_view name) const noexcept;
-        // Returns nothing if the other owner did not declare the setting.
+        /**
+         * @brief A setting of another owner.
+         * @param owner Owner name. @param name Short name.
+         * @return The value, or nothing if that owner did not declare it.
+         */
         [[nodiscard]] std::optional<config::value> get_from(std::string_view owner,
                                                             std::string_view name) const noexcept;
-        // Fails and logs if the owner did not declare the setting, the type differs from the declared one or the value
-        // is not a finite number.
+        /**
+         * @brief Changes one of the owner's settings.
+         * @param name Short name. @param setting New value.
+         * @return False, with the reason logged, if the owner did not declare the setting, the type differs from the
+         *         declared one or the value is not a finite number.
+         */
         st::bool_t set(std::string_view     name,
                        const config::value &setting) noexcept;
 
-        // The full key of a setting: the owner name and a fullstop, unless the owner name already ends with one.
+        /**
+         * @brief The full key of a setting: the owner name and a full stop, unless it already ends with one, then the
+         *        short name.
+         * @param owner Owner name. @param name Short name.
+         */
         [[nodiscard]] static std::string key_for(std::string_view owner,
-                                                 std::string_view name);
+                                                 std::string_view name) noexcept;
 
     private:
         struct config_scope_impl;
@@ -96,5 +150,7 @@ namespace st::util
     };
 
 } // namespace st::util
+
+/** @} */
 
 #endif // STICKY_UTIL_CONFIG_H

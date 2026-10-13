@@ -81,7 +81,7 @@ st::gui::component::component(st::gui::nestable_component *parent) noexcept :
 st::gui::component::~component() noexcept { detach(); }
 
 st::uint64
-st::gui::component::id() const
+st::gui::component::id() const noexcept
 {
     return m_impl->m_id;
 }
@@ -93,7 +93,7 @@ st::gui::component::is_closed() const noexcept
 }
 
 st::gui::nestable_component *
-st::gui::component::parent() const
+st::gui::component::parent() const noexcept
 {
     return m_impl->m_parent;
 }
@@ -242,7 +242,7 @@ st::gui::nestable_component::~nestable_component() noexcept
 }
 
 std::vector<st::gui::component *>
-st::gui::nestable_component::children() noexcept
+st::gui::nestable_component::children() const noexcept
 {
     return m_impl->m_children;
 }

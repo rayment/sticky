@@ -19,6 +19,7 @@ extern "C" {
 #include "lua/config_bindings.h"
 #include "lua/resource_bindings.h"
 #if ST_MODULE_AUDIO
+#include "audio/server.h"
 #include "audio/sound.h"
 #include "audio/sound_handle.h"
 #endif
@@ -42,6 +43,7 @@ namespace
     struct config_definition
     {
         std::string             name;
+        std::string             description;
         st::util::config::value default_value;
     };
 
@@ -183,6 +185,7 @@ namespace
                                !read_string_field(L, "type", type) ||
                                !read_config_default(L, type, definition.default_value))
                                return false;
+                           static_cast<void>(read_string_field(L, "description", definition.description));
                            definitions.push_back(std::move(definition));
                            return true;
                        });
@@ -256,6 +259,8 @@ struct st::mod::mod_impl
                   root_dir)
     {
         lua_State *L = m_runtime.state();
+        if (L == nullptr)
+            return;
         lua_getglobal(L, "st");
         lua_rawsetp(L, LUA_REGISTRYINDEX, &st_table_key);
         set_init_table(L, true);
@@ -308,32 +313,35 @@ st::mod::mod(std::string_view             name,
 st::mod::~mod() noexcept {}
 
 std::string
-st::mod::author() noexcept
+st::mod::author() const noexcept
 {
     return m_impl->m_author;
 }
 
 std::string
-st::mod::description() noexcept
+st::mod::description() const noexcept
 {
     return m_impl->m_description;
 }
 
 std::string
-st::mod::display_name() noexcept
+st::mod::display_name() const noexcept
 {
     return m_impl->m_display_name;
 }
 
 std::string
-st::mod::name() noexcept
+st::mod::name() const noexcept
 {
     return m_impl->m_name;
 }
 
 st::bool_t
-st::mod::execute_init(const progress_callback &progress)
+st::mod::execute_init(const progress_callback &progress) noexcept
 {
+    if (m_impl->m_runtime.state() == nullptr)
+        return false;
+
     const auto report = [&](std::string_view status, st::float32 fraction)
     {
         if (progress)
@@ -368,7 +376,11 @@ st::mod::execute_init(const progress_callback &progress)
         st::io::log::warn("Textures were declared but the video module is disabled.");
 #endif
 #if ST_MODULE_AUDIO
-    load_resources(m_impl->m_sounds, res_dir, sounds, "sound", st::audio::sound::load_file, on_resource);
+    if (!sounds.empty() && !st::audio::server::is_available())
+        st::io::log::warn(
+            fmt::format("The sounds of '{}' were not loaded because no audio device is open.", m_impl->m_display_name));
+    else
+        load_resources(m_impl->m_sounds, res_dir, sounds, "sound", st::audio::sound::load_file, on_resource);
 #else
     if (!sounds.empty())
         st::io::log::warn("Sounds were declared but the audio module is disabled.");
@@ -384,12 +396,13 @@ st::mod::bind_config(st::util::config &config) noexcept
     for (const auto &definition : m_impl->m_config)
         static_cast<void>(scope->declare(definition.name, definition.default_value));
 
-    st::lua::set_config_scope(m_impl->m_runtime.state(), scope.get());
+    if (m_impl->m_runtime.state() != nullptr)
+        st::lua::set_config_scope(m_impl->m_runtime.state(), scope.get());
     m_impl->m_scope = std::move(scope);
 }
 
 st::bool_t
-st::mod::execute_runtime()
+st::mod::execute_runtime() noexcept
 {
     return m_impl->m_runtime.execute_file("runtime.lua");
 }
@@ -407,8 +420,20 @@ st::mod::execute_function(std::string_view                                      
     return m_impl->m_runtime.execute_function(name, args);
 }
 
+std::vector<st::config_setting>
+st::mod::config_settings() const noexcept
+{
+    std::vector<config_setting> settings;
+    settings.reserve(m_impl->m_config.size());
+    for (const auto &definition : m_impl->m_config)
+    {
+        settings.push_back({st::util::config_scope::key_for(m_impl->m_name, definition.name), definition.description});
+    }
+    return settings;
+}
+
 std::string
-st::mod::version() noexcept
+st::mod::version() const noexcept
 {
     return m_impl->m_version;
 }

@@ -18,7 +18,7 @@ namespace
 {
     namespace fs = std::filesystem;
 
-    const fs::path res_dir = fs::path(ST_TEST_RES_DIR);
+    const fs::path res_dir = fs::path(ST_TEST_RES_DIR) / "util";
 
     struct config_file
     {
@@ -69,9 +69,9 @@ TEST_CASE("config set and get round trip each type")
     config.set("number", 1.5);
     config.set("flag", true);
 
-    CHECK(std::get<std::string>(*config.get("text")) == "hello");
-    CHECK(std::get<st::float64>(*config.get("number")) == 1.5);
-    CHECK(std::get<st::bool_t>(*config.get("flag")) == true);
+    CHECK(config.get("text") == st::util::config::value{std::string("hello")});
+    CHECK(config.get("number") == st::util::config::value{st::float64(1.5)});
+    CHECK(config.get("flag") == st::util::config::value{st::bool_t(true)});
     CHECK_FALSE(config.get("missing").has_value());
 }
 
@@ -82,7 +82,7 @@ TEST_CASE("config set_default keeps existing values of the same type")
     CHECK(config.set_default("key", 1.0));
     config.set("key", 2.0);
     CHECK_FALSE(config.set_default("key", 3.0));
-    CHECK(std::get<st::float64>(*config.get("key")) == 2.0);
+    CHECK(config.get("key") == st::util::config::value{st::float64(2.0)});
 }
 
 TEST_CASE("config set_default replaces values of a different type")
@@ -91,7 +91,7 @@ TEST_CASE("config set_default replaces values of a different type")
 
     config.set("key", std::string("text"));
     CHECK(config.set_default("key", false));
-    CHECK(std::get<st::bool_t>(*config.get("key")) == false);
+    CHECK(config.get("key") == st::util::config::value{st::bool_t(false)});
 }
 
 TEST_CASE("config save then load restores settings")
@@ -106,9 +106,26 @@ TEST_CASE("config save then load restores settings")
 
     st::util::config loaded;
     CHECK(loaded.load(file.path));
-    CHECK(std::get<std::string>(*loaded.get("mod.text")) == "hello");
-    CHECK(std::get<st::float64>(*loaded.get("mod.number")) == 42.0);
-    CHECK(std::get<st::bool_t>(*loaded.get("mod.flag")) == true);
+    CHECK(loaded.get("mod.text") == st::util::config::value{std::string("hello")});
+    CHECK(loaded.get("mod.number") == st::util::config::value{st::float64(42.0)});
+    CHECK(loaded.get("mod.flag") == st::util::config::value{st::bool_t(true)});
+}
+
+TEST_CASE("config save replaces an existing file and leaves no temporary file")
+{
+    config_file file("config_replace.json");
+    file.write("{\"mod.old\": 1}");
+
+    st::util::config saved;
+    saved.set("mod.new", 2.0);
+    CHECK(saved.save(file.path));
+    CHECK(saved.save(file.path));
+    CHECK_FALSE(fs::exists(fs::path(file.path) += ".tmp"));
+
+    st::util::config loaded;
+    CHECK(loaded.load(file.path));
+    CHECK_FALSE(loaded.get("mod.old"));
+    CHECK(loaded.get("mod.new") == st::util::config::value{st::float64(2.0)});
 }
 
 TEST_CASE("config load treats a missing file as empty")
