@@ -7,8 +7,6 @@
 
 #include <system_error>
 
-#include <SDL3/SDL.h>
-
 #include "io/filesystem.h"
 
 namespace
@@ -223,14 +221,4 @@ st::io::filesystem::resolve_file(const std::filesystem::path &root,
         return false;
 
     return std::filesystem::is_regular_file(resolved, ec) && !ec;
-}
-
-std::filesystem::path
-st::io::filesystem::executable_dir() noexcept
-{
-    // SDL caches the result and owns the string. It ends with a separator.
-    const char *base = SDL_GetBasePath();
-    if (base == nullptr)
-        return ".";
-    return std::filesystem::u8path(base);
 }
